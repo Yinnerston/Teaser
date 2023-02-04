@@ -13,12 +13,12 @@ services:
     networks:
       - memefeed-network
   frontend:
-    build: ./src/frontend
-    command: npm run dev
+    build: ./src/frontend/wocchit
+    command: npm run start
     ports:
       - 666:666
     volumes:
-      - ./src/frontend:/app
+      - ./src/frontend/wocchit:/app
     networks:
       - memefeed-network
 
