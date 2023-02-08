@@ -2,27 +2,27 @@ version: '3.8'
 
 services:
   backend-django:
-    build: ./src/backend/wocchit
+    build: ./src/backend/teaser
     command: bash -c " python manage.py runserver 0.0.0.0:8000"
     ports:
       - 8000:8000
     volumes:
-      - ./src/backend/wocchit:/app
+      - ./src/backend/teaser:/app
     env_file:
       - .backend.env
     networks:
-      - memefeed-network
+      - teaser-network
   frontend:
-    build: ./src/frontend/wocchit
-    command: npm run start
+    build: ./src/frontend/teaser
+    command: npm start --clear
     ports:
       - 666:666
     volumes:
-      - ./src/frontend/wocchit:/app
+      - ./src/frontend/teaser:/app
     networks:
-      - memefeed-network
+      - teaser-network
 
 
 
 networks:
-  memefeed-network:
+  teaser-network:
