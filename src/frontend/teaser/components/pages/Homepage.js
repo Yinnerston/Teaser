@@ -1,11 +1,16 @@
 import { ScrollView } from 'react-native';
-import TeaserView from '../teaser/TeaserView';
+import ForYouPage from './ForYouPage';
+import FollowingPage from './FollowingPage';
 
+/**
+ * Homepage containing ForYou and Following pages.
+ * @returns 
+ */
 export default function HomePage()    {
     return (
         <ScrollView>
-            <TeaserView></TeaserView>
-            <TeaserView></TeaserView>
+            <ForYouPage />
+            {/* <FollowingPage /> */}
         </ScrollView>
     );
 }
