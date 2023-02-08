@@ -1,16 +1,13 @@
 import { useState } from "react";
-import { View, Text } from "react-native";
-import Video from 'react-native-video';
+import { View, Text, StyleSheet } from "react-native";
+import { Video } from 'expo-av';
 
 export default function TeaserView()    {
-    const [post, setPost] = useState(props.post);
+    // const [post, setPost] = useState(props.post);
     
 
     return (
         <View style={styles.container}>
-            <Video
-            source={"assets/susExample.mp4"} repeat={true}>
-            </Video>
         </View>
     );
 }
