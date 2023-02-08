@@ -3,7 +3,7 @@
 .env
 
 # venv
-wocchitvenv
+teaservenv
 venv
 
 # Django #
