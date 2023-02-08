@@ -14,11 +14,12 @@ services:
       - teaser-network
   frontend:
     build: ./src/frontend/teaser
-    command: npm start --reset-cache
+    command: npm start
     ports:
       - 42069:42069
     environment:
       - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+      - CHOKIDAR_USEPOLLING=true
     volumes:
       - ./src/frontend/teaser:/app
       - /app/node_modules
