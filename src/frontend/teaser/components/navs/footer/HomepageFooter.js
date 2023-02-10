@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons'; 
 import { SimpleLineIcons } from '@expo/vector-icons'; 
-
+import { HOMEPAGE_FOOTER_HEIGHT } from "../../../Constants";
 /**
  * Container for footer of the homepage.
  * Handles seeking between Home, Subscriptions, Inbox and Profile.
@@ -22,6 +22,7 @@ export default function HomepageFooter() {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#ffffff',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        height: HOMEPAGE_FOOTER_HEIGHT
     }
 })
