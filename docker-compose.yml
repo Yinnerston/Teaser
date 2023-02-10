@@ -14,7 +14,7 @@ services:
       - teaser-network
   frontend:
     build: ./src/frontend/teaser
-    command: npm start
+    command: npm run start
     ports:
       - 42069:42069
     environment:
