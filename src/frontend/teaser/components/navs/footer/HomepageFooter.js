@@ -11,10 +11,10 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 export default function HomepageFooter() {
     return (
         <View style={styles.container}>
-            <AntDesign style={{flex: 1}} name="home" size={24} color="black" />
-            <AntDesign style={{flex: 2}} name="heart" size={24} color="black" />
-            <SimpleLineIcons style={{flex: 3}} name="speech" size={24} color="black" />
-            <Ionicons style={{flex: 4}} name="person-outline" size={24} color="black" />
+            <AntDesign style={{flex: 1, marginLeft: "auto", marginRight: "auto"}} name="home" size={24} color="black" />
+            <AntDesign style={{flex: 1, marginLeft: "auto", marginRight: "auto"}} name="heart" size={24} color="black" />
+            <SimpleLineIcons style={{flex: 1, marginLeft: "auto", marginRight: "auto"}} name="speech" size={24} color="black" />
+            <Ionicons style={{flex: 1, marginLeft: "auto", marginRight: "auto"}} name="person-outline" size={24} color="black" />
         </View>
     );
 }
