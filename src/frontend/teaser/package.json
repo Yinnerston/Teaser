@@ -9,6 +9,7 @@
     "web": "expo start --web --port 42069"
   },
   "dependencies": {
+    "@expo/vector-icons": "^13.0.0",
     "expo": "~47.0.12",
     "expo-av": "~13.0.2",
     "expo-status-bar": "~1.4.2",
