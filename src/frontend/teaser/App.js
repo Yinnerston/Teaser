@@ -9,17 +9,8 @@ const tmp = require('./assets/susExample.mp4');
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
       <StatusBar style="auto" />
-      {/* <Homepage></Homepage> */}
-      <View style={{flex:1}}>
-        {/* <Video source={tmp} isLooping={true}></Video> */}
-        <Text>Hello World</Text>
-      </View>
-      <View style={{flex:2, backgroundColor:"black"}}>
-        {/* <HomepageFooter></HomepageFooter> */}
-        <Text>Bottom text</Text>
-      </View>
+      <Homepage></Homepage>
     </View>
   );
 }
