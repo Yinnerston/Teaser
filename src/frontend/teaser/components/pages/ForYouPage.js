@@ -1,12 +1,12 @@
-import { ScrollView } from "react-native";
+import { View } from "react-native";
 import HomepageFooter from "../navs/footer/HomepageFooter";
 import TeaserView from "../teaser/TeaserView";
 
 export default function ForYouPage()    {
     return (
-        <ScrollView>
+        <View>
             <TeaserView>
             </TeaserView>
-        </ScrollView>
+        </View>
     );
 }
