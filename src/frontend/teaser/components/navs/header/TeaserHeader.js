@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 
 /**
  * Container for header of a Teaser.
@@ -7,6 +7,8 @@ import { View } from "react-native";
  */
 export default function TeaserHeader() {
     return (
-        <View></View>
+        <View>
+            <Text>Teaser Header</Text>
+        </View>
     );
 }

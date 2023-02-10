@@ -5,7 +5,6 @@ export default function FollowingPage()    {
     return (
         <ScrollView>
             <TeaserView>
-                <TeaserVideo></TeaserVideo>
             </TeaserView>
         </ScrollView>
     );

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 
 /**
  * Container for the captions and tags of a teaser.
@@ -6,6 +6,14 @@ import { View } from "react-native";
  */
 export default function TeaserCaption() {
     return (
-        <View></View>
+        <View>
+            <Text style={styles.captionText}>Example caption text here</Text>
+        </View>
     );
 }
+
+const styles = StyleSheet.create({
+    captionText: {
+        fontWeight: 'bold'
+    }
+});
