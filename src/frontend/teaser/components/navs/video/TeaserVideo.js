@@ -3,14 +3,13 @@ import { Video } from 'expo-av'
 import { useRef, useState } from 'react';
 import { HOMEPAGE_FOOTER_HEIGHT } from '../../../Constants';
 import { AntDesign } from '@expo/vector-icons';
-const susExampleImage = require('../../../assets/susExample.mp4');
 
 /**
  * Container for video of a teaser.
  * Handles play / pause / volume / seeking through a video.
  * @returns 
  */
-export default function TeaserVideo()   {
+export default function TeaserVideo(props)   {
     const videoRef = useRef(null);
     const [status, setStatus] = useState([]);
     // const [playbackInstance, setPlaybackInstance] = useState(null);
@@ -26,17 +25,24 @@ export default function TeaserVideo()   {
      * Toggles between playing and pausing the video if the video has been loaded.
      */
     const _onPressTogglePlayPause = () => {
-        if (videoRef != null)   {   // TODO: Do I need to check if .current is null? Maybe when video changes?
-            if (isPlaying)  {
-                videoRef.current.pauseAsync();
-                setIsPlaying(false);
-            } else  {
-                videoRef.current.playAsync();
-                setIsPlaying(true);
+        requestAnimationFrame(() => {
+            if (videoRef != null)   {   // TODO: Do I need to check if .current is null? Maybe when video changes?
+                if (isPlaying)  {
+                    videoRef.current.pauseAsync();
+                    setIsPlaying(false);
+                } else  {
+                    videoRef.current.playAsync();
+                    setIsPlaying(true);
+                }
             }
-        }
+        })
+        
     }
 
+    /**
+     * Render the play button if the video is not playing.
+     * @returns 
+     */
     const _renderPlayButton = () => {
         if (!isPlaying)  {
             return <AntDesign style={styles.playIcon} name="caretright" size={48} color="white"/>
@@ -50,7 +56,7 @@ export default function TeaserVideo()   {
                 style={styles.video} 
                 useNativeControls={false}
                 onPlaybackStatusUpdate={_onPlaybackStatusUpdate} 
-                source={susExampleImage} 
+                source={props.videoURL} 
                 isLooping={true}
                 shouldPlay={true}
                 >
