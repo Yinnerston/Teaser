@@ -1,8 +1,8 @@
-import { StyleSheet, View, Text, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, TouchableOpacity } from 'react-native';
 import { Video } from 'expo-av'
 import { useRef, useState } from 'react';
 import { HOMEPAGE_FOOTER_HEIGHT } from '../../../Constants';
-
+import { AntDesign } from '@expo/vector-icons';
 const susExampleImage = require('../../../assets/susExample.mp4');
 
 /**
@@ -11,18 +11,51 @@ const susExampleImage = require('../../../assets/susExample.mp4');
  * @returns 
  */
 export default function TeaserVideo()   {
+    
     const videoRef = useRef(null);
     const [status, setStatus] = useState([]);
+    // const [playbackInstance, setPlaybackInstance] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    /**
+     * Function called on pressing the video TouchableOpacity.
+     * Toggles between playing and pausing the video if the video has been loaded.
+     */
+    const _onPressTogglePlayPause = () => {
+        if (videoRef != null)   {   // TODO: Do I need to check if .current is null? Maybe when video changes?
+            if (isPlaying)  {
+                videoRef.current.pauseAsync();
+                setIsPlaying(false);
+            } else  {
+                videoRef.current.playAsync();
+                setIsPlaying(true);
+            }
+        }
+    }
+
+    const _renderPlayButton = () => {
+        if (!isPlaying)  {
+            return <AntDesign style={styles.playIcon} name="caretright" size={48} color="white"/>
+        }
+    }
+
     return (
-        <View>
-            <Video ref={videoRef}
-            style={styles.video} 
-            useNativeControls 
-            onPlaybackStatusUpdate={status => setStatus(() => status)} 
-            source={susExampleImage} 
-            isLooping={true}
-            >
-            </Video>
+         <View>
+            <TouchableOpacity activeOpacity={1} onPress={() => _onPressTogglePlayPause()}>
+                <Video ref={videoRef}
+                style={styles.video} 
+                useNativeControls={false}
+                onPlaybackStatusUpdate={status => setStatus(() => status)} 
+                source={susExampleImage} 
+                isLooping={true}
+                shouldPlay={true}
+                >
+                </Video>
+                {
+                    _renderPlayButton()
+                }
+            </TouchableOpacity>
+            
         </View>
     );
 }
@@ -33,5 +66,13 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         height: height - HOMEPAGE_FOOTER_HEIGHT,
         width: width
+    },
+    playIcon: {
+        position: 'absolute',
+        top: height / 2 - 24,
+        left: width / 2 - 24,
+        justifyContent: 'center',
+        alignItems: 'center',
+        opacity: 0.7
     }
 })
