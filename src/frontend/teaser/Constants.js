@@ -1,0 +1,1 @@
+export const HOMEPAGE_FOOTER_HEIGHT = 32;

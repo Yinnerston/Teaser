@@ -3,9 +3,9 @@ import TeaserVideo from "../navs/video/TeaserVideo";
 
 export default function FollowingPage()    {
     return (
-        <ScrollView>
+        <View>
             <TeaserView>
             </TeaserView>
-        </ScrollView>
+        </View>
     );
 }
