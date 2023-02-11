@@ -11,11 +11,15 @@ const susExampleImage = require('../../../assets/susExample.mp4');
  * @returns 
  */
 export default function TeaserVideo()   {
-    
     const videoRef = useRef(null);
     const [status, setStatus] = useState([]);
     // const [playbackInstance, setPlaybackInstance] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
+
+    const _onPlaybackStatusUpdate = status => {
+        setStatus(() => status);
+        setIsPlaying(status.isPlaying);
+    }
 
     /**
      * Function called on pressing the video TouchableOpacity.
@@ -45,7 +49,7 @@ export default function TeaserVideo()   {
                 <Video ref={videoRef}
                 style={styles.video} 
                 useNativeControls={false}
-                onPlaybackStatusUpdate={status => setStatus(() => status)} 
+                onPlaybackStatusUpdate={_onPlaybackStatusUpdate} 
                 source={susExampleImage} 
                 isLooping={true}
                 shouldPlay={true}
