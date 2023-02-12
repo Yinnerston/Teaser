@@ -1,11 +1,15 @@
-import { ScrollView } from "react-native";
-import TeaserVideo from "../navs/video/TeaserVideo";
+import { StyleSheet, SafeAreaView } from "react-native";
 
 export default function FollowingPage()    {
     return (
-        <View>
-            <TeaserView>
-            </TeaserView>
-        </View>
+        <SafeAreaView style={styles.container}>
+            <Text>Not implemented</Text>
+        </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+
+    }
+})
