@@ -11,26 +11,16 @@ import { HOMEPAGE_FOOTER_HEIGHT } from "../../../Constants";
 export default function HomepageFooter() {
   return (
     <View style={styles.container}>
-      <AntDesign
-        style={{ flex: 1, marginLeft: "auto", marginRight: "auto" }}
-        name="home"
-        size={24}
-        color="black"
-      />
-      <AntDesign
-        style={{ flex: 1, marginLeft: "auto", marginRight: "auto" }}
-        name="heart"
-        size={24}
-        color="black"
-      />
+      <AntDesign style={styles.icon} name="home" size={24} color="black" />
+      <AntDesign style={styles.icon} name="heart" size={24} color="black" />
       <SimpleLineIcons
-        style={{ flex: 1, marginLeft: "auto", marginRight: "auto" }}
+        style={styles.icon}
         name="speech"
         size={24}
         color="black"
       />
       <Ionicons
-        style={{ flex: 1, marginLeft: "auto", marginRight: "auto" }}
+        style={styles.icon}
         name="person-outline"
         size={24}
         color="black"
@@ -44,5 +34,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     flexDirection: "row",
     height: HOMEPAGE_FOOTER_HEIGHT,
+  },
+  icon: {
+    flex: 1,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
 });
