@@ -59,6 +59,7 @@ export default function TeaserVideo(props)   {
                 source={props.videoURL} 
                 isLooping={true}
                 shouldPlay={true}
+                resizeMode="cover"
                 >
                 </Video>
                 {
