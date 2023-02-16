@@ -1,10 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Homepage from './components/pages/Homepage';
-
-import { Video } from 'expo-av';
-import HomepageFooter from './components/navs/footer/HomepageFooter';
-const tmp = require('./assets/susExample.mp4');
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, View } from "react-native";
+import Homepage from "./components/pages/Homepage";
 
 export default function App() {
   return (
@@ -18,9 +14,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "column",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

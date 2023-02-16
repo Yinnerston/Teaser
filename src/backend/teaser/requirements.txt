@@ -3,3 +3,4 @@ Django==4.1.6
 django-environ==0.9.0
 sqlparse==0.4.3
 tzdata==2022.7
+pre-commit
