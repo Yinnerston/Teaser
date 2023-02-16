@@ -6,8 +6,7 @@
     "start": "expo start -c --port 42069",
     "android": "expo start --android --port 42069",
     "ios": "expo start --ios --port 42069",
-    "web": "expo start --web --port 42069",
-    "prepare": "husky install"
+    "web": "expo start --web --port 42069"
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
