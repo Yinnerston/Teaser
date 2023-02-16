@@ -1,7 +1,7 @@
 import { SafeAreaView, StyleSheet, FlatList, Dimensions } from "react-native";
 import TeaserView from "./TeaserView";
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const PLAYLIST = [
   {
@@ -14,9 +14,8 @@ const PLAYLIST = [
     },
     video: {
       videoURL: "https://i.imgur.com/xaAAjDk.mp4",
-      thumbnailURL: "https://i.imgur.com/OYCAEpd.png"
-
-    }
+      thumbnailURL: "https://i.imgur.com/OYCAEpd.png",
+    },
   },
 
   {
@@ -29,25 +28,35 @@ const PLAYLIST = [
     },
     video: {
       videoURL: "https://i.imgur.com/9RwUfgJ.mp4",
-      thumbnailURL: "https://i.imgur.com/MlCqb3r.png"
-    }
+      thumbnailURL: "https://i.imgur.com/MlCqb3r.png",
+    },
   },
-]
+];
 
-export default function TeaserViewList()    {
-    // const onViewableItemsChange = () => {
-    // }
+export default function TeaserViewList() {
+  // const onViewableItemsChange = () => {
+  // }
 
-    return (
-        <SafeAreaView style={styles.container}>
-          {/* TODO: Render as flatlist with scrollToItem snapping like TikTok */}
-          <FlatList data={PLAYLIST} renderItem={({item}) => (<TeaserView videoURL={item.video.videoURL} thumbnailURL={item.video.thumbnailURL} snapToInterval={height} snapToAlignment="start"></TeaserView>)} ></FlatList>
-        </SafeAreaView>
-    );
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* TODO: Render as flatlist with scrollToItem snapping like TikTok */}
+      <FlatList
+        data={PLAYLIST}
+        renderItem={({ item }) => (
+          <TeaserView
+            videoURL={item.video.videoURL}
+            thumbnailURL={item.video.thumbnailURL}
+            snapToInterval={height}
+            snapToAlignment="start"
+          ></TeaserView>
+        )}
+      ></FlatList>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
-  }
-})
+    flex: 1,
+  },
+});

@@ -1,12 +1,9 @@
-import { ScrollView } from 'react-native';
+import { ScrollView } from "react-native";
 
 /**
  * Horizontal scroll between teasers.
- * @returns 
+ * @returns
  */
-export default function HorizontalScroll()    {
-    return (
-        <ScrollView>
-        </ScrollView>
-    );
+export default function HorizontalScroll() {
+  return <ScrollView></ScrollView>;
 }
