@@ -1,8 +1,12 @@
 import { useState } from "react";
-import { SafeAreaView, StyleSheet, FlatList, Dimensions } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  FlatList,
+  useWindowDimensions,
+} from "react-native";
+import { HOMEPAGE_FOOTER_HEIGHT } from "../../Constants";
 import TeaserView from "./TeaserView";
-
-const { width, height } = Dimensions.get("window");
 
 const PLAYLIST = [
   {
@@ -37,6 +41,7 @@ const PLAYLIST = [
 export default function TeaserViewList() {
   const [curData, setCurData] = useState({});
   const [curVideo, setCurVideo] = useState({});
+  const windowDimensions = useWindowDimensions();
   const onViewableItemsChange = ({ changed, viewableItems }) => {
     // Set the data object
     console.log(changed, viewableItems);
@@ -47,7 +52,6 @@ export default function TeaserViewList() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {console.log("hello world")}
       {/* TODO: Render as flatlist with scrollToItem snapping like TikTok */}
       <FlatList
         data={PLAYLIST}
@@ -63,7 +67,7 @@ export default function TeaserViewList() {
           viewAreaCoveragePercentThreshold: 60,
           waitForInteraction: true,
         }}
-        snapToInterval={height}
+        snapToInterval={windowDimensions.height}
         decelerationRate="fast"
         snapToAlignment="start"
       ></FlatList>

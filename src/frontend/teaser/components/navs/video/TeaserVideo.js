@@ -2,14 +2,13 @@ import {
   StyleSheet,
   View,
   Text,
-  Dimensions,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import { Video } from "expo-av";
 import { useRef, useState } from "react";
 import { HOMEPAGE_FOOTER_HEIGHT } from "../../../Constants";
 import { AntDesign } from "@expo/vector-icons";
-
 /**
  * Container for video of a teaser.
  * Handles play / pause / volume / seeking through a video.
@@ -18,6 +17,7 @@ import { AntDesign } from "@expo/vector-icons";
 export default function TeaserVideo(props) {
   const videoRef = useRef(null);
   const [status, setStatus] = useState([]);
+  const styles = useTeaserVideoStyle();
   // const [playbackInstance, setPlaybackInstance] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -84,19 +84,22 @@ export default function TeaserVideo(props) {
   );
 }
 
-const { height, width } = Dimensions.get("window");
-const styles = StyleSheet.create({
-  video: {
-    alignContent: "center",
-    height: height - HOMEPAGE_FOOTER_HEIGHT,
-    width: width,
-  },
-  playIcon: {
-    position: "absolute",
-    top: height / 2 - 24,
-    left: width / 2 - 24,
-    justifyContent: "center",
-    alignItems: "center",
-    opacity: 0.7,
-  },
-});
+const useTeaserVideoStyle = () => {
+  const { height, width } = useWindowDimensions();
+  const styles = StyleSheet.create({
+    video: {
+      alignContent: "center",
+      height: height,
+      width: width,
+    },
+    playIcon: {
+      position: "absolute",
+      top: height / 2 - 24,
+      left: width / 2 - 24,
+      justifyContent: "center",
+      alignItems: "center",
+      opacity: 0.7,
+    },
+  });
+  return styles;
+};

@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, useWindowDimensions } from "react-native";
 
 /**
  * Container for the sidebar of a teaser.
@@ -6,15 +6,29 @@ import { StyleSheet, View, Text } from "react-native";
  * @returns
  */
 export default function TeaserSidebar() {
+  const styles = useSidebarStyle();
   return (
-    <View>
-      <Text style={styles.sidebarText}>Sidebar</Text>
+    <View style={styles.container}>
+      <Text style={styles.sidebarText}>SIDEBAR</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  sidebarText: {
-    fontSize: 10,
-  },
-});
+const useSidebarStyle = () => {
+  const { height, width } = useWindowDimensions();
+  const styles = StyleSheet.create({
+    container: {
+      position: "absolute",
+      top: "auto",
+      bottom: 16,
+      left: "auto",
+      right: 16,
+      height: height / 2,
+      backgroundColor: "yellow",
+    },
+    sidebarText: {
+      fontSize: 10,
+    },
+  });
+  return styles;
+};
