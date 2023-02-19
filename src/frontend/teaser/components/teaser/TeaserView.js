@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import { View, StyleSheet, useWindowDimensions } from "react-native";
 import TeaserCaption from "../navs/caption/TeaserCaption";
 import TeaserHeader from "../navs/header/TeaserHeader";
 import TeaserSidebar from "../navs/sidebar/TeaserSidebar";
@@ -12,14 +11,16 @@ import { HOMEPAGE_FOOTER_HEIGHT } from "../../Constants";
  * @returns
  */
 export default function TeaserView(props) {
+  const { videoURL, thumbnailURL, videoMode, videoIdx } = props;
   // const [post, setPost] = useState(props.post);
-  const [isReloaded, setIsReloaded] = useState(false);
   const styles = useTeaserViewStyle();
   return (
     <View style={styles.container}>
       <TeaserVideo
-        videoURL={{ uri: props.videoURL }}
-        thumbnailURL={{ uri: props.thumbnailURL }}
+        videoURL={{ uri: videoURL }}
+        thumbnailURL={{ uri: thumbnailURL }}
+        videoMode={videoMode}
+        videoIdx={videoIdx}
       ></TeaserVideo>
       <TeaserHeader></TeaserHeader>
       <TeaserSidebar></TeaserSidebar>

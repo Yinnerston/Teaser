@@ -1,13 +1,12 @@
 import {
   StyleSheet,
   View,
-  Text,
   TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
 import { Video } from "expo-av";
 import { useRef, useState } from "react";
-import { HOMEPAGE_FOOTER_HEIGHT } from "../../../Constants";
+import { VIDEO_LANDSCAPE, VIDEO_PORTRAIT } from "../../../Constants";
 import { AntDesign } from "@expo/vector-icons";
 /**
  * Container for video of a teaser.
@@ -15,15 +14,14 @@ import { AntDesign } from "@expo/vector-icons";
  * @returns
  */
 export default function TeaserVideo(props) {
+  const { videoURL, videoMode, videoIdx, curTeaserPlayingIdx } = props;
   const videoRef = useRef(null);
-  const [status, setStatus] = useState([]);
   const styles = useTeaserVideoStyle();
   // const [playbackInstance, setPlaybackInstance] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const _onPlaybackStatusUpdate = (status) => {
-    setStatus(() => status);
-    setIsPlaying(status.isPlaying);
+  const _onPlaybackStatusUpdate = (playbackStatus) => {
+    playbackStatus;
   };
 
   /**
@@ -73,10 +71,10 @@ export default function TeaserVideo(props) {
           style={styles.video}
           useNativeControls={false}
           onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
-          source={props.videoURL}
+          source={videoURL}
           isLooping={true}
-          shouldPlay={true}
-          resizeMode="cover"
+          paused={true}
+          resizeMode={videoMode == VIDEO_PORTRAIT ? "cover" : "center"}
         ></Video>
         {_renderPlayButton()}
       </TouchableOpacity>
