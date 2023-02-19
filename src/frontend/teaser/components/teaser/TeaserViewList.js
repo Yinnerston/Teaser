@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useCallback } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -10,7 +10,7 @@ import {
   VIDEO_PORTRAIT,
   VIEWABILITY_CONFIG_THRESHOLD,
 } from "../../Constants";
-import TeaserView from "./TeaserView";
+import { TeaserView } from "./TeaserView";
 
 const PLAYLIST = [
   {
@@ -101,31 +101,60 @@ const PLAYLIST = [
   },
 ];
 
+/**
+ * Renders a TikTok like feed of TeaserViews.
+ * Videos automatically play if they are in the window.
+ * Videos outside the window are paused.
+ * @returns FlatList of TeaserViews
+ */
 export default function TeaserViewList() {
   const windowDimensions = useWindowDimensions();
+  // Array of Refs to all the videos in the list
+  const videoRefs = useRef([]);
 
+  /**
+   * Function to render each TeaserView element in the flatlist.
+   */
   const renderTeaserViewItem = useCallback(({ item }) => {
     return (
       <TeaserView
         videoURL={item.video.videoURL}
         thumbnailURL={item.video.thumbnailURL}
         videoMode={item.video.videoMode}
+        videoIdx={item.data.id}
+        ref={videoRefs}
       ></TeaserView>
     );
   }, []);
 
+  /**
+   * Play videos that take up >= viewAreaCoveragePercentThreshold % of the window.
+   * Pause videos that are not in the window anymore.
+   */
+  const handleOnViewableItemsChanged = useRef(({ changed }) => {
+    changed.forEach((element) => {
+      const cell = videoRefs.current[element.item.data.id];
+      if (cell) {
+        if (element.isViewable) {
+          cell.playAsync();
+        } else {
+          cell.pauseAsync();
+        }
+      }
+    });
+  });
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* TODO: Render as flatlist with scrollToItem snapping like TikTok */}
       <FlatList
         data={PLAYLIST}
         renderItem={renderTeaserViewItem}
         keyExtractor={(item) => item.data.id.toString()}
+        onViewableItemsChanged={handleOnViewableItemsChanged.current}
         // Determines how the video snaps
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: VIEWABILITY_CONFIG_THRESHOLD,
           waitForInteraction: true,
-          itemVisiblePercentThreshold: VIEWABILITY_CONFIG_THRESHOLD,
         }}
         snapToInterval={windowDimensions.height}
         decelerationRate="fast"

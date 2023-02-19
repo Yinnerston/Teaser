@@ -2,17 +2,20 @@ import { View, StyleSheet, useWindowDimensions } from "react-native";
 import TeaserCaption from "../navs/caption/TeaserCaption";
 import TeaserHeader from "../navs/header/TeaserHeader";
 import TeaserSidebar from "../navs/sidebar/TeaserSidebar";
-import TeaserVideo from "../navs/video/TeaserVideo";
-import { HOMEPAGE_FOOTER_HEIGHT } from "../../Constants";
+import { TeaserVideo } from "../navs/video/TeaserVideo";
+import { forwardRef } from "react";
 
 /**
  *  Container for all the components that make up a teaser.
  * Defines sequence of videos to load.
+ * @argument thumbnailURL Url to the thumbnail
+ * @argument videoURL Url to the video .mp4 file
+ * @argument videoMode enum {VIDEO_PORTRAIT, VIDEO_LANDSCAPE}
+ * @argument videoIdx id of the video
  * @returns
  */
-export default function TeaserView(props) {
+export const TeaserView = forwardRef(function TeaserView(props, ref) {
   const { videoURL, thumbnailURL, videoMode, videoIdx } = props;
-  // const [post, setPost] = useState(props.post);
   const styles = useTeaserViewStyle();
   return (
     <View style={styles.container}>
@@ -21,13 +24,14 @@ export default function TeaserView(props) {
         thumbnailURL={{ uri: thumbnailURL }}
         videoMode={videoMode}
         videoIdx={videoIdx}
+        ref={ref}
       ></TeaserVideo>
       <TeaserHeader></TeaserHeader>
       <TeaserSidebar></TeaserSidebar>
       <TeaserCaption></TeaserCaption>
     </View>
   );
-}
+});
 
 const useTeaserViewStyle = () => {
   const { height, width } = useWindowDimensions();
