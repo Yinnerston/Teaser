@@ -75,7 +75,7 @@ export const TeaserVideo = forwardRef(function TeaserVideo(props, ref) {
           source={videoURL}
           isLooping={true}
           paused={false}
-          resizeMode={videoMode == VIDEO_PORTRAIT ? "cover" : "center"}
+          resizeMode={videoMode == VIDEO_PORTRAIT ? "cover" : "contain"}
         ></Video>
         {_renderPlayButton()}
       </TouchableOpacity>
@@ -90,6 +90,7 @@ const useTeaserVideoStyle = () => {
       alignContent: "center",
       height: height,
       width: width,
+      margin: "auto",
     },
     playIcon: {
       position: "absolute",
