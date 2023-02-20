@@ -13,6 +13,12 @@ export default function HomepageFooter() {
     <View style={styles.container}>
       <AntDesign style={styles.icon} name="home" size={24} color="black" />
       <AntDesign style={styles.icon} name="heart" size={24} color="black" />
+      <AntDesign
+        style={styles.icon}
+        name="pluscircle"
+        size={24}
+        color="black"
+      />
       <SimpleLineIcons
         style={styles.icon}
         name="speech"

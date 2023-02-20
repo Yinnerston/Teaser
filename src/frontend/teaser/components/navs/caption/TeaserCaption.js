@@ -6,13 +6,20 @@ import { StyleSheet, View, Text } from "react-native";
  */
 export default function TeaserCaption() {
   return (
-    <View>
-      <Text style={styles.captionText}>Example caption text here</Text>
+    <View style={styles.container}>
+      <Text style={styles.captionText}>CAPTION</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    bottom: 16,
+    left: 16,
+    right: "auto",
+    backgroundColor: "green",
+  },
   captionText: {
     fontWeight: "bold",
   },
