@@ -1,45 +1,40 @@
 import {
   StyleSheet,
   View,
-  Text,
-  Dimensions,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import { Video } from "expo-av";
-import { useRef, useState } from "react";
-import { HOMEPAGE_FOOTER_HEIGHT } from "../../../Constants";
+import { forwardRef, useState } from "react";
+import { VIDEO_LANDSCAPE, VIDEO_PORTRAIT } from "../../../Constants";
 import { AntDesign } from "@expo/vector-icons";
-
 /**
  * Container for video of a teaser.
  * Handles play / pause / volume / seeking through a video.
+ * @argument videoURL Url to the video .mp4 file
+ * @argument videoMode enum {VIDEO_PORTRAIT, VIDEO_LANDSCAPE}
+ * @argument videoIdx id of the video
  * @returns
  */
-export default function TeaserVideo(props) {
-  const videoRef = useRef(null);
-  const [status, setStatus] = useState([]);
-  // const [playbackInstance, setPlaybackInstance] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const _onPlaybackStatusUpdate = (status) => {
-    setStatus(() => status);
-    setIsPlaying(status.isPlaying);
-  };
+export const TeaserVideo = forwardRef(function TeaserVideo(props, ref) {
+  const { videoURL, videoMode, videoIdx } = props;
+  const styles = useTeaserVideoStyle();
+  // State variable for rendering play icon on pause
+  const [videoPlayingStatus, setVideoPlayingStatus] = useState({
+    isPlaying: true,
+  });
 
   /**
    * Function called on pressing the video TouchableOpacity.
    * Toggles between playing and pausing the video if the video has been loaded.
    */
-  const _onPressTogglePlayPause = () => {
+  const _onPressTogglePlayPause = async () => {
     requestAnimationFrame(() => {
-      if (videoRef != null) {
-        // TODO: Do I need to check if .current is null? Maybe when video changes?
-        if (isPlaying) {
-          videoRef.current.pauseAsync();
-          setIsPlaying(false);
+      if (ref.current[videoIdx] != null) {
+        if (videoPlayingStatus.isPlaying) {
+          ref.current[videoIdx].pauseAsync();
         } else {
-          videoRef.current.playAsync();
-          setIsPlaying(true);
+          ref.current[videoIdx].playAsync();
         }
       }
     });
@@ -50,7 +45,7 @@ export default function TeaserVideo(props) {
    * @returns
    */
   const _renderPlayButton = () => {
-    if (!isPlaying) {
+    if (!videoPlayingStatus.isPlaying) {
       return (
         <AntDesign
           style={styles.playIcon}
@@ -69,34 +64,42 @@ export default function TeaserVideo(props) {
         onPress={() => _onPressTogglePlayPause()}
       >
         <Video
-          ref={videoRef}
+          ref={(_videoRef) => {
+            ref.current[videoIdx] = _videoRef;
+          }}
           style={styles.video}
           useNativeControls={false}
-          onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
-          source={props.videoURL}
+          onPlaybackStatusUpdate={(status) =>
+            setVideoPlayingStatus(() => status)
+          }
+          source={videoURL}
           isLooping={true}
-          shouldPlay={true}
-          resizeMode="cover"
+          paused={false}
+          resizeMode={videoMode == VIDEO_PORTRAIT ? "cover" : "contain"}
         ></Video>
         {_renderPlayButton()}
       </TouchableOpacity>
     </View>
   );
-}
-
-const { height, width } = Dimensions.get("window");
-const styles = StyleSheet.create({
-  video: {
-    alignContent: "center",
-    height: height - HOMEPAGE_FOOTER_HEIGHT,
-    width: width,
-  },
-  playIcon: {
-    position: "absolute",
-    top: height / 2 - 24,
-    left: width / 2 - 24,
-    justifyContent: "center",
-    alignItems: "center",
-    opacity: 0.7,
-  },
 });
+
+const useTeaserVideoStyle = () => {
+  const { height, width } = useWindowDimensions();
+  const styles = StyleSheet.create({
+    video: {
+      alignContent: "center",
+      height: height,
+      width: width,
+      margin: "auto",
+    },
+    playIcon: {
+      position: "absolute",
+      top: height / 2 - 24,
+      left: width / 2 - 24,
+      justifyContent: "center",
+      alignItems: "center",
+      opacity: 0.7,
+    },
+  });
+  return styles;
+};
