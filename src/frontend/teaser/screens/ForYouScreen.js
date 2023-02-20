@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import TeaserViewList from "../teaser/TeaserViewList";
+import TeaserViewList from "../components/teaser/TeaserViewList";
 
 export default function ForYouScreen() {
   return (

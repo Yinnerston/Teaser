@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import ForYouScreen from "./ForYouScreen";
 import FollowingScreen from "./FollowingScreen";
-import HomeScreenFooter from "../navs/footer/HomeScreenFooter";
+import HomeScreenFooter from "../components/navs/footer/HomeScreenFooter";
 
 /**
  * Home Screen containing ForYou and Following screens.
