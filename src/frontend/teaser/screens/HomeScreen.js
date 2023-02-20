@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import ForYouScreen from "./ForYouScreen";
 import FollowingScreen from "./FollowingScreen";
 import HomeScreenFooter from "../components/navs/footer/HomeScreenFooter";
@@ -7,12 +7,12 @@ import HomeScreenFooter from "../components/navs/footer/HomeScreenFooter";
  * Home Screen containing ForYou and Following screens.
  * @returns
  */
-export default function HomeScreen() {
+export default function HomeScreen({ route }) {
   return (
     <View style={styles.homescreenContainer}>
-      <ForYouScreen style={{ flex: 1 }} />
+      <ForYouScreen style={{ flex: 1 }} route={route} />
       {/* <FollowingScreen /> */}
-      <HomeScreenFooter style={{ flex: 2 }}></HomeScreenFooter>
+      {/* <HomeScreenFooter style={{ flex: 2 }}></HomeScreenFooter> */}
     </View>
   );
 }

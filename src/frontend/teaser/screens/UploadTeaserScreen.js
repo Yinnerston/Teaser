@@ -1,11 +1,11 @@
 import { View, Text } from "react-native";
 
 /**
- * Screen for profile.
+ * Screen for the video editor.
  * @returns Currently logged in user's profile
  * @returns otherwise the AuthScreen to register/login.
  */
-export default function ProfileScreen({ navigator }) {
+export default function UploadTeaserScreen({ navigator }) {
   // TODO: Change to state variable based on AuthContext?
   const userIsLoggedIn = true;
   // Navigate to AuthScreen if user is nt logged in
@@ -16,7 +16,7 @@ export default function ProfileScreen({ navigator }) {
   return (
     <View>
       {_userIsLoggedIn}
-      <Text>Profile</Text>
+      <Text>Upload Teaser</Text>
     </View>
   );
 }
