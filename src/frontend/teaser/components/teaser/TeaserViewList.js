@@ -124,6 +124,7 @@ export default function TeaserViewList({ navigation }) {
   const videoRefs = useRef([]);
   const scrollRef = useRef(null);
   useScrollToTop(scrollRef);
+  // List of teaser video metadata rendered into a FlatList
   const [feed, setFeed] = useState(PLAYLIST);
 
   // Scroll to top of list on Home tab press
