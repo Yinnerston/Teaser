@@ -1,9 +1,7 @@
-import HomeScreen from "../screens/HomeScreen";
 import SubscriptionsScreen from "../screens/SubscriptionsScreen";
 import UploadTeaserScreen from "../screens/UploadTeaserScreen";
 import InboxScreen from "../screens/InboxScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import ForYouScreen from "../screens/ForYouScreen";
 import TeaserViewList from "../components/teaser/TeaserViewList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -28,9 +26,7 @@ export default function HomeNavigator() {
         component={TeaserViewList}
         options={{
           tabBarIcon: ({ color }) => <HomeIcon color={color}></HomeIcon>,
-          tabBarLabelStyle: styles.labelStyle,
-          tabBarActiveTintColor: "white",
-          tabBarInactiveTintColor: "#bfbfbf",
+          ...iconParameters,
         }}
       />
       <Tab.Screen
@@ -38,9 +34,7 @@ export default function HomeNavigator() {
         component={SubscriptionsScreen}
         options={{
           tabBarIcon: ({ color }) => <HeartIcon color={color}></HeartIcon>,
-          tabBarLabelStyle: styles.labelStyle,
-          tabBarActiveTintColor: "white",
-          tabBarInactiveTintColor: "#bfbfbf",
+          ...iconParameters,
         }}
       />
       <Tab.Screen
@@ -48,9 +42,7 @@ export default function HomeNavigator() {
         component={UploadTeaserScreen}
         options={{
           tabBarIcon: ({ color }) => <UploadIcon color={color}></UploadIcon>,
-          tabBarLabelStyle: styles.labelStyle,
-          tabBarActiveTintColor: "white",
-          tabBarInactiveTintColor: "#bfbfbf",
+          ...iconParameters,
         }}
       />
       <Tab.Screen
@@ -58,9 +50,7 @@ export default function HomeNavigator() {
         component={InboxScreen}
         options={{
           tabBarIcon: ({ color }) => <SpeechIcon color={color}></SpeechIcon>,
-          tabBarLabelStyle: styles.labelStyle,
-          tabBarActiveTintColor: "white",
-          tabBarInactiveTintColor: "#bfbfbf",
+          ...iconParameters,
         }}
       />
       <Tab.Screen
@@ -68,9 +58,7 @@ export default function HomeNavigator() {
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color }) => <PersonIcon color={color}></PersonIcon>,
-          tabBarLabelStyle: styles.labelStyle,
-          tabBarActiveTintColor: "white",
-          tabBarInactiveTintColor: "#bfbfbf",
+          ...iconParameters,
         }}
       />
     </Tab.Navigator>
@@ -90,3 +78,9 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
 });
+
+const iconParameters = {
+  tabBarLabelStyle: styles.labelStyle,
+  tabBarActiveTintColor: "white",
+  tabBarInactiveTintColor: "#bfbfbf",
+};
