@@ -4,7 +4,6 @@ import TeaserViewList from "../components/teaser/TeaserViewList";
 export default function ForYouScreen({ route }) {
   return (
     <View style={styles.container}>
-      <Text>TMP2</Text>
       <TeaserViewList route={route}></TeaserViewList>
     </View>
   );

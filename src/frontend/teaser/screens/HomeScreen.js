@@ -12,7 +12,7 @@ export default function HomeScreen({ route }) {
     <View style={styles.homescreenContainer}>
       <ForYouScreen style={{ flex: 1 }} route={route} />
       {/* <FollowingScreen /> */}
-      {/* <HomeScreenFooter style={{ flex: 2 }}></HomeScreenFooter> */}
+      <HomeScreenFooter style={{ flex: 1 }}></HomeScreenFooter>
     </View>
   );
 }
