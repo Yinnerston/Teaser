@@ -11,7 +11,7 @@ import {
   VIEWABILITY_CONFIG_THRESHOLD,
 } from "../../Constants";
 import { TeaserView } from "./TeaserView";
-import { useScrollToTop } from "@react-navigation/native";
+import { useScrollToTop, useFocusEffect } from "@react-navigation/native";
 
 const PLAYLIST = [
   {
@@ -133,6 +133,7 @@ export default function TeaserViewList({ navigation }) {
       // Prevent default behavior
       e.preventDefault();
       // TODO: Get new posts --> Implement in backend
+      // TODO: Handle async data get in useEffect
       // This implementation shuffles a copy of PLAYLIST
       var newFeed = PLAYLIST.slice(0);
       for (var i = newFeed.length - 1; i > 0; i--) {
@@ -152,6 +153,9 @@ export default function TeaserViewList({ navigation }) {
       // Navigate to homepage
       navigation.navigate("Home");
     });
+
+    // TODO: Pause video when no longer focused
+    // https://reactnavigation.org/docs/function-after-focusing-screen/
 
     return unsubscribe;
   }, [navigation]);
