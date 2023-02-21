@@ -15,11 +15,16 @@ import { HOMESCREEN_FOOTER_HEIGHT } from "../Constants";
 
 const Tab = createBottomTabNavigator();
 
+/**
+ * Bottom Tab navigator for Homepage.
+ * @returns
+ */
 export default function HomeNavigator() {
   return (
     <Tab.Navigator
       tabBarShowLabel={false}
       screenOptions={{ headerShown: false, tabBarStyle: styles.barStyle }}
+      initialRouteName="Home"
     >
       <Tab.Screen
         name="Home"
