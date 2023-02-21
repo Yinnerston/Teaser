@@ -1,9 +1,11 @@
 import { StyleSheet } from "react-native";
-import { SimpleLineIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
-export default function SpeechIcon(props) {
+export default function UploadIcon(props) {
   const { color } = props;
-  return <SimpleLineIcons name="speech" size={24} color={color} />;
+  return (
+    <AntDesign style={styles.icon} name="pluscircle" size={24} color={color} />
+  );
 }
 
 const styles = StyleSheet.create({

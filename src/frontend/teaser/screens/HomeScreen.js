@@ -7,10 +7,10 @@ import HomeScreenFooter from "../components/navs/footer/HomeScreenFooter";
  * Home Screen containing ForYou and Following screens.
  * @returns
  */
-export default function HomeScreen({ route }) {
+export default function HomeScreen() {
   return (
     <View style={styles.homescreenContainer}>
-      <ForYouScreen style={{ flex: 1 }} route={route} />
+      <ForYouScreen style={{ flex: 1 }} />
       {/* <FollowingScreen /> */}
       <HomeScreenFooter style={{ flex: 1 }}></HomeScreenFooter>
     </View>

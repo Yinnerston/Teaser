@@ -1,8 +1,9 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function HomeIcon() {
-  return <AntDesign name="home" size={24} color="black" />;
+export default function HomeIcon(props) {
+  const { color } = props;
+  return <AntDesign name="home" size={24} color={color} />;
 }
 
 const styles = StyleSheet.create({

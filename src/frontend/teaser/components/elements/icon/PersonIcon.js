@@ -1,8 +1,9 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function PersonIcon() {
-  return <Ionicons name="person-outline" size={24} color="black" />;
+export default function PersonIcon(props) {
+  const { color } = props;
+  return <Ionicons name="person-outline" size={24} color={color} />;
 }
 
 const styles = StyleSheet.create({
