@@ -5,6 +5,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Video } from "expo-av";
+// import { Image } from 'expo-image';
 import { forwardRef, useState } from "react";
 import { VIDEO_LANDSCAPE, VIDEO_PORTRAIT } from "../../../Constants";
 import { AntDesign } from "@expo/vector-icons";
@@ -17,7 +18,7 @@ import { AntDesign } from "@expo/vector-icons";
  * @returns
  */
 export const TeaserVideo = forwardRef(function TeaserVideo(props, ref) {
-  const { videoURL, videoMode, videoIdx } = props;
+  const { videoURL, thumbnailURL, videoMode, videoIdx } = props;
   const styles = useTeaserVideoStyle();
   // State variable for rendering play icon on pause
   const [videoPlayingStatus, setVideoPlayingStatus] = useState({

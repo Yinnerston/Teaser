@@ -4,6 +4,7 @@ import UploadTeaserScreen from "../screens/UploadTeaserScreen";
 import InboxScreen from "../screens/InboxScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ForYouScreen from "../screens/ForYouScreen";
+import TeaserViewList from "../components/teaser/TeaserViewList";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import HomeIcon from "../components/elements/icon/HomeIcon";
 import HeartIcon from "../components/elements/icon/HeartIcon";
@@ -18,7 +19,7 @@ export default function HomeNavigator() {
     <Tab.Navigator labeled={false} barStyle={{ backgroundColor: "white" }}>
       <Tab.Screen
         name="Home"
-        component={ForYouScreen}
+        component={TeaserViewList}
         options={{
           tabBarIcon: ({ color }) => <HomeIcon color={color}></HomeIcon>,
         }}
