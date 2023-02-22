@@ -1,21 +1,22 @@
 import { View, Text } from "react-native";
-
+import { useEffect } from "react";
 /**
  * Screen for profile.
  * @returns Currently logged in user's profile
  * @returns otherwise the AuthScreen to register/login.
  */
-export default function ProfileScreen({ navigator }) {
+export default function ProfileScreen({ navigation }) {
   // TODO: Change to state variable based on AuthContext?
   const userIsLoggedIn = true;
   // Navigate to AuthScreen if user is nt logged in
-  const _userIsLoggedIn = () => {
-    if (userIsLoggedIn) navigator.navigate("Auth");
-  };
+  useEffect(() => {
+    if (userIsLoggedIn) {
+      navigation.navigate("Auth");
+    }
+  });
 
   return (
     <View>
-      {_userIsLoggedIn}
       <Text>Profile</Text>
     </View>
   );

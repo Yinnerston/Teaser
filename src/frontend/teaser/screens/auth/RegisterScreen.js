@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { useForm } from "react-hook-form";
 import { authFormStyles } from "./styles";
 
@@ -28,9 +28,6 @@ export default function RegisterScreen() {
           })}
         ></input>
         {errors.email ? <span>*A valid email is required</span> : null}
-        <Text style={authFormStyles.formValidationText}>
-          By continuing, you agree to Teaser's Terms of Service.
-        </Text>
         <input type="submit" />
       </form>
     </View>

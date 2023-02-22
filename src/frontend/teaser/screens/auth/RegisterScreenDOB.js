@@ -1,11 +1,11 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { useForm } from "react-hook-form";
 import { authFormStyles } from "./styles";
 /**
  * Register Screen for a user's date of birth.
  * @returns
  */
-export default function RegisterScreenDOB({ navigator }) {
+export default function RegisterScreenDOB({ navigation }) {
   const {
     register,
     handleSubmit,
@@ -16,7 +16,7 @@ export default function RegisterScreenDOB({ navigator }) {
   // On submit, send data to RegisterScreenUsername
   const onSubmit = (data) => {
     console.log(data);
-    navigator.navigate("");
+    navigation.navigate("");
   };
 
   return (

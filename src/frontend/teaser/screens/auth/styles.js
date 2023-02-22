@@ -4,5 +4,6 @@ export const authFormStyles = StyleSheet.create({
   formValidationText: {
     color: "gray",
     fontSize: 12,
+    justifyContent: "center",
   },
 });

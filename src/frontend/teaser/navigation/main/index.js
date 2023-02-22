@@ -27,7 +27,7 @@ export default function MainNavigator() {
         component={HomeNavigator}
         options={{ headerShown: false }}
       />
-      <Stack.Group screenOptions={{ headerShown: false }}>
+      <Stack.Group>
         <Stack.Screen name="Auth" component={AuthScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen
