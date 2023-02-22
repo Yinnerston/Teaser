@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  Pressable,
   StyleSheet,
   useWindowDimensions,
   Image,
@@ -10,6 +9,8 @@ import {
 import { Link } from "@react-navigation/native";
 import { authFormStyles } from "./styles";
 import { useHeaderHeight } from "@react-navigation/elements";
+import AuthButton from "../../components/elements/button/AuthButton";
+import { REGISTER_BUTTON_COLOR } from "../../Constants";
 const teaserLogo = require("../../assets/teaser_180x60.png");
 /**
  * One button for Register and One for Login.
@@ -25,12 +26,12 @@ export default function AuthScreen({ navigation }) {
       </View>
       <View style={{ flex: 3 }}>
         <Text style={styles.titleStyle}>Sign up for a Teaser account:</Text>
-        <Pressable
-          onPress={() => navigation.navigate("Register")}
-          style={styles.registerButtonStyle}
-        >
-          <Text style={styles.registerButtonTextStyle}>Register</Text>
-        </Pressable>
+        <AuthButton
+          color={REGISTER_BUTTON_COLOR}
+          routeName="Register"
+          buttonText="Register"
+          navigation={navigation}
+        />
         <Text style={authFormStyles.formValidationText}>
           By continuing, you agree to Teaser's Terms of Service.
         </Text>
@@ -68,21 +69,6 @@ const useAuthScreenStyle = () => {
       alignItems: "center",
       textAlign: "center",
       fontSize: 24,
-    },
-    registerButtonStyle: {
-      alignItems: "center",
-      justifyContent: "center",
-      paddingVertical: 12,
-      paddingHorizontal: 64,
-      borderRadius: 4,
-      elevation: 3,
-      backgroundColor: "#db133e",
-    },
-    registerButtonTextStyle: {
-      fontSize: 16,
-      fontWeight: "bold",
-      color: "white",
-      textAlign: "center",
     },
     loginView: {
       flex: 1,
