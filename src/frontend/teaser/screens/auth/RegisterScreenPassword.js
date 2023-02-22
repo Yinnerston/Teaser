@@ -1,45 +1,73 @@
-import { View, Text } from "react-native";
-import { useForm } from "react-hook-form";
+import { View, TextInput, Text, StyleSheet } from "react-native";
+import { useForm, Controller } from "react-hook-form";
 import { authFormStyles } from "./styles";
+import AuthButton from "../../components/elements/button/AuthButton";
+import { REGISTER_BUTTON_COLOR } from "../../Constants";
 /**
  * Register Screen for a user's password.
  * @returns
  */
-export default function RegisterScreenPassword({ navigation }) {
+export default function RegisterScreenPassword({ navigation, email, phone }) {
   const {
-    register,
+    control,
     handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+    formState: { errors, isValid },
+  } = useForm({
+    defaultValues: {
+      password: "",
+    },
+  });
   // TODO: Implement Login endpoint
   // On submit, send data to RegisterScreenDOB
-  const onSubmit = (data) => {
-    console.log(data);
-    navigation.navigate("");
-  };
+  const onSubmit = (data) =>
+    navigation.navigate("RegisterDOB", { email: email, phone: phone, ...data });
 
   return (
     <View style={authFormStyles.container}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label>Password:</label>
-        <input
-          placeholder="Password"
-          {...register("password", {
-            required: true,
-            minLength: 8,
-            maxLength: 32,
-            pattern:
-              "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$",
-          })}
-        ></input>
-        {errors.password ? <span>*Password meet the guidelines.</span> : null}
-        <Text style={authFormStyles.formValidationText}>
-          Passwords must be 8-32 characters long, contain at least one uppercase
-          and lowercase letter, number and special character
+      <Text style={authFormStyles.textInputLabel}>Password:</Text>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+          minLength: 8,
+          maxLength: 32,
+          pattern:
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$",
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+          />
+        )}
+        name="email"
+        // style={{flex: 1}}
+      />
+      {errors.email && (
+        <Text style={authFormStyles.formValidationTextNoFlex}>
+          *Passwords must be 8-32 characters long, contain at least one
+          uppercase and lowercase letter, number and special character.
         </Text>
-        <input type="submit" />
-      </form>
+      )}
+
+      <AuthButton
+        onPress={handleSubmit(onSubmit)}
+        color={REGISTER_BUTTON_COLOR}
+        routeName="RegisterDOB"
+        buttonText="Next"
+        navigation={navigation}
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
+});
