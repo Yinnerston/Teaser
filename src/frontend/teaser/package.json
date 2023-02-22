@@ -18,7 +18,6 @@
     "expo": "~47.0.12",
     "expo-av": "~13.0.2",
     "expo-cli": "^6.3.0",
-    "expo-image": "^1.0.0-rc.2",
     "expo-status-bar": "~1.4.2",
     "react": "18.1.0",
     "react-hook-form": "^7.43.1",
