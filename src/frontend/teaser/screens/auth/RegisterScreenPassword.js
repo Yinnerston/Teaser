@@ -7,7 +7,7 @@ import { REGISTER_BUTTON_COLOR } from "../../Constants";
  * Register Screen for a user's password.
  * @returns
  */
-export default function RegisterScreenPassword({ navigation, email, phone }) {
+export default function RegisterScreenPassword({ navigation, route }) {
   const {
     control,
     handleSubmit,
@@ -20,7 +20,7 @@ export default function RegisterScreenPassword({ navigation, email, phone }) {
   // TODO: Implement Login endpoint
   // On submit, send data to RegisterScreenDOB
   const onSubmit = (data) =>
-    navigation.navigate("RegisterDOB", { email: email, phone: phone, ...data });
+    navigation.navigate("RegisterDOB", { ...route.params, ...data });
 
   return (
     <View style={authFormStyles.container}>
@@ -42,10 +42,10 @@ export default function RegisterScreenPassword({ navigation, email, phone }) {
             value={value}
           />
         )}
-        name="email"
+        name="password"
         // style={{flex: 1}}
       />
-      {errors.email && (
+      {errors.password && (
         <Text style={authFormStyles.formValidationTextNoFlex}>
           *Passwords must be 8-32 characters long, contain at least one
           uppercase and lowercase letter, number and special character.

@@ -25,7 +25,6 @@ export default function RegisterScreen({ navigation }) {
   // TODO: Implement Login endpoint
   // TODO: Pass props to next navigation.navigate("RegisterPassword", data)
   const onSubmit = (data) => navigation.navigate("RegisterPassword", data);
-
   // TODO: Grey out button until fields are valid
   // const [buttonColor, setButtonColor] = useState("#e9e7e9")
   // const [phoneNumberValue, setPhoneNumberValue] = useState("")
