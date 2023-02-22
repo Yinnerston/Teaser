@@ -1,17 +1,17 @@
-import SubscriptionsScreen from "../screens/SubscriptionsScreen";
-import UploadTeaserScreen from "../screens/UploadTeaserScreen";
-import InboxScreen from "../screens/InboxScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import TeaserViewList from "../components/teaser/TeaserViewList";
+import SubscriptionsScreen from "../../screens/SubscriptionsScreen";
+import UploadTeaserScreen from "../../screens/UploadTeaserScreen";
+import InboxScreen from "../../screens/InboxScreen";
+import ProfileScreen from "../../screens/ProfileScreen";
+import TeaserViewList from "../../components/teaser/TeaserViewList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import HomeIcon from "../components/elements/icon/HomeIcon";
-import HeartIcon from "../components/elements/icon/HeartIcon";
-import UploadIcon from "../components/elements/icon/UploadIcon";
-import SpeechIcon from "../components/elements/icon/SpeechIcon";
-import PersonIcon from "../components/elements/icon/PersonIcon";
+import HomeIcon from "../../components/elements/icon/HomeIcon";
+import HeartIcon from "../../components/elements/icon/HeartIcon";
+import UploadIcon from "../../components/elements/icon/UploadIcon";
+import SpeechIcon from "../../components/elements/icon/SpeechIcon";
+import PersonIcon from "../../components/elements/icon/PersonIcon";
 import { StyleSheet } from "react-native";
-import { HOMESCREEN_FOOTER_HEIGHT } from "../Constants";
+import { HOMESCREEN_FOOTER_HEIGHT } from "../../Constants";
 
 const Tab = createBottomTabNavigator();
 
