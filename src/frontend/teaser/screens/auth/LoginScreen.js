@@ -22,12 +22,12 @@ export default function LoginScreen() {
           defaultValue="Username"
           {...register("username", { required: true })}
         ></input>
-        {errors.username && <span>This field is required</span>}
+        {errors.username ? <span>This field is required</span> : null}
         <input
           defaultValue="Password"
           {...register("password", { required: true })}
         ></input>
-        {errors.password && <span>This field is required</span>}
+        {errors.password ? <span>This field is required</span> : null}
         <input type="submit" />
       </form>
     </View>

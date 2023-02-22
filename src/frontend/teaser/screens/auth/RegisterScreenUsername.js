@@ -1,6 +1,7 @@
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useForm } from "react-hook-form";
 import { authFormStyles } from "./styles";
+
 /**
  * Register Screen for a user's date of birth.
  * @returns
@@ -32,7 +33,9 @@ export default function RegisterScreenDOB({ navigator }) {
             pattern: "^(?=[a-zA-Z0-9._]{6,30}$)(?!.*[_.]{2})[^_.].*[^_.]$",
           })}
         ></input>
-        {errors.username && <span>*Username must meet the guidelines.</span>}
+        {errors.username ? (
+          <span>*Username must meet the guidelines.</span>
+        ) : null}
         <Text style={authFormStyles.formValidationText}>
           Username must be between 6-30 characters.
         </Text>

@@ -27,7 +27,7 @@ export default function RegisterScreen() {
             pattern: "/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/",
           })}
         ></input>
-        {errors.email && <span>*A valid email is required</span>}
+        {errors.email ? <span>*A valid email is required</span> : null}
         <Text style={authFormStyles.formValidationText}>
           By continuing, you agree to Teaser's Terms of Service.
         </Text>

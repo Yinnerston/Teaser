@@ -33,7 +33,7 @@ export default function RegisterScreenPassword({ navigator }) {
               "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$",
           })}
         ></input>
-        {errors.password && <span>*Password meet the guidelines.</span>}
+        {errors.password ? <span>*Password meet the guidelines.</span> : null}
         <Text style={authFormStyles.formValidationText}>
           Passwords must be 8-32 characters long, contain at least one uppercase
           and lowercase letter, number and special character
