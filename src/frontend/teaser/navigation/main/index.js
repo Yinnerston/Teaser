@@ -28,16 +28,30 @@ export default function MainNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Group>
-        <Stack.Screen name="Auth" component={AuthScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen
+          name="Auth"
+          component={AuthScreen}
+          options={{ title: "Sign Up" }}
+        />
+        <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{ title: "Register your details" }}
+        />
         <Stack.Screen
           name="RegisterPassword"
           component={RegisterScreenPassword}
+          options={{ title: "Setting your password" }}
         />
-        <Stack.Screen name="RegisterDOB" component={RegisterScreenDOB} />
+        <Stack.Screen
+          name="RegisterDOB"
+          component={RegisterScreenDOB}
+          options={{ title: "Setting your date of birth" }}
+        />
         <Stack.Screen
           name="RegisterUsername"
           component={RegisterScreenUsername}
+          options={{ title: "Setting your username" }}
         />
         <Stack.Screen name="Login" component={LoginScreen} />
       </Stack.Group>
