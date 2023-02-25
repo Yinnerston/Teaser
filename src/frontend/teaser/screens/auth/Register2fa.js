@@ -33,6 +33,9 @@ export default function Register2fa({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1 }}>
         <Text style={styles.todoText}>TODO: Add validation using 2fa.</Text>
+        <Text style={styles.todoText}>
+          Route params: {JSON.stringify(route.params, null, 2)}
+        </Text>
       </View>
       <View style={{ flex: 1 }}>
         {/* <OTPInput
