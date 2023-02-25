@@ -57,7 +57,7 @@ export default function LoginScreen({ navigation }) {
               value={value}
             />
           )}
-          name="confirmPassword"
+          name="username"
           // style={{flex: 1}}
         />
         <Text style={authFormStyles.textInputLabel}>Password:</Text>
@@ -77,7 +77,7 @@ export default function LoginScreen({ navigation }) {
               value={value}
             />
           )}
-          name="confirmPassword"
+          name="password"
           // style={{flex: 1}}
         />
         <AuthButton
