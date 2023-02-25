@@ -23,7 +23,7 @@ export default function HomeNavigator() {
   return (
     <Tab.Navigator
       tabBarShowLabel={false}
-      screenOptions={{ headerShown: false, tabBarStyle: styles.barStyle }}
+      screenOptions={{ tabBarStyle: styles.barStyle }}
       initialRouteName="Home"
     >
       <Tab.Screen
@@ -31,6 +31,7 @@ export default function HomeNavigator() {
         component={TeaserViewList}
         options={{
           tabBarIcon: ({ color }) => <HomeIcon color={color}></HomeIcon>,
+          headerShown: false,
           ...iconParameters,
         }}
       />

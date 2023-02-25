@@ -1,24 +1,26 @@
-import { SafeAreaView, Text } from "react-native";
-import { useEffect } from "react";
+import { SafeAreaView, Text, View } from "react-native";
+import PersonIcon from "../components/elements/icon/PersonIcon";
+import { SIGN_UP_VIEW_ICON_SIZE } from "../Constants";
+import { useSignUpViewStyles } from "./styles";
+import AuthButton from "../components/elements/button/AuthButton";
+import { REGISTER_BUTTON_COLOR } from "../Constants";
 /**
  * Screen for profile.
  * @returns Currently logged in user's profile
  * @returns otherwise the AuthScreen to register/login.
  */
 export default function ProfileScreen({ navigation }) {
-  // TODO: Change to state variable based on AuthContext?
-  const userIsLoggedIn = true;
-  // Navigate to AuthScreen if user is nt logged in
-  useEffect(() => {
-    if (userIsLoggedIn) {
-      navigation.navigate("Register");
-      // navigation.navigate("Register2fa", {username: "Jimmy", password: "Hello123!", phone: "+61234567890", email: "jimmy@gmail.com", dob: "Today"}); // TODO: TEMP CHANGE
-    }
-  });
-
+  const signUpViewStyles = useSignUpViewStyles();
   return (
-    <SafeAreaView>
-      <Text>Profile</Text>
+    <SafeAreaView style={signUpViewStyles.container}>
+      <PersonIcon size={SIGN_UP_VIEW_ICON_SIZE} color="#B0AFB4" />
+      <Text style={signUpViewStyles.textBodyStyle}>Sign up for an account</Text>
+      <AuthButton
+        color={REGISTER_BUTTON_COLOR}
+        routeName="Auth"
+        buttonText="Sign Up"
+        navigation={navigation}
+      />
     </SafeAreaView>
   );
 }

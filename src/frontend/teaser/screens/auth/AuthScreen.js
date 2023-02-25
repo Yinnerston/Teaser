@@ -15,6 +15,7 @@ const teaserLogo = require("../../assets/teaser_180x60.png");
 /**
  * One button for Register and One for Login.
  * TODO: Add link to TOS.
+ * TODO: Can extend in the future by adding sign in using google, facebook, etc.
  * @returns
  */
 export default function AuthScreen({ navigation }) {
