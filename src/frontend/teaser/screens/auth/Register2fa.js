@@ -29,21 +29,6 @@ export default function Register2fa({ navigation, route }) {
     setShowLoginButton(true);
   };
 
-  function renderLoginButton() {
-    if (showLoginButton) {
-      return (
-        <View style={styles.loginView}>
-          <AuthButton
-            color={REGISTER_BUTTON_COLOR}
-            routeName="Register"
-            buttonText="Register"
-            navigation={navigation}
-          />
-        </View>
-      );
-    }
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1 }}>
@@ -58,7 +43,17 @@ export default function Register2fa({ navigation, route }) {
             /> */}
         <Button title="2FA Placeholder" onPress={onButtonPress} />
       </View>
-      {renderLoginButton}
+
+      <View style={styles.loginView}>
+        {showLoginButton ? (
+          <AuthButton
+            color={REGISTER_BUTTON_COLOR}
+            routeName="Login"
+            buttonText="Login"
+            navigation={navigation}
+          />
+        ) : null}
+      </View>
     </SafeAreaView>
   );
 }
@@ -82,7 +77,7 @@ const useAuthScreenStyle = () => {
       flex: 1,
       backgroundColor: "#fcdae2",
       // // height: 69,
-      // width: width,
+      width: width,
       // // position: 'absolute',
       // // top: height - 69 - headerHeight,
       // marginTop: 69,
