@@ -13,28 +13,28 @@ import AuthButton from "../../components/elements/button/AuthButton";
 import { REGISTER_BUTTON_COLOR } from "../../Constants";
 const teaserLogo = require("../../assets/teaser_180x60.png");
 /**
- * One button for Register and One for Login.
+ * Forgot password page.
  * TODO: Add link to TOS.
  * @returns
  */
-export default function AuthScreen({ navigation }) {
+export default function ForgotPasswordScreen({ navigation }) {
   const styles = useAuthScreenStyle();
+  // TODO: Reset password.
+  const onSubmit = (data) => navigation.navigate("Home");
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 2 }}>
         <Image source={teaserLogo} style={styles.logoImageStyle}></Image>
       </View>
       <View style={{ flex: 3 }}>
-        <Text style={styles.titleStyle}>Sign up for a Teaser account:</Text>
+        <Text style={styles.titleStyle}>Forgot your password?</Text>
         <AuthButton
           color={REGISTER_BUTTON_COLOR}
-          routeName="Register"
-          buttonText="Register"
+          routeName="Login"
+          buttonText="Click Here."
           navigation={navigation}
         />
-        <Text style={authFormStyles.formValidationText}>
-          By continuing, you agree to Teaser's Terms of Service.
-        </Text>
       </View>
       <View style={styles.loginView}>
         <Text style={styles.loginViewTextStyle}>

@@ -7,6 +7,7 @@ import RegisterScreenPassword from "../../screens/auth/RegisterScreenPassword";
 import RegisterScreenUsername from "../../screens/auth/RegisterScreenUsername";
 import RegisterScreen2fa from "../../screens/auth/Register2fa";
 import LoginScreen from "../../screens/auth/LoginScreen";
+import ForgotPasswordScreen from "../../screens/auth/ForgotPasswordScreen";
 import HomeNavigator from "../home";
 
 const Stack = createStackNavigator();
@@ -64,6 +65,11 @@ export default function MainNavigator() {
           name="Login"
           component={LoginScreen}
           options={{ title: "Log In" }}
+        />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPasswordScreen}
+          options={{ title: "Forgot Password" }}
         />
       </Stack.Group>
     </Stack.Navigator>

@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { SafeAreaView, Text } from "react-native";
 import { useEffect } from "react";
 /**
  * Screen for profile.
@@ -11,13 +11,14 @@ export default function ProfileScreen({ navigation }) {
   // Navigate to AuthScreen if user is nt logged in
   useEffect(() => {
     if (userIsLoggedIn) {
-      navigation.navigate("Auth");
+      navigation.navigate("Register");
+      // navigation.navigate("Register2fa", {username: "Jimmy", password: "Hello123!", phone: "+61234567890", email: "jimmy@gmail.com", dob: "Today"}); // TODO: TEMP CHANGE
     }
   });
 
   return (
-    <View>
+    <SafeAreaView>
       <Text>Profile</Text>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -1,4 +1,4 @@
-import { View, TextInput, Text, StyleSheet } from "react-native";
+import { View, TextInput, Text } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { authFormStyles } from "./styles";
 import AuthButton from "../../components/elements/button/AuthButton";
@@ -37,7 +37,7 @@ export default function RegisterScreenPassword({ navigation, route }) {
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            style={styles.input}
+            style={authFormStyles.textInputStyle}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -64,7 +64,7 @@ export default function RegisterScreenPassword({ navigation, route }) {
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            style={styles.input}
+            style={authFormStyles.textInputStyle}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -94,12 +94,3 @@ export default function RegisterScreenPassword({ navigation, route }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});

@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { SafeAreaView, Text } from "react-native";
 import { useEffect } from "react";
 /**
  * Screen for Inbox.
@@ -16,8 +16,8 @@ export default function InboxScreen({ navigation }) {
   });
 
   return (
-    <View>
+    <SafeAreaView>
       <Text>Inbox</Text>
-    </View>
+    </SafeAreaView>
   );
 }

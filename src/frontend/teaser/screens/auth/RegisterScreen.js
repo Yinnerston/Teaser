@@ -1,6 +1,6 @@
-import { View, TextInput, Button, StyleSheet, Text } from "react-native";
+import { View, TextInput, Text } from "react-native";
 import { useForm, Controller } from "react-hook-form";
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { authFormStyles } from "./styles";
 import PhoneInput from "react-native-phone-number-input";
 import AuthButton from "../../components/elements/button/AuthButton";
@@ -44,7 +44,7 @@ export default function RegisterScreen({ navigation }) {
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            style={styles.input}
+            style={authFormStyles.textInputStyle}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -105,12 +105,3 @@ export default function RegisterScreen({ navigation }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-});
