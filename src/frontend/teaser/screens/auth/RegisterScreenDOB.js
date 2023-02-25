@@ -1,10 +1,15 @@
-import { View, Text } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useState } from "react";
 import { authFormStyles } from "./styles";
 import AuthButton from "../../components/elements/button/AuthButton";
 import DOBDatePicker from "../../components/elements/datepicker/DOBDatePicker";
-import { REGISTER_BUTTON_COLOR } from "../../Constants";
+import {
+  REGISTER_BUTTON_COLOR,
+  TEXT_INPUT_LABEL_FONTWEIGHT,
+} from "../../Constants";
+const cake = require("../../assets/cake.png");
+
 /**
  * Register Screen for a user's date of birth.
  * @returns
@@ -26,7 +31,10 @@ export default function RegisterScreenDOB({ navigation, route }) {
 
   return (
     <View style={authFormStyles.container}>
-      <Text style={authFormStyles.textInputLabel}>What's your birthday?</Text>
+      <View style={styles.birthdayPromptStyle}>
+        <Text style={authFormStyles.textInputLabel}>What's your birthday?</Text>
+        <Image source={cake} style={styles.cakeStyle}></Image>
+      </View>
       {/* TODO: Add SVG graphic */}
       <Text style={authFormStyles.textInputLabel}>
         Selected: {date.toString()}
@@ -77,3 +85,19 @@ export default function RegisterScreenDOB({ navigation, route }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  birthdayPromptStyle: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  cakeStyle: {
+    flex: 1,
+    maxHeight: 200,
+  },
+  textInputLabel: {
+    fontWeight: "bold",
+    fontSize: TEXT_INPUT_LABEL_FONTWEIGHT,
+    flex: 1,
+  },
+});
