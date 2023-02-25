@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { HOME_NAV_ICON_SIZE } from "../../../Constants";
 
 /**
  * Heart icon used in HomeNavigator.
@@ -7,8 +8,14 @@ import { AntDesign } from "@expo/vector-icons";
  * @returns
  */
 export default function HeartIcon(props) {
-  const { color } = props;
-  return <AntDesign name="heart" size={24} color={color} />;
+  const { color, size } = props;
+  return (
+    <AntDesign
+      name="heart"
+      size={size ? size : HOME_NAV_ICON_SIZE}
+      color={color}
+    />
+  );
 }
 
 const styles = StyleSheet.create({

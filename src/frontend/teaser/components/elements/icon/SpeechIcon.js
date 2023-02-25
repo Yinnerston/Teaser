@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { SimpleLineIcons } from "@expo/vector-icons";
+import { HOME_NAV_ICON_SIZE } from "../../../Constants";
 
 /**
  * Speech icon used in HomeNavigator.
@@ -7,8 +8,14 @@ import { SimpleLineIcons } from "@expo/vector-icons";
  * @returns
  */
 export default function SpeechIcon(props) {
-  const { color } = props;
-  return <SimpleLineIcons name="speech" size={24} color={color} />;
+  const { color, size } = props;
+  return (
+    <SimpleLineIcons
+      name="speech"
+      size={size ? size : HOME_NAV_ICON_SIZE}
+      color={color}
+    />
+  );
 }
 
 const styles = StyleSheet.create({

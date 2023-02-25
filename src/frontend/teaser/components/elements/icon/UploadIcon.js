@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { HOME_NAV_ICON_SIZE } from "../../../Constants";
 
 /**
  * Upload icon used in HomeNavigator.
@@ -7,9 +8,14 @@ import { AntDesign } from "@expo/vector-icons";
  * @returns
  */
 export default function UploadIcon(props) {
-  const { color } = props;
+  const { color, size } = props;
   return (
-    <AntDesign style={styles.icon} name="pluscircle" size={24} color={color} />
+    <AntDesign
+      style={styles.icon}
+      name="pluscircle"
+      size={size ? size : HOME_NAV_ICON_SIZE}
+      color={color}
+    />
   );
 }
 
