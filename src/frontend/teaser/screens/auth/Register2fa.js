@@ -16,6 +16,7 @@ const teaserLogo = require("../../assets/teaser_180x60.png");
 /**
  * One button for Register and One for Login.
  * TODO: Add link to TOS.
+ * TODO: Disble going back form this page.
  * @returns
  */
 export default function Register2fa({ navigation, route }) {
@@ -37,17 +38,20 @@ export default function Register2fa({ navigation, route }) {
           Route params: {JSON.stringify(route.params, null, 2)}
         </Text>
       </View>
-      <View style={{ flex: 1 }}>
-        {/* <OTPInput
-                code={otpCode}
-                setCode={setOTPCode}
-                maximumLength={maximumCodeLength}
-                setIsPinReady={setShowLoginButton}
-            /> */}
-        <Button title="2FA Placeholder" onPress={onButtonPress} />
-      </View>
 
-      <View style={styles.loginView}>
+      <View style={styles.authContainer}>
+        {/* <OTPInput
+          code={otpCode}
+          setCode={setOTPCode}
+          maximumLength={maximumCodeLength}
+          setIsPinReady={setShowLoginButton}
+        /> */}
+        <Button
+          title="2FA Placeholder"
+          style={{ marginBotton: 20 }}
+          onPress={onButtonPress}
+        />
+
         {showLoginButton ? (
           <AuthButton
             color={REGISTER_BUTTON_COLOR}
@@ -71,16 +75,18 @@ const useAuthScreenStyle = () => {
       alignItems: "center",
       height: height,
       width: width,
+      backgroundColor: "#ed345c",
     },
     todoText: {
-      backgroundColor: "gray",
+      backgroundColor: "#ed345c",
       fontWeight: "bold",
     },
-    loginView: {
-      flex: 1,
-      backgroundColor: "#fcdae2",
+    authContainer: {
+      flex: 3,
+      backgroundColor: "white",
       // // height: 69,
-      width: width,
+      width: width - 20,
+      margin: 20,
       // // position: 'absolute',
       // // top: height - 69 - headerHeight,
       // marginTop: 69,

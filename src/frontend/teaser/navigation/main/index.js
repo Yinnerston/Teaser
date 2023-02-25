@@ -58,7 +58,7 @@ export default function MainNavigator() {
         <Stack.Screen
           name="Register2fa"
           component={RegisterScreen2fa}
-          options={{ title: "Two Factor Authentication" }}
+          options={{ title: "Two Factor Authentication", headerShown: false }}
         />
 
         <Stack.Screen
