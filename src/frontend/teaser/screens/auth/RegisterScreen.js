@@ -40,7 +40,7 @@ export default function RegisterScreen({ navigation }) {
         rules={{
           required: true,
           // TODO: Check through verification email
-          pattern: "/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/",
+          pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
@@ -53,11 +53,10 @@ export default function RegisterScreen({ navigation }) {
         name="email"
         // style={{flex: 1}}
       />
-      {errors.email && (
-        <Text style={authFormStyles.formValidationTextNoFlex}>
-          *A valid email is required
-        </Text>
-      )}
+      <Text style={authFormStyles.formValidationErrorTextNoFlex}>
+        {" "}
+        {errors.email && "*A valid email is required"}
+      </Text>
 
       <Text style={authFormStyles.textInputLabel}>Phone Number:</Text>
       {/* TODO: Check phone number validity with 2fa */}
@@ -89,12 +88,10 @@ export default function RegisterScreen({ navigation }) {
         name="phone"
         // style={{flex: 1}}
       />
-      {errors.phone && (
-        <Text style={authFormStyles.formValidationTextNoFlex}>
-          *A valid phone number is required
-        </Text>
-      )}
-
+      <Text style={authFormStyles.formValidationErrorTextNoFlex}>
+        {" "}
+        {errors.phone && "*A valid phone number is required."}
+      </Text>
       <AuthButton
         onPress={handleSubmit(onSubmit)}
         color={REGISTER_BUTTON_COLOR}

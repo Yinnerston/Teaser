@@ -60,12 +60,10 @@ export default function RegisterScreenDOB({ navigation, route }) {
         type="date"
         // style={{flex: 1}}
       />
-      {errors.dob && (
-        <Text style={authFormStyles.formValidationTextNoFlex}>
-          *You must be over 18 to use Teaser.
-        </Text>
-      )}
-
+      <Text style={authFormStyles.formValidationErrorTextNoFlex}>
+        {" "}
+        {errors.dob && "*You are not over 18 years of age."}
+      </Text>
       <AuthButton
         onPress={handleSubmit(onSubmit)}
         color={REGISTER_BUTTON_COLOR}
@@ -73,6 +71,9 @@ export default function RegisterScreenDOB({ navigation, route }) {
         buttonText="Next"
         navigation={navigation}
       />
+      <Text style={authFormStyles.formValidationTextNoFlex}>
+        *You must be over 18 to use Teaser.
+      </Text>
     </View>
   );
 }

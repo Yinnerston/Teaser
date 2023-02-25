@@ -73,17 +73,15 @@ export default function RegisterScreenPassword({ navigation, route }) {
         name="confirmPassword"
         // style={{flex: 1}}
       />
-      {errors.password && (
-        <Text style={authFormStyles.formValidationTextNoFlex}>
-          *Passwords must be 8-32 characters long, contain at least one
-          uppercase and lowercase letter, number and special character.
-        </Text>
-      )}
-      {errors.confirmPassword && (
-        <Text style={authFormStyles.formValidationTextNoFlex}>
-          *Passwords must match.
-        </Text>
-      )}
+      <Text style={authFormStyles.formValidationErrorTextNoFlex}>
+        {" "}
+        {errors.password && "*Password does not meet criteria."}
+      </Text>
+      <Text style={authFormStyles.formValidationErrorTextNoFlex}>
+        {" "}
+        {errors.confirmPassword && "*Passwords must match."}
+      </Text>
+
       <AuthButton
         onPress={handleSubmit(onSubmit)}
         color={REGISTER_BUTTON_COLOR}
@@ -91,6 +89,10 @@ export default function RegisterScreenPassword({ navigation, route }) {
         buttonText="Next"
         navigation={navigation}
       />
+      <Text style={authFormStyles.formValidationTextNoFlex}>
+        *Passwords must be 8-32 characters long, contain at least one uppercase
+        and lowercase letter, number and special character.
+      </Text>
     </View>
   );
 }

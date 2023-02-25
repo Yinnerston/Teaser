@@ -46,13 +46,10 @@ export default function RegisterScreenUsername({ navigation, route }) {
         name="username"
         // style={{flex: 1}}
       />
-      {errors.username && (
-        <Text style={authFormStyles.formValidationTextNoFlex}>
-          *Usernames must be 6-32 characters long. *You can only use letters,
-          numbers, periods and underscores in your username.
-        </Text>
-      )}
-
+      <Text style={authFormStyles.formValidationErrorTextNoFlex}>
+        {" "}
+        {errors.username && "*Username does not fit criteria."}
+      </Text>
       <AuthButton
         onPress={handleSubmit(onSubmit)}
         color={REGISTER_BUTTON_COLOR}
@@ -60,6 +57,10 @@ export default function RegisterScreenUsername({ navigation, route }) {
         buttonText="Next"
         navigation={navigation}
       />
+      <Text style={authFormStyles.formValidationTextNoFlex}>
+        *Usernames must be 6-32 characters long. *You can only use letters,
+        numbers, periods and underscores in your username.
+      </Text>
     </View>
   );
 }
