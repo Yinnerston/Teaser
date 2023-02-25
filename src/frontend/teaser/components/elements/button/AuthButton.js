@@ -1,4 +1,4 @@
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Pressable, Text, StyleSheet, View } from "react-native";
 
 /**
  * Button used in Auth Forms.
@@ -16,6 +16,9 @@ export default function AuthButton({
   onPress,
 }) {
   const styles = StyleSheet.create({
+    container: {
+      alignItems: "center",
+    },
     registerButtonStyle: {
       alignItems: "center",
       justifyContent: "center",
@@ -35,18 +38,22 @@ export default function AuthButton({
 
   if (onPress) {
     return (
-      <Pressable onPress={onPress} style={styles.registerButtonStyle}>
-        <Text style={styles.registerButtonTextStyle}>{buttonText}</Text>
-      </Pressable>
+      <View style={styles.container}>
+        <Pressable onPress={onPress} style={styles.registerButtonStyle}>
+          <Text style={styles.registerButtonTextStyle}>{buttonText}</Text>
+        </Pressable>
+      </View>
     );
   } else {
     return (
-      <Pressable
-        onPress={() => navigation.navigate(routeName)}
-        style={styles.registerButtonStyle}
-      >
-        <Text style={styles.registerButtonTextStyle}>{buttonText}</Text>
-      </Pressable>
+      <View style={styles.container}>
+        <Pressable
+          onPress={() => navigation.navigate(routeName)}
+          style={styles.registerButtonStyle}
+        >
+          <Text style={styles.registerButtonTextStyle}>{buttonText}</Text>
+        </Pressable>
+      </View>
     );
   }
 }
