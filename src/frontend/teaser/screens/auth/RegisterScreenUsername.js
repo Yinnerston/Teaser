@@ -5,6 +5,7 @@ import AuthButton from "../../components/elements/button/AuthButton";
 import { REGISTER_BUTTON_COLOR } from "../../Constants";
 /**
  * Register Screen for a user's username.
+ * TODO: Validate username is not already taken.
  * @returns
  */
 export default function RegisterScreenUsername({ navigation, route }) {
@@ -31,8 +32,8 @@ export default function RegisterScreenUsername({ navigation, route }) {
           required: true,
           minLength: 6,
           maxLength: 32,
-          pattern:
-            "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{6,}$",
+          // Usernames can only have letters, numbers, periods and underscores
+          pattern: /^[a-zA-Z0-9_.]+$/,
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
@@ -47,7 +48,8 @@ export default function RegisterScreenUsername({ navigation, route }) {
       />
       {errors.username && (
         <Text style={authFormStyles.formValidationTextNoFlex}>
-          *Usernames must be 6-32 characters long.
+          *Usernames must be 6-32 characters long. *You can only use letters,
+          numbers, periods and underscores in your username.
         </Text>
       )}
 
