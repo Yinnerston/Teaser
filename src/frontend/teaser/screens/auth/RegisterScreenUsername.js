@@ -20,7 +20,7 @@ export default function RegisterScreenUsername({ navigation, route }) {
   // TODO: Implement Login endpoint
   // On submit, send data to RegisterScreenDOB
   const onSubmit = (data) =>
-    navigation.navigate("RegisterDOB", { ...route.params, ...data });
+    navigation.navigate("Register2fa", { ...route.params, ...data });
 
   return (
     <View style={authFormStyles.container}>
@@ -29,10 +29,10 @@ export default function RegisterScreenUsername({ navigation, route }) {
         control={control}
         rules={{
           required: true,
-          minLength: 8,
+          minLength: 6,
           maxLength: 32,
           pattern:
-            "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$",
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{6,}$",
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
@@ -47,8 +47,7 @@ export default function RegisterScreenUsername({ navigation, route }) {
       />
       {errors.username && (
         <Text style={authFormStyles.formValidationTextNoFlex}>
-          *Usernames must be 8-32 characters long, contain at least one
-          uppercase and lowercase letter, number and special character.
+          *Usernames must be 6-32 characters long.
         </Text>
       )}
 
