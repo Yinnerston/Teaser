@@ -11,6 +11,7 @@ export default function RegisterScreenPassword({ navigation, route }) {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
@@ -45,13 +46,45 @@ export default function RegisterScreenPassword({ navigation, route }) {
         name="password"
         // style={{flex: 1}}
       />
+
+      <Text style={authFormStyles.textInputLabel}>Confirm Password:</Text>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+          minLength: 8,
+          maxLength: 32,
+          pattern:
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$",
+          validate: {
+            samePassword: (confirmPassword) => {
+              if (watch("password") != confirmPassword)
+                return "*Passwords do not match.";
+            },
+          },
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+          />
+        )}
+        name="confirmPassword"
+        // style={{flex: 1}}
+      />
       {errors.password && (
         <Text style={authFormStyles.formValidationTextNoFlex}>
           *Passwords must be 8-32 characters long, contain at least one
           uppercase and lowercase letter, number and special character.
         </Text>
       )}
-
+      {errors.confirmPassword && (
+        <Text style={authFormStyles.formValidationTextNoFlex}>
+          *Passwords must match.
+        </Text>
+      )}
       <AuthButton
         onPress={handleSubmit(onSubmit)}
         color={REGISTER_BUTTON_COLOR}
