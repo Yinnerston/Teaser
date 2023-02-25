@@ -54,8 +54,7 @@ export default function RegisterScreenPassword({ navigation, route }) {
           required: true,
           minLength: 8,
           maxLength: 32,
-          pattern:
-            "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$",
+          pattern: /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
           validate: {
             samePassword: (confirmPassword) => {
               if (watch("password") != confirmPassword)
