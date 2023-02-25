@@ -15,14 +15,14 @@ const cake = require("../../assets/cake.png");
  * @returns
  */
 export default function RegisterScreenDOB({ navigation, route }) {
-  const [date, setDate] = useState(new Date(1995, 11, 17));
+  const [date, setDate] = useState(new Date(1995, 11, 17).toDateString());
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
-      DOB: new Date(1995, 11, 17), // TODO: Remove example date
+      DOB: new Date(1995, 11, 17).toDateString(), // TODO: Remove example date
     },
   });
   // TODO: Allow <18 DOB, just restrict content to SFW
@@ -45,6 +45,7 @@ export default function RegisterScreenDOB({ navigation, route }) {
         rules={
           {
             // TODO: Uncomment this when you implement DOBDatePicker
+            // Convert date string back into date
             // required: true,
             // validate: {
             //   required: (value) => {
