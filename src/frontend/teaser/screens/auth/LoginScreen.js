@@ -7,6 +7,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import { Link } from "@react-navigation/native";
 import { authFormStyles } from "./styles";
@@ -20,6 +21,8 @@ import { REGISTER_BUTTON_COLOR } from "../../Constants";
  * @returns
  */
 export default function LoginScreen({ navigation }) {
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+
   const styles = useLoginScreenStyle();
   // TODO: set error if login fails
   const [isError, setIsError] = useState(false);
@@ -70,12 +73,26 @@ export default function LoginScreen({ navigation }) {
             pattern: /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={authFormStyles.textInputStyle}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-            />
+            <View>
+              <TextInput
+                secureTextEntry={isPasswordSecure}
+                style={authFormStyles.textInputStyle}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+              <Ionicons
+                style={{ position: "absolute", right: 24, top: 20 }}
+                name={isPasswordSecure ? "eye-off" : "eye"}
+                onPress={() => {
+                  isPasswordSecure
+                    ? setIsPasswordSecure(false)
+                    : setIsPasswordSecure(true);
+                }}
+                size={24}
+                color="gray"
+              />
+            </View>
           )}
           name="password"
           // style={{flex: 1}}

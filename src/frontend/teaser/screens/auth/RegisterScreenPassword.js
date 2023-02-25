@@ -1,4 +1,6 @@
 import { View, TextInput, Text } from "react-native";
+import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import { authFormStyles } from "./styles";
 import AuthButton from "../../components/elements/button/AuthButton";
@@ -8,6 +10,9 @@ import { REGISTER_BUTTON_COLOR } from "../../Constants";
  * @returns
  */
 export default function RegisterScreenPassword({ navigation, route }) {
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+  const [isConfirmPasswordSecure, setIsConfirmPasswordSecure] = useState(true);
+
   const {
     control,
     handleSubmit,
@@ -36,12 +41,26 @@ export default function RegisterScreenPassword({ navigation, route }) {
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$",
         }}
         render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            style={authFormStyles.textInputStyle}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-          />
+          <View>
+            <TextInput
+              secureTextEntry={isPasswordSecure}
+              style={authFormStyles.textInputStyle}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+            <Ionicons
+              style={{ position: "absolute", right: 24, top: 20 }}
+              name={isPasswordSecure ? "eye-off" : "eye"}
+              onPress={() => {
+                isPasswordSecure
+                  ? setIsPasswordSecure(false)
+                  : setIsPasswordSecure(true);
+              }}
+              size={24}
+              color="gray"
+            />
+          </View>
         )}
         name="password"
         // style={{flex: 1}}
@@ -63,12 +82,26 @@ export default function RegisterScreenPassword({ navigation, route }) {
           },
         }}
         render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            style={authFormStyles.textInputStyle}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-          />
+          <View>
+            <TextInput
+              secureTextEntry={isConfirmPasswordSecure}
+              style={authFormStyles.textInputStyle}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+            <Ionicons
+              style={{ position: "absolute", right: 24, top: 20 }}
+              name={isConfirmPasswordSecure ? "eye-off" : "eye"}
+              onPress={() => {
+                isConfirmPasswordSecure
+                  ? setIsConfirmPasswordSecure(false)
+                  : setIsConfirmPasswordSecure(true);
+              }}
+              size={24}
+              color="gray"
+            />
+          </View>
         )}
         name="confirmPassword"
         // style={{flex: 1}}
