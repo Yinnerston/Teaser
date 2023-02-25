@@ -2,7 +2,7 @@ import SubscriptionsScreen from "../../screens/SubscriptionsScreen";
 import UploadTeaserScreen from "../../screens/UploadTeaserScreen";
 import InboxScreen from "../../screens/InboxScreen";
 import ProfileScreen from "../../screens/ProfileScreen";
-import TeaserViewList from "../../components/teaser/TeaserViewList";
+import TeaserViewList from "../../components/templates/TeaserViewList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import HomeIcon from "../../components/elements/icon/HomeIcon";
