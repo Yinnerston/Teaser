@@ -1,9 +1,10 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, Platform } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useState } from "react";
 import { authFormStyles } from "./styles";
 import AuthButton from "../../components/elements/button/AuthButton";
-import DOBDatePicker from "../../components/elements/datepicker/DOBDatePicker";
+import DOBDatePickerAndroid from "../../components/elements/datepicker/DOBDatePickerAndroid";
+import DOBDatePickerIOS from "../../components/elements/datepicker/DOBDatePickerIOS";
 import {
   REGISTER_BUTTON_COLOR,
   TEXT_INPUT_LABEL_FONTWEIGHT,
@@ -15,19 +16,35 @@ const cake = require("../../assets/cake.png");
  * @returns
  */
 export default function RegisterScreenDOB({ navigation, route }) {
-  const [date, setDate] = useState(new Date(1995, 11, 17).toDateString());
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isValid },
-  } = useForm({
-    defaultValues: {
-      DOB: new Date(1995, 11, 17).toDateString(), // TODO: Remove example date
-    },
-  });
+  const [date, setDate] = useState(new Date());
+  const [error, setError] = useState(false);
+
+  const renderDatePicker = () => {
+    if (Platform.OS === "ios") {
+      return (
+        <DOBDatePickerIOS
+          onChange={setDate}
+          date={new Date()}
+          display="spinner"
+        />
+      );
+    } else {
+      return <DOBDatePickerAndroid date={date} setDate={setDate} />;
+    }
+  };
   // TODO: Allow <18 DOB, just restrict content to SFW
-  const onSubmit = (data) =>
-    navigation.navigate("RegisterUsername", { ...route.params, ...data });
+  const onSubmit = (data) => {
+    const now = new Date();
+    const eighteenYearsOld = now.setFullYear(now.getFullYear() - 18);
+    if (date >= eighteenYearsOld) {
+      setError(true);
+      return;
+    }
+    navigation.navigate("RegisterUsername", {
+      ...route.params,
+      date: date.toDateString(),
+    });
+  };
 
   return (
     <View style={authFormStyles.container}>
@@ -35,46 +52,16 @@ export default function RegisterScreenDOB({ navigation, route }) {
         <Text style={authFormStyles.textInputLabel}>What's your birthday?</Text>
         <Image source={cake} style={styles.cakeStyle}></Image>
       </View>
-      {/* TODO: Add SVG graphic */}
       <Text style={authFormStyles.textInputLabel}>
         Selected: {date.toString()}
       </Text>
-
-      <Controller
-        control={control}
-        rules={
-          {
-            // TODO: Uncomment this when you implement DOBDatePicker
-            // Convert date string back into date
-            // required: true,
-            // validate: {
-            //   required: (value) => {
-            //     if (!value) return "*This field is required.";
-            //     const now = new Date();
-            //     const eighteenYearsOld = now.setFullYear(
-            //       now.getFullYear() - 18,
-            //     );
-            //     if (date >= eighteenYearsOld) {
-            //       return "*You are not over 18.";
-            //     }
-            //   },
-            // }
-          }
-        }
-        render={({ field: { onChange, value } }) => (
-          // TODO:
-          <DOBDatePicker onChange={onChange} value={value} />
-        )}
-        name="dob"
-        type="date"
-        // style={{flex: 1}}
-      />
+      {renderDatePicker()}
       <Text style={authFormStyles.formValidationErrorTextNoFlex}>
         {" "}
-        {errors.dob && "*You are not over 18 years of age."}
+        {error ? "*You must wait until you 18 to use Teaser." : null}
       </Text>
       <AuthButton
-        onPress={handleSubmit(onSubmit)}
+        onPress={onSubmit}
         color={REGISTER_BUTTON_COLOR}
         routeName="RegisterUsername"
         buttonText="Next"
