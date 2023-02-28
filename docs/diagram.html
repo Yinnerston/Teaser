@@ -6,7 +6,7 @@
         USERS |o--o{ POSTS : uploads
         USERS |o--o{ SERVICES : offers
         POSTS ||--|| SONGS : plays
-        POSTS ||--|| POST_TYPE : are
+        POSTS ||--|| POST_TYPES : are
         USERS {
             int id PK
             string username "6-32 characters"
@@ -79,6 +79,7 @@
             int user_id "PK FK"
             string description
         }
+        USER_PROFILE ||--|| USERS : has
         USER_PROFILE ||--o{ PROFILE_LINKS : has
         PROFILE_LINKS }|--|{ PROFILE_LINK_TYPES : are
         PROFILE_LINKS   {
@@ -104,7 +105,7 @@
         }
 
         FOLLOWED_USERS }o--|{ USERS : follows
-        BLOCKED_USERS }o--|| POSTS : blocks
+        BLOCKED_USERS }o--|| USERS : blocks
         FOLLOWED_USERS {
             int followed_user_id FK
             int follower_user_id FK
@@ -145,6 +146,7 @@
         }
 
         USERS }o--o| PURCHASES : makes
+        USERS ||--o{ PAYMENT_METHODS : has
         PURCHASES }|--|| PAYMENT_METHODS : uses
         PURCHASES   {
             int id PK
@@ -161,9 +163,9 @@
             JSONB details "encrypted details?"
         }
 
-        USER_CLICKS }o--|| USER : event
-        USER_CLICKS }|--|| EVENT_METRIC_TYPES : has
-        USER_CLICKS {
+        EVENTS }o--|| USERS : event
+        EVENTS }|--|| EVENT_METRIC_TYPES : has
+        EVENTS {
             int id PK
             int user_id FK
             string event_type FK
@@ -171,7 +173,7 @@
         }
 
         EVENT_METRIC_TYPES {
-            string type PK
+            string type "PK clicks, watch, swipe right, etc."
         }
             </pre>
     <script type="module">
