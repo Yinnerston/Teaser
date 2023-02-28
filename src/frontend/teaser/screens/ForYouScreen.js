@@ -1,7 +1,6 @@
-import { StyleSheet, View } from "react-native";
-import TeaserViewList from "../teaser/TeaserViewList";
-
-export default function ForYouPage() {
+import { StyleSheet, View, Text } from "react-native";
+import TeaserViewList from "../components/templates/TeaserViewList";
+export default function ForYouScreen() {
   return (
     <View style={styles.container}>
       <TeaserViewList></TeaserViewList>

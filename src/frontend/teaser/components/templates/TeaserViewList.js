@@ -1,4 +1,4 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,6 +11,7 @@ import {
   VIEWABILITY_CONFIG_THRESHOLD,
 } from "../../Constants";
 import { TeaserView } from "./TeaserView";
+import { useScrollToTop, useFocusEffect } from "@react-navigation/native";
 
 const PLAYLIST = [
   {
@@ -101,16 +102,63 @@ const PLAYLIST = [
   },
 ];
 
+function basicHash(inputString) {
+  let hash = 0;
+  for (let i = 0; i < inputString.length; i++) {
+    const char = inputString.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash &= hash; // Convert to 32bit integer
+  }
+  return new Uint32Array([hash])[0].toString(36);
+}
+
 /**
  * Renders a TikTok like feed of TeaserViews.
  * Videos automatically play if they are in the window.
  * Videos outside the window are paused.
  * @returns FlatList of TeaserViews
  */
-export default function TeaserViewList() {
+export default function TeaserViewList({ navigation }) {
   const windowDimensions = useWindowDimensions();
   // Array of Refs to all the videos in the list
   const videoRefs = useRef([]);
+  const scrollRef = useRef(null);
+  useScrollToTop(scrollRef);
+  // List of teaser video metadata rendered into a FlatList
+  const [feed, setFeed] = useState(PLAYLIST);
+
+  // Scroll to top of list on Home tab press
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("tabPress", (e) => {
+      // Prevent default behavior
+      e.preventDefault();
+      // TODO: Get new posts --> Implement in backend
+      // TODO: Handle async data get in useEffect
+      // This implementation shuffles a copy of PLAYLIST
+      var newFeed = PLAYLIST.slice(0);
+      for (var i = newFeed.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = newFeed[i];
+        newFeed[i] = newFeed[j];
+        newFeed[j] = temp;
+        // Get "new" teasers with different ids
+        newFeed[i].data.id = basicHash(newFeed[i].data.id);
+        newFeed[j].data.id = basicHash(newFeed[j].data.id);
+      }
+      setFeed(newFeed);
+      // Scroll to top
+      if (scrollRef.current) {
+        scrollRef.current.scrollToOffset({ offset: 0 });
+      }
+      // Navigate to homepage
+      navigation.navigate("Home");
+    });
+
+    // TODO: Pause video when no longer focused
+    // https://reactnavigation.org/docs/function-after-focusing-screen/
+
+    return unsubscribe;
+  }, [navigation]);
 
   /**
    * Function to render each TeaserView element in the flatlist.
@@ -147,7 +195,8 @@ export default function TeaserViewList() {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={PLAYLIST}
+        data={feed}
+        ref={scrollRef}
         renderItem={renderTeaserViewItem}
         keyExtractor={(item) => item.data.id.toString()}
         onViewableItemsChanged={handleOnViewableItemsChanged.current}

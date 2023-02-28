@@ -1,6 +1,6 @@
 import { StyleSheet, SafeAreaView } from "react-native";
 
-export default function FollowingPage() {
+export default function FollowingScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <Text>Not implemented</Text>
