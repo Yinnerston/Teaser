@@ -1,19 +1,19 @@
 erDiagram
-    USERS ||--o{ POSTS : uploads
-    USERS ||--o{ SERVICES : offers
-    USERS ||--o{ BOUNDARIES : has
+    USERS |o--o{ POSTS : uploads
+    USERS |o--o{ SERVICES : offers
     POSTS ||--|| SONGS : plays
     POSTS ||--|| POST_TYPE : are
     USERS {
         int id PK
-        string username
-        string password "protected"
+        string username "6-32 characters"
+        string password "encrypted, 8-32 characters with a at least one Uppercase, lowercase, number and special chacter"
         string email
-        string phone
+        string phone "country code included"
         string profile_photo_url
         string stage_name
-        date dob ">= 18 years old"
+        date dob ">= 18 years old, utc"
         boolean verified
+        int location_id FK
     }
     POSTS {
         int id PK
@@ -34,9 +34,17 @@ erDiagram
     SERVICES  {
         int id PK
         int user_id FK
-        int cost
+        float cost "AUD, 2 decimal points"
         string title
         string description
+    }
+    USERS |o--o| LOCATIONS : located
+    LOCATIONS    {
+        int id PK
+        string address "nullable"
+        string city
+        string state
+        string country
     }
 
     LIKED_POSTS }o--|| USERS : has
@@ -52,9 +60,8 @@ erDiagram
         int post_id FK
         int user_id FK
     }
-    USER_PROFILE ||--|| USER_CATEGORIES : "relates to"
-    USER_CATEGORIES |o--o{ CATEGORIES : "applies to"
-    USER_CATEGORIES |o--|{ USERS : "applies to"
+    USER_CATEGORIES ||--o{ CATEGORIES : "applies to"
+    USER_CATEGORIES }|--o{ USERS : "applies to"
     CATEGORIES  {
         int id PK
         string title
@@ -67,9 +74,9 @@ erDiagram
     USER_PROFILE  {
         int user_id "PK FK"
         string description
-
     }
-    PROFILE_LINKS ||--|| PROFILE_LINK_TYPES : are
+    USER_PROFILE ||--o{ PROFILE_LINKS : has
+    PROFILE_LINKS }|--|{ PROFILE_LINK_TYPES : are
     PROFILE_LINKS   {
         int id PK
         int user_id FK
@@ -92,7 +99,7 @@ erDiagram
         int tag_id FK
     }
 
-    FOLLOWED_USERS }o--o{ USERS : follows
+    FOLLOWED_USERS }o--|{ USERS : follows
     BLOCKED_USERS }o--|| POSTS : blocks
     FOLLOWED_USERS {
         int followed_user_id FK
@@ -103,8 +110,8 @@ erDiagram
         int blocker_user_id FK
     }
 
-    COMMENT_PATHS }o--o{ POSTS : "closure table"
-    COMMENT_PATHS }o--o{ COMMENTS : "closure table"
+    COMMENT_PATHS }o--|{ POSTS : "closure table"
+    COMMENT_PATHS }o--|{ COMMENTS : "closure table"
 
     COMMENTS    {
         int id PK
@@ -119,6 +126,7 @@ erDiagram
         int depth ">= 0"
     }
 
+    SUBSCRIPTIONS }o--|{ USERS : has
     SUBSCRIPTIONS }|--|| BILLING_PERIOD : has
     SUBSCRIPTIONS   {
         int creator_id "PK FK"
@@ -132,7 +140,7 @@ erDiagram
         string time_range "PK --> Weekly, Fortnightly, Monthly, Yearly"
     }
 
-    USERS }|--|{ PURCHASES : makes
+    USERS }o--o| PURCHASES : makes
     PURCHASES }|--|| PAYMENT_METHODS : uses
     PURCHASES   {
         int id PK
