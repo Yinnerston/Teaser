@@ -5,9 +5,8 @@
         erDiagram
     USERS ||--o{ POSTS : uploads
     USERS ||--o{ SERVICES : offers
-    USERS ||--o{ BOUNDARIES : has
     POSTS ||--|| SONGS : plays
-    POSTS ||--|| POST_TYPE : are
+    POSTS ||--|| POST_TYPES : are
     USERS {
         int id PK
         string username
@@ -153,7 +152,7 @@
         JSONB details "encrypted details?"
     }
 
-    USER_CLICKS }o--|| USER : event
+    USER_CLICKS }o--|| USERS : event
     USER_CLICKS }|--|| EVENT_METRIC_TYPES : has
     USER_CLICKS {
         int id PK
