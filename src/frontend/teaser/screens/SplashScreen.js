@@ -14,7 +14,7 @@ export default function SplashScreen({ navigation }) {
     setTimeout(() => {
       navigation.navigate("HomeNavigator", { screen: "Home" }, 1000);
     });
-  }, []);
+  });
 
   return (
     <View style={styles.container}>
