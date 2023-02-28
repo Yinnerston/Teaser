@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <pre class="mermaid">
+    erDiagram
+        USERS |o--o{ POSTS : uploads
+        USERS |o--o{ SERVICES : offers
+        POSTS ||--|| SONGS : plays
+        POSTS ||--|| POST_TYPE : are
+        USERS {
+            int id PK
+            string username "6-32 characters"
+            string password "encrypted, 8-32 characters with a at least one Uppercase, lowercase, number and special chacter"
+            string email
+            string phone "country code included"
+            string profile_photo_url
+            string stage_name
+            date dob ">= 18 years old, utc"
+            boolean verified
+            int location_id FK
+        }
+        POSTS {
+            int id PK
+            string title
+            boolean is_private
+            int song_id FK
+            string post_type "FK whether photo, gallery, video, etc.."
+            JSONB data "data: {urls, thumbnail, ..}, question: {data, VO_url}"
+        }
+        POST_TYPES   {
+            string type PK
+        }
+        SONGS   {
+            int id PK
+            string title
+            url url "nullable"
+        }
+        SERVICES  {
+            int id PK
+            int user_id FK
+            float cost "AUD, 2 decimal points"
+            string title
+            string description
+        }
+        USERS |o--o| LOCATIONS : located
+        LOCATIONS    {
+            int id PK
+            string address "nullable"
+            string city
+            string state
+            string country
+        }
+
+        LIKED_POSTS }o--|| USERS : has
+        LIKED_POSTS }o--|| POSTS : has
+        LIKED_POSTS  {
+            int post_id FK
+            int user_id FK
+        }
+
+        BOOKMARKED_POSTS }o--|| USERS : has
+        BOOKMARKED_POSTS }o--|| POSTS : has
+        BOOKMARKED_POSTS {
+            int post_id FK
+            int user_id FK
+        }
+        USER_CATEGORIES ||--o{ CATEGORIES : "applies to"
+        USER_CATEGORIES }|--o{ USERS : "applies to"
+        CATEGORIES  {
+            int id PK
+            string title
+            string colour "#colour code identifier"
+        }
+        USER_CATEGORIES {
+            int user_id FK
+            int category_id FK
+        }
+        USER_PROFILE  {
+            int user_id "PK FK"
+            string description
+        }
+        USER_PROFILE ||--o{ PROFILE_LINKS : has
+        PROFILE_LINKS }|--|{ PROFILE_LINK_TYPES : are
+        PROFILE_LINKS   {
+            int id PK
+            int user_id FK
+            string link_type FK
+        }
+        PROFILE_LINK_TYPES   {
+            string type PK
+            string logo_url
+        }
+
+
+        POST_TAGS |o--|{ POSTS : has
+        POST_TAGS |o--|{ TAGS : has
+        TAGS  {
+            int id PK
+            string title
+        }
+        POST_TAGS {
+            int post_id FK
+            int tag_id FK
+        }
+
+        FOLLOWED_USERS }o--|{ USERS : follows
+        BLOCKED_USERS }o--|| POSTS : blocks
+        FOLLOWED_USERS {
+            int followed_user_id FK
+            int follower_user_id FK
+        }
+        BLOCKED_USERS {
+            int blocked_user_id FK
+            int blocker_user_id FK
+        }
+
+        COMMENT_PATHS }o--|{ POSTS : "closure table"
+        COMMENT_PATHS }o--|{ COMMENTS : "closure table"
+
+        COMMENTS    {
+            int id PK
+            int post_id FK
+            int user_id FK
+            string comment_text
+            int likes
+        }
+        COMMENT_PATHS   {
+            int ancestor "PK FK"
+            int descendent "PK FK"
+            int depth ">= 0"
+        }
+
+        SUBSCRIPTIONS }o--|{ USERS : has
+        SUBSCRIPTIONS }|--|| BILLING_PERIOD : has
+        SUBSCRIPTIONS   {
+            int creator_id "PK FK"
+            int subscriber_id "PK FK"
+            boolean is_subscribed
+            double price
+            string billing_period "FK recurrent period of billing"
+        }
+
+        BILLING_PERIOD   {
+            string time_range "PK --> Weekly, Fortnightly, Monthly, Yearly"
+        }
+
+        USERS }o--o| PURCHASES : makes
+        PURCHASES }|--|| PAYMENT_METHODS : uses
+        PURCHASES   {
+            int id PK
+            int seller_id FK
+            int buyer_id FK
+            string name "Donation, Purchase for services"
+            date timestamp
+            int payment_method FK
+        }
+
+        PAYMENT_METHODS {
+            int id PK
+            int user_id FK
+            JSONB details "encrypted details?"
+        }
+
+        USER_CLICKS }o--|| USER : event
+        USER_CLICKS }|--|| EVENT_METRIC_TYPES : has
+        USER_CLICKS {
+            int id PK
+            int user_id FK
+            string event_type FK
+            JSONB data "Data describing the event"
+        }
+
+        EVENT_METRIC_TYPES {
+            string type PK
+        }
+            </pre>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    </script>
+  </body>
+</html>
