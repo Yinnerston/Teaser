@@ -5,8 +5,10 @@ import {
   useWindowDimensions,
   SafeAreaView,
   Button,
+  Alert,
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { StackActions } from "@react-navigation/native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import AuthButton from "../../components/elements/button/AuthButton";
 import { REGISTER_BUTTON_COLOR } from "../../Constants";
@@ -22,9 +24,40 @@ const teaserLogo = require("../../assets/teaser_180x60.png");
 export default function Register2fa({ navigation, route }) {
   // TODO: Add validation / link to backend.
   const [showLoginButton, setShowLoginButton] = useState(false);
+  const [is2faAuthorized, setIs2faAuthorized] = useState(false);
+
   // const [otpCode, setOTPCode] = useState("");
   // const maximumCodeLength = 4;
   const styles = useAuthScreenStyle();
+
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        if (is2faAuthorized) {
+          // If authorized, do nothing
+          return;
+        }
+
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+
+        // Prompt the user before leaving the screen
+        Alert.alert(
+          "Cancel your registration?",
+          "You cannot make an account unless you complete two factor authentication.",
+          [
+            { text: "Don't leave", style: "cancel", onPress: () => {} },
+            {
+              text: "Cancel Registration",
+              style: "destructive",
+              // Go back to the homepage
+              onPress: () => navigation.navigate("Home"),
+            },
+          ],
+        );
+      }),
+    [navigation, is2faAuthorized],
+  );
 
   const onButtonPress = () => {
     setShowLoginButton(true);
