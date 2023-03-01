@@ -22,7 +22,7 @@ class CategoriesModel(models.Model):
     Lookup table for categories that a user can assign to themselves.
     """
 
-    title = models.CharField(max_length="50", primary_key=True)
+    title = models.CharField(max_length=50, primary_key=True)
 
 
 class UserCategoriesModel(models.Model):
