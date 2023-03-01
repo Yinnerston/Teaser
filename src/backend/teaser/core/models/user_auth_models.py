@@ -22,9 +22,9 @@ class TeaserUserModel(models.Model):
     """
 
     user_model = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=16)
+    phone_str = models.CharField(max_length=16)
     profile_photo_url = models.URLField()
     stage_name = models.CharField(max_length=64)
-    dob = models.DateField()
+    dob_date = models.DateField()
     is_verified = models.BooleanField(default=False)
     location_id = models.ForeignKey(LocationsModel, on_delete=models.DO_NOTHING)
