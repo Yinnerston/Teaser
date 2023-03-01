@@ -70,11 +70,11 @@
         CATEGORIES  {
             int id PK
             string title
-            string colour "#colour code identifier"
         }
         USER_CATEGORIES {
             int user_id FK
             int category_id FK
+            string colour "#colour code identifier specified by user"
         }
         USER_PROFILE  {
             int user_id "PK FK"
@@ -87,10 +87,10 @@
             int id PK
             int user_id FK
             string link_type FK
+            string link_url
         }
         PROFILE_LINK_TYPES   {
             string type PK
-            string logo_url
         }
 
 
