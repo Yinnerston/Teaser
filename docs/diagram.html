@@ -163,9 +163,9 @@
             JSONB details "encrypted details?"
         }
 
-        EVENTS }o--|| USERS : event
-        EVENTS }|--|| EVENT_METRIC_TYPES : has
-        EVENTS {
+        EVENT_METRICS }o--|| USERS : event
+        EVENT_METRICS }|--|| EVENT_METRIC_TYPES : has
+        EVENT_METRICS {
             int id PK
             int user_id FK
             string event_type FK
