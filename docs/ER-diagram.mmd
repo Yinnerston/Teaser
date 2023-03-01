@@ -13,7 +13,6 @@
             string stage_name
             date dob ">= 18 years old, utc"
             boolean verified
-            int location_id FK
         }
         POSTS {
             int id PK
@@ -38,7 +37,13 @@
             string title
             string description
         }
-        USERS |o--o| LOCATIONS : located
+        USER_LOCATIONS }|--o{ LOCATIONS : located
+        USER_LOCATIONS }|--o{ USERS : located
+        USER_LOCATIONS  {
+            int user_id "PK FK"
+            int location_id "PK FK"
+            date last_seen
+        }
         LOCATIONS    {
             int id PK
             string address "nullable"
