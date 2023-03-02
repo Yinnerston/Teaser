@@ -1,4 +1,4 @@
-from ninja import Schema
+from ninja import Schema, Field
 
 
 class TeaserUserSchema(Schema):
@@ -11,4 +11,4 @@ class TeaserUserSchema(Schema):
     phone: str
     password: str
     dob: str
-    terms_of_service_accepted: bool
+    terms_of_service_accepted: bool = Field(default=False)

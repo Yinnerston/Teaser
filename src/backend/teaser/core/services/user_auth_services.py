@@ -3,6 +3,7 @@ Services layer for user_auth_services models.
 """
 
 from core.models.user_auth_models import TeaserUserModel
+from core.utils.user_auth_validator import *
 
 
 def register_user_service(
@@ -16,8 +17,10 @@ def register_user_service(
     """
     Register a user.
     """
-
     # Validate user input
+    validate_register(
+        s_username, s_email, s_phone, us_password, s_dob, s_terms_of_service_accepted
+    )
     # Check that the the inputs follow the business rules
     # Convert dob to date and validate is valid date + over 18
     # E.G. Correct length, valid regex pattern, etc
@@ -28,6 +31,7 @@ def register_user_service(
     # Persist the model to the database
     # Send SMS code
     # Return JSON
+    return {"Hello": "world"}
 
 
 def activate_user_account_service(s_username: str, s_2fa_otp: str):
