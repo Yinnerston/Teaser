@@ -28,3 +28,4 @@ class TeaserUserModel(models.Model):
     dob_date = models.DateField()
     is_verified = models.BooleanField(default=False)
     location_id = models.ForeignKey(LocationsModel, on_delete=models.DO_NOTHING)
+    terms_of_service_accepted = models.BooleanField(default=False)
