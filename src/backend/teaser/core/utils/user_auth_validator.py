@@ -12,8 +12,8 @@ def validate_username(s_username: str):
 
 def validate_password(us_password: str):
     if (
-        match("/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/", us_password)
-        is None
+        match("/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/", us_password)
+        and len(us_password) < 32 is None
     ):
         raise user_auth_errors.PatternMatchError()
     return us_password
@@ -21,7 +21,10 @@ def validate_password(us_password: str):
 
 def validate_email(s_email: str):
     if (
-        match("/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/", s_email) is None
+        match(
+            "([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+", s_email
+        )
+        is None
         or len(s_email) > 255
     ):
         raise user_auth_errors.PatternMatchError()
@@ -42,7 +45,7 @@ def validate_phone(s_phone):
 
 
 def validate_dob(s_dob: str):
-    dob_datetime = datetime.strptime(s_dob, "%d/%m/%y")
+    dob_datetime = datetime.strptime(s_dob, "%d/%m/%Y")
     eighteen_years_ago_datetime = datetime.now() - relativedelta(years=18)
     if dob_datetime >= eighteen_years_ago_datetime:
         raise user_auth_errors.InvalidDOBError()
