@@ -25,6 +25,9 @@ from core.services.user_auth_services import register_user_service
 # Import schemas
 from core.schemas.user_auth_schemas import TeaserUserSchema
 
+# Basic Sanitizers
+from core.utils import sanitization_utils
+
 api = NinjaAPI()
 
 
@@ -44,11 +47,22 @@ def register_user_endpoint(request, payload: TeaserUserSchema):
     us_phone = teaser_user_dict["phone"]
     us_password = teaser_user_dict["password"]
     us_dob = teaser_user_dict["dob"]
-    us_terms_of_service_accepted = teaser_user_dict["terms_of_service_accepted"]
+    # safe because automatically validated as bool by schema
+    s_terms_of_service_accepted = teaser_user_dict["terms_of_service_accepted"]
     # Sanitize the input
-
+    s_username = sanitization_utils.sanitize_str(us_username)
+    s_email = sanitization_utils.sanitize_str(us_email)
+    s_phone = sanitization_utils.sanitize_str(us_phone)
+    s_dob = sanitization_utils.sanitize_str(us_dob)
     # Call the service layer to run business logic --> Returns JSON to return
-    return {"username": us_username}
+    return register_user_service(
+        s_username=s_username,
+        s_email=s_email,
+        s_phone=s_phone,
+        us_password=us_password,
+        s_dob=s_dob,
+        s_terms_of_service_accepted=s_terms_of_service_accepted,
+    )
 
 
 urlpatterns = [
