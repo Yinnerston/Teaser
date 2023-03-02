@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_extensions",
+    "admin_honeypot",  # TODO: Setup listener on admin_honeypot.signals.honeypot() signal
     "core",
 ]
 
