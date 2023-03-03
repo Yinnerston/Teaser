@@ -15,7 +15,8 @@ def validate_username(s_username: str):
 def validate_password(us_password: str):
     if (
         match("/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/", us_password)
-        and len(us_password) < 32 is None
+        is None
+        and len(us_password) < 32
     ):
         raise user_auth_errors.PatternMatchValidationError(
             412, "Password Validation Error"
@@ -60,7 +61,7 @@ def validate_dob(s_dob: str):
             410, r"Invalid DOB Format %d/%m/%Y"
         )
     eighteen_years_ago_datetime = datetime.now() - relativedelta(years=18)
-    if dob_datetime >= eighteen_years_ago_datetime:
+    if dob_datetime > eighteen_years_ago_datetime:
         raise user_auth_errors.InvalidDOBValidationError(410, "DOB is not 18 Years Old")
     return dob_datetime
 
@@ -84,9 +85,13 @@ def validate_register(
     # Ok what is Django going to do for me?
     # Do i need to do stuff like constraint validation here
     # Do regex validation here? YES
-    validate_username(s_username)
-    validate_email(s_email)
-    validate_dob(s_dob)
-    validate_password(us_password)
-    validate_phone(s_phone)
-    validate_terms_of_service_accepted(s_terms_of_service_accepted)
+    return {
+        "username": validate_username(s_username),
+        "email": validate_email(s_email),
+        "dob": validate_dob(s_dob),
+        "password": validate_password(us_password),
+        "phone": validate_phone(s_phone),
+        "terms_of_service": validate_terms_of_service_accepted(
+            s_terms_of_service_accepted
+        ),
+    }
