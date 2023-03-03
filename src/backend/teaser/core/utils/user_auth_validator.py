@@ -82,6 +82,12 @@ def validate_register(
     s_dob: str,
     s_terms_of_service_accepted: bool,
 ):
+    """
+    Validate register inputs for a new user is syntactically correct.
+    @raises TermsOfServiceNotAcceptedValidationError ToS not accepted
+    @raises InvalidDOBValidationError <18 y/o
+    @raises PatternMatchValidationError Invalid regex match in str fields
+    """
     # Ok what is Django going to do for me?
     # Do i need to do stuff like constraint validation here
     # Do regex validation here? YES

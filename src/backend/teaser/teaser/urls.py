@@ -61,6 +61,15 @@ def terms_of_service_not_accepted_validation_error(request, exc):
     )
 
 
+@api.exception_handler(UserAlreadyExistsValidationError)
+def invalid_dob_validation_error(request, exc):
+    return api.create_response(
+        request,
+        {"message": f"User already exists: {exc}"},
+        status=413,
+    )
+
+
 # Define API urls here
 @api.post("register")
 def register_user_endpoint(request, payload: TeaserUserSchema):

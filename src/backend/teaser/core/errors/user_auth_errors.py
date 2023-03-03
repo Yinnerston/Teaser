@@ -11,3 +11,7 @@ class TermsOfServiceNotAcceptedValidationError(HttpError):
 
 class PatternMatchValidationError(HttpError):
     pass
+
+
+class UserAlreadyExistsValidationError(HttpError):
+    pass
