@@ -1,10 +1,13 @@
-class InvalidDOBError(Exception):
+from ninja.errors import HttpError
+
+
+class InvalidDOBValidationError(HttpError):
     pass
 
 
-class TermsOfServiceNotAcceptedError(Exception):
+class TermsOfServiceNotAcceptedValidationError(HttpError):
     pass
 
 
-class PatternMatchError(Exception):
+class PatternMatchValidationError(HttpError):
     pass

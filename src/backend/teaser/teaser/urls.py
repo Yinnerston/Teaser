@@ -29,6 +29,36 @@ from core.schemas.user_auth_schemas import TeaserUserSchema
 from core.utils import sanitization_utils
 
 api = NinjaAPI()
+# Define exceptions
+
+from core.errors.user_auth_errors import *
+
+
+@api.exception_handler(InvalidDOBValidationError)
+def invalid_dob_validation_error(request, exc):
+    return api.create_response(
+        request,
+        {"message": f"Invalid DOB: {exc}"},
+        status=410,
+    )
+
+
+@api.exception_handler(TermsOfServiceNotAcceptedValidationError)
+def terms_of_service_not_accepted_validation_error(request, exc):
+    return api.create_response(
+        request,
+        {"message": f"Must accept ToS to use Teaser: {exc}"},
+        status=411,
+    )
+
+
+@api.exception_handler(PatternMatchValidationError)
+def terms_of_service_not_accepted_validation_error(request, exc):
+    return api.create_response(
+        request,
+        {"message": f"Invalid input: {exc}"},
+        status=412,
+    )
 
 
 # Define API urls here
