@@ -7,6 +7,7 @@ from core.utils.user_auth_validator import validate_register
 from core.errors.user_auth_errors import UserAlreadyExistsValidationError
 import unicodedata
 from django.contrib.auth.models import User
+from django.db import transaction
 
 
 def register_user_service(
@@ -27,9 +28,9 @@ def register_user_service(
     # Normalize unicode text
     nfc_username = unicodedata.normalize("NFC", validated_dict["username"])
     nfkc_username = unicodedata.normalize("NFKC", validated_dict["username"]).casefold()
-    nfc_email_address = unicodedata.normalize("NFC", validated_dict["emal"])
+    nfc_email_address = unicodedata.normalize("NFC", validated_dict["email"])
     nfkc_email_address = unicodedata.normalize(
-        "NFKC", validated_dict["emal"]
+        "NFKC", validated_dict["email"]
     ).casefold()
     # Check that the username, phone, email is unique.
     if User.objects.filter(nfkc_username=nfkc_username).exists():
@@ -37,11 +38,31 @@ def register_user_service(
         raise UserAlreadyExistsValidationError(413, "Duplicate username!")
     if User.objects.filter(nfkc_email_address=nfkc_email_address).exists():
         raise UserAlreadyExistsValidationError(413, "Duplicate email!")
-    if User.objects.filter(phone=validated_dict["phone"]).exists():
+    if TeaserUserModel.objects.filter(phone=validated_dict["phone"]).exists():
         raise UserAlreadyExistsValidationError(413, "Duplicate phone number!")
     # Persist the model to the database
+    with transaction.atomic():
+        # TODO: This needs to have fields username
+        # Not nfkc_* / nfc_&
+        user_model = User.objects.create_user(
+            nfkc_username=nfkc_username,
+            nfc_username=nfc_username,
+            nfkc_email_address=nfkc_email_address,
+            password=validated_dict["password"],
+        )
+        user_model.full_clean()
+        user_model.save()
+        # Update or create TeaserUserModel
+        teaser_user_model = TeaserUserModel.objects.create(
+            user_model=user_model,
+            phone_str=validated_dict["phone"],
+            dob_date=validated_dict["dob"],
+            terms_of_service_accepted=validated_dict["terms_of_service"],
+        )
+        teaser_user_model.full_clean()
+        teaser_user_model.save()
+    # TODO: Send SMS code? Use TOTP?
 
-    # Send SMS code
     # Return JSON
     return {"Hello": "world"}
 
