@@ -14,12 +14,15 @@ def validate_username(s_username: str):
 
 def validate_password(us_password: str):
     if (
-        match("/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/", us_password)
+        match(
+            "^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$",
+            us_password,
+        )
         is None
-        and len(us_password) < 32
+        or len(us_password) > 32
     ):
         raise user_auth_errors.PatternMatchValidationError(
-            412, "Password Validation Error"
+            412, f"Password Validation Error:"
         )
     return us_password
 
