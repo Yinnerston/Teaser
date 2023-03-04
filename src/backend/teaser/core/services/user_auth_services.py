@@ -33,21 +33,20 @@ def register_user_service(
         "NFKC", validated_dict["email"]
     ).casefold()
     # Check that the username, phone, email is unique.
-    if User.objects.filter(nfkc_username=nfkc_username).exists():
+    if User.objects.filter(username=nfkc_username).exists():
         # TODO: Can you overload User^ object with nfkc_username attr or put in TeaserUser?
         raise UserAlreadyExistsValidationError(413, "Duplicate username!")
-    if User.objects.filter(nfkc_email_address=nfkc_email_address).exists():
+    if User.objects.filter(email=nfkc_email_address).exists():
         raise UserAlreadyExistsValidationError(413, "Duplicate email!")
-    if TeaserUserModel.objects.filter(phone=validated_dict["phone"]).exists():
+    if TeaserUserModel.objects.filter(phone_str=validated_dict["phone"]).exists():
         raise UserAlreadyExistsValidationError(413, "Duplicate phone number!")
     # Persist the model to the database
     with transaction.atomic():
         # TODO: This needs to have fields username
         # Not nfkc_* / nfc_&
         user_model = User.objects.create_user(
-            nfkc_username=nfkc_username,
-            nfc_username=nfc_username,
-            nfkc_email_address=nfkc_email_address,
+            username=nfkc_username,
+            email=nfkc_email_address,
             password=validated_dict["password"],
         )
         user_model.full_clean()
@@ -55,6 +54,8 @@ def register_user_service(
         # Update or create TeaserUserModel
         teaser_user_model = TeaserUserModel.objects.create(
             user_model=user_model,
+            nfc_username=nfc_username,
+            nfc_email_address=nfc_email_address,
             phone_str=validated_dict["phone"],
             dob_date=validated_dict["dob"],
             terms_of_service_accepted=validated_dict["terms_of_service"],
@@ -64,7 +65,12 @@ def register_user_service(
     # TODO: Send SMS code? Use TOTP?
 
     # Return JSON
-    return {"Hello": "world"}
+    return {
+        "username": teaser_user_model.user_model.username,
+        "dob": teaser_user_model.dob_date,
+        "phone": teaser_user_model.phone_str,
+        "terms_of_service_accepted": teaser_user_model.terms_of_service_accepted,
+    }
 
 
 def activate_user_account_service(s_username: str, s_2fa_otp: str):

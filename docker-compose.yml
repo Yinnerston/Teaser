@@ -10,6 +10,8 @@ services:
       - ./src/backend/teaser:/app
     env_file:
       - .backend.env
+    depends_on:
+      - db
     networks:
       - teaser-network
   frontend:
@@ -22,6 +24,18 @@ services:
     volumes:
       - ./src/frontend/teaser:/app
       - /app/node_modules
+    networks:
+      - teaser-network
+  db:
+    image: postgres:15.2
+    volumes:
+      - ./data:/var/lib/postgresql/data/
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=teaseruser
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=teaser
     networks:
       - teaser-network
 

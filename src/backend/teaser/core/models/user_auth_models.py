@@ -22,10 +22,14 @@ class TeaserUserModel(models.Model):
     """
 
     user_model = models.OneToOneField(User, on_delete=models.CASCADE)
+    nfc_username = models.CharField(max_length=32)
+    nfc_email_address = models.CharField(max_length=255)
     phone_str = models.CharField(max_length=16)
-    profile_photo_url = models.URLField()
-    stage_name = models.CharField(max_length=64)
+    profile_photo_url = models.URLField(default="", blank=True)
+    stage_name = models.CharField(max_length=64, default="", blank=True)
     dob_date = models.DateField()
     is_verified = models.BooleanField(default=False)
-    location_id = models.ForeignKey(LocationsModel, on_delete=models.DO_NOTHING)
+    location_id = models.ForeignKey(
+        LocationsModel, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
     terms_of_service_accepted = models.BooleanField(default=False)
