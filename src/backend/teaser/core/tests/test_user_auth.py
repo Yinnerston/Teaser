@@ -80,7 +80,7 @@ class TestUserAuthRegisterService(TestCase):
         self.assertEquals(User.objects.count(), 0)
         self.assertEquals(TeaserUserModel.objects.count(), 0)
 
-    def test_register_username_duplicate_username(self):
+    def test_register_username_uniqueness(self):
         """
         Check that duplicating a register user raises an exception.
         """
@@ -109,6 +109,9 @@ class TestUserAuthRegisterService(TestCase):
         self.assertEquals(TeaserUserModel.objects.count(), 1)
 
     def test_register_username_normalisation(self):
+        """
+        TODO: Probably for email as well
+        """
         pass
 
     def test_register_email_invalid_length(self):
@@ -117,7 +120,7 @@ class TestUserAuthRegisterService(TestCase):
     def test_register_email_invalid_pattern(self):
         pass
 
-    def test_register_email_duplicate_email(self):
+    def test_register_email_uniqueness(self):
         pass
 
     def test_register_phone_invalid_length(self):
