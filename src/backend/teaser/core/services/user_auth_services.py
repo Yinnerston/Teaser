@@ -65,10 +65,12 @@ def register_user_service(
     # TODO: Send SMS code? Use TOTP?
 
     # Return JSON
+    # Not exposing the nfkc user_model attributes
     return {
-        "username": teaser_user_model.user_model.username,
+        "username": teaser_user_model.nfc_username,
         "dob": teaser_user_model.dob_date,
         "phone": teaser_user_model.phone_str,
+        "email": teaser_user_model.nfc_email_address,
         "terms_of_service_accepted": teaser_user_model.terms_of_service_accepted,
     }
 
