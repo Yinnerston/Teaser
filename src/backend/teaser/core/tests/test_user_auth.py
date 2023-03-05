@@ -125,6 +125,9 @@ class TestUserAuthRegisterService(TestCase):
         self.assertEquals(TeaserUserModel.objects.count(), 0)
 
     def test_register_email_invalid_pattern(self):
+        """
+        Test emails must have a valid domain pattern
+        """
         # Requires "@text.text" --> Missing . for email domain
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
@@ -137,9 +140,23 @@ class TestUserAuthRegisterService(TestCase):
             )
         self.assertEquals(User.objects.count(), 0)
         self.assertEquals(TeaserUserModel.objects.count(), 0)
-        # Suffix can be any length as long as the the length is within the bounds
+        # Invalid characters in email
+        with self.assertRaises(PatternMatchValidationError):
+            register_user_service(
+                TestUserAuthRegisterService.register_data["username"],
+                "🤡🤡🤡" + "@gmail.com",
+                TestUserAuthRegisterService.register_data["phone"],
+                TestUserAuthRegisterService.register_data["password"],
+                TestUserAuthRegisterService.register_data["dob"],
+                TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
+            )
+        self.assertEquals(User.objects.count(), 0)
+        self.assertEquals(TeaserUserModel.objects.count(), 0)
 
     def test_register_email_uniqueness(self):
+        """
+        Test emails are unique
+        """
         register_user_service(
             TestUserAuthRegisterService.register_data["username"],
             TestUserAuthRegisterService.register_data["email"],
@@ -165,6 +182,9 @@ class TestUserAuthRegisterService(TestCase):
         self.assertEquals(TeaserUserModel.objects.count(), 1)
 
     def test_register_phone_invalid_length(self):
+        """
+        Test phone numbers must be of valid length
+        """
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
                 TestUserAuthRegisterService.register_data["username"],
@@ -178,6 +198,9 @@ class TestUserAuthRegisterService(TestCase):
         self.assertEquals(TeaserUserModel.objects.count(), 0)
 
     def test_register_phone_invalid_pattern(self):
+        """
+        Test country codes must be in a phone number
+        """
         # Missing country code
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
@@ -191,7 +214,10 @@ class TestUserAuthRegisterService(TestCase):
         self.assertEquals(User.objects.count(), 0)
         self.assertEquals(TeaserUserModel.objects.count(), 0)
 
-    def test_register_phone_duplicate_phone(self):
+    def test_register_phone_number_uniqueness(self):
+        """
+        Test phone numbers are unique
+        """
         register_user_service(
             TestUserAuthRegisterService.register_data["username"],
             TestUserAuthRegisterService.register_data["email"],
@@ -217,6 +243,9 @@ class TestUserAuthRegisterService(TestCase):
         self.assertEquals(TeaserUserModel.objects.count(), 1)
 
     def test_register_dob_invalid_pattern(self):
+        """
+        Test that only the %d/%m/%Y dob format is accepted
+        """
         # Try abbreviated year: Requires %d/%m/%Y
         with self.assertRaises(InvalidDOBValidationError):
             register_user_service(
@@ -255,6 +284,9 @@ class TestUserAuthRegisterService(TestCase):
         self.assertEquals(TeaserUserModel.objects.count(), 0)
 
     def test_register_dob_invalid_age(self):
+        """
+        Test underage clients cannot register
+        """
         # get the date a week ago in the format %d/%m/%Y
         last_week = datetime.today() - relativedelta(days=7)
         last_week_str = last_week.strftime("%d/%m/%Y")
@@ -271,6 +303,9 @@ class TestUserAuthRegisterService(TestCase):
         self.assertEquals(TeaserUserModel.objects.count(), 0)
 
     def test_register_terms_of_service_accepted(self):
+        """
+        Test terms of service was accepted.
+        """
         with self.assertRaises(TermsOfServiceNotAcceptedValidationError):
             register_user_service(
                 TestUserAuthRegisterService.register_data["username"],
