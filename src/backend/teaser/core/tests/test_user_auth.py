@@ -4,7 +4,6 @@ from core.errors.user_auth_errors import (
     PatternMatchValidationError,
     UserAlreadyExistsValidationError,
 )
-from copy import deepcopy
 from core.models.user_auth_models import TeaserUserModel
 from django.contrib.auth.models import User
 
@@ -22,29 +21,26 @@ class TestUserAuthRegisterService(TestCase):
         }
 
     def test_register_username_invalid_length(self):
-        invalid_data = deepcopy(TestUserAuthRegisterService.register_data)
-        invalid_data["username"] = "X" * 33
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
-                invalid_data["username"],
-                invalid_data["email"],
-                invalid_data["phone"],
-                invalid_data["password"],
-                invalid_data["dob"],
-                invalid_data["terms_of_service_accepted"],
+                "X" * 33,
+                TestUserAuthRegisterService.register_data["email"],
+                TestUserAuthRegisterService.register_data["phone"],
+                TestUserAuthRegisterService.register_data["password"],
+                TestUserAuthRegisterService.register_data["dob"],
+                TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
             )
-        # Check that no user has been created
         self.assertEquals(User.objects.count(), 0)
         self.assertEquals(TeaserUserModel.objects.count(), 0)
-        invalid_data["username"] = "Y" * 5
+
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
-                invalid_data["username"],
-                invalid_data["email"],
-                invalid_data["phone"],
-                invalid_data["password"],
-                invalid_data["dob"],
-                invalid_data["terms_of_service_accepted"],
+                "Y" * 5,
+                TestUserAuthRegisterService.register_data["email"],
+                TestUserAuthRegisterService.register_data["phone"],
+                TestUserAuthRegisterService.register_data["password"],
+                TestUserAuthRegisterService.register_data["dob"],
+                TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
             )
         self.assertEquals(User.objects.count(), 0)
         self.assertEquals(TeaserUserModel.objects.count(), 0)
@@ -53,29 +49,26 @@ class TestUserAuthRegisterService(TestCase):
         """
         Test registration with invalid username input.
         """
-        invalid_data = deepcopy(TestUserAuthRegisterService.register_data)
-        invalid_data["username"] = "😀🤣kms🙃🙃"
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
-                invalid_data["username"],
-                invalid_data["email"],
-                invalid_data["phone"],
-                invalid_data["password"],
-                invalid_data["dob"],
-                invalid_data["terms_of_service_accepted"],
+                "😀🤣kms🙃🙃",
+                TestUserAuthRegisterService.register_data["email"],
+                TestUserAuthRegisterService.register_data["phone"],
+                TestUserAuthRegisterService.register_data["password"],
+                TestUserAuthRegisterService.register_data["dob"],
+                TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
             )
         self.assertEquals(User.objects.count(), 0)
         self.assertEquals(TeaserUserModel.objects.count(), 0)
 
-        invalid_data["username"] = "<Script src=sussy>"
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
-                invalid_data["username"],
-                invalid_data["email"],
-                invalid_data["phone"],
-                invalid_data["password"],
-                invalid_data["dob"],
-                invalid_data["terms_of_service_accepted"],
+                "<Script src=sussy>",
+                TestUserAuthRegisterService.register_data["email"],
+                TestUserAuthRegisterService.register_data["phone"],
+                TestUserAuthRegisterService.register_data["password"],
+                TestUserAuthRegisterService.register_data["dob"],
+                TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
             )
         self.assertEquals(User.objects.count(), 0)
         self.assertEquals(TeaserUserModel.objects.count(), 0)
@@ -115,7 +108,14 @@ class TestUserAuthRegisterService(TestCase):
         pass
 
     def test_register_email_invalid_length(self):
-        pass
+        register_user_service(
+            TestUserAuthRegisterService.register_data["username"],
+            TestUserAuthRegisterService.register_data["email"],
+            TestUserAuthRegisterService.register_data["phone"],
+            TestUserAuthRegisterService.register_data["password"],
+            TestUserAuthRegisterService.register_data["dob"],
+            TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
+        )
 
     def test_register_email_invalid_pattern(self):
         pass
