@@ -17,3 +17,4 @@ class EventMetricsModel(models.Model):
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE)
     event_type = models.ForeignKey(EventMetricsTypeModel, on_delete=models.DO_NOTHING)
     event_data = models.JSONField()
+    timestamp = models.DateTimeField(auto_now_add=True, blank=True)
