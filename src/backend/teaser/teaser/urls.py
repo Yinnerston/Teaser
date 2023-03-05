@@ -16,8 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from ninja.security import django_auth
-from ninja import NinjaAPI
-from bleach import clean
 
 # Import services
 from core.services.user_auth_services import register_user_service, login_user_service
@@ -28,7 +26,12 @@ from core.schemas.user_auth_schemas import TeaserUserSchema, LoginUserSchema
 # Basic Sanitizers
 from core.utils import sanitization_utils
 
-api = NinjaAPI(csrf=True)
+from ninja_jwt.controller import NinjaJWTDefaultController
+from ninja_extra import NinjaExtraAPI
+from ninja_jwt.authentication import JWTAuth
+
+api = NinjaExtraAPI()
+api.register_controllers(NinjaJWTDefaultController)
 # Define exceptions
 
 from core.errors.user_auth_errors import *
@@ -126,13 +129,12 @@ def login_user_endpoint(request, payload: LoginUserSchema):
     )
 
 
-@api.get("get_data", auth=django_auth)
+@api.get("get_data", auth=JWTAuth())
 def get_data(request, payload):
     if not request.user.is_authenticated:
         raise InvalidLoginCredentialsValidationError(414, "amongus")
     else:
-        print(request.headers)
-        return {"Hello": "world"}
+        return f"Authenticated user {request.auth} {request.user}"
 
 
 urlpatterns = [

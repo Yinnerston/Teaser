@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import environ
+from datetime import timedelta
 
 env = environ.Env()
 
@@ -26,11 +27,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-# TODO: Check if exposing these are security vulnerabilities / remove for prod
+DEBUG = False
 ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1"]
 
+if env("DEBUG") == "1":
+    DEBUG = True
+    # TODO: Check if exposing these are security vulnerabilities / remove for prod
+    ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1"]
 
 # Application definition
 
@@ -43,6 +46,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "admin_honeypot",  # TODO: Setup listener on admin_honeypot.signals.honeypot() signal
+    "ninja_extra",
+    "ninja_jwt",
     "core",
 ]
 
@@ -144,3 +149,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # HSTS
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+NINJA_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=69),
+}

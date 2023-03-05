@@ -138,6 +138,8 @@ def login_user_service(request, s_username: str, us_password: str):
                 event_data=json.loads("{}"),
                 user_id=logged_in_user,
             )
+            # TODO: https://eadwincode.github.io/django-ninja-jwt/creating_tokens_manually/
+            # Return auth token, username, expiry date
     else:
         # failed authentication
         # Get logged in user
