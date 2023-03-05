@@ -3,6 +3,7 @@ Services layer for user_auth_services models.
 """
 
 from core.models.user_auth_models import TeaserUserModel
+from core.models.event_metric_models import EventMetricsModel, EventMetricsTypeModel
 from core.utils.user_auth_validator import validate_register, validate_login
 from core.errors.user_auth_errors import (
     UserAlreadyExistsValidationError,
@@ -12,6 +13,7 @@ import unicodedata
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db import transaction
+import json
 
 
 def register_user_service(
@@ -66,6 +68,17 @@ def register_user_service(
         )
         teaser_user_model.full_clean()
         teaser_user_model.save()
+        # Log register Action
+        # TODO: Should I have the logging in the same atomic commit or another commit?
+        register_event_type, created = EventMetricsTypeModel.objects.get_or_create(
+            type="REGISTER"
+        )
+        register_event_metric = EventMetricsModel.objects.create(
+            event_type=register_event_type,
+            event_data=json.loads("{}"),
+            user_id=teaser_user_model,
+        )
+
     # TODO: Send SMS code? Use TOTP?
 
     # Return JSON
@@ -95,14 +108,15 @@ def update_user_account_service(s_auth_token: str, s_payload: dict):
 
 
 def login_user_service(request, s_username: str, us_password: str):
-    if request.user.is_authenticated:
-        # User already logged in
-        # TODO: Raise an error?
-        return {"is_authenticated": request.user.is_authenticated}
+    # if request.user.is_authenticated:
+    #     # User already logged in
+    #     # TODO: Raise an error?
+    #     return {"is_authenticated": request.user.is_authenticated}
 
     # Validate input
     validated_dict = validate_login(s_username, us_password)
     # Normalize
+    nfc_username = unicodedata.normalize("NFC", validated_dict["username"]).casefold()
     nfkc_username = unicodedata.normalize("NFKC", validated_dict["username"]).casefold()
     # Authenticate
     authenticated_user = authenticate(
@@ -111,6 +125,35 @@ def login_user_service(request, s_username: str, us_password: str):
     if authenticated_user is not None:
         # Backend authenticated the credentials
         login(request, authenticated_user)
+        with transaction.atomic():
+            # Get logged in user
+            logged_in_user = TeaserUserModel.objects.get(nfc_username=nfc_username)
+            # Log login Action
+            # TODO: Should I have the logging in the same atomic commit or another commit?
+            login_event_type, created = EventMetricsTypeModel.objects.get_or_create(
+                type="LOGIN"
+            )
+            register_event_metric = EventMetricsModel.objects.create(
+                event_type=login_event_type,
+                event_data=json.loads("{}"),
+                user_id=logged_in_user,
+            )
     else:
         # failed authentication
+        # Get logged in user
+        try:
+            logged_in_user = TeaserUserModel.objects.get(nfc_username=nfc_username)
+        except TeaserUserModel.DoesNotExist:
+            logged_in_user = None
+        with transaction.atomic():
+            # Log failed login Action
+            # TODO: Should I have the logging in the same atomic commit or another commit?
+            login_event_type, created = EventMetricsTypeModel.objects.get_or_create(
+                type="LOGIN"
+            )
+            register_event_metric = EventMetricsModel.objects.create(
+                event_type=login_event_type,
+                event_data=json.loads('{"login_fail": true}'),
+                user_id=logged_in_user,
+            )
         raise InvalidLoginCredentialsValidationError(414, "Invalid login credentials!")

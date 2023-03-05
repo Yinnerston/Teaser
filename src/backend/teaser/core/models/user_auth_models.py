@@ -19,6 +19,7 @@ class LocationsModel(models.Model):
 class TeaserUserModel(models.Model):
     """
     Teaser User model.
+    TODO: Define some indexes to improve performance?
     """
 
     user_model = models.OneToOneField(User, on_delete=models.CASCADE)
