@@ -5,7 +5,11 @@ from re import match
 
 
 def validate_username(s_username: str):
-    if match("^[a-zA-Z0-9_.]{6,32}", s_username) is None:
+    if (
+        match("^[a-zA-Z0-9_.]{6,32}", s_username) is None
+        or len(s_username) < 6
+        or len(s_username) > 32
+    ):
         raise user_auth_errors.PatternMatchValidationError(
             412, "Username Validation Error"
         )
@@ -20,6 +24,7 @@ def validate_password(us_password: str):
         )
         is None
         or len(us_password) > 32
+        or len(us_password) < 8
     ):
         raise user_auth_errors.PatternMatchValidationError(
             412, f"Password Validation Error:"
