@@ -1,6 +1,8 @@
-# Postgres data bolume
-
+# Postgres data volume
 data/
+
+# mkcert self-signed certificates
+*.pem
 
 # .env files
 *.env
