@@ -15,20 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-
+from ninja.security import django_auth
 from ninja import NinjaAPI
 from bleach import clean
 
 # Import services
-from core.services.user_auth_services import register_user_service
+from core.services.user_auth_services import register_user_service, login_user_service
 
 # Import schemas
-from core.schemas.user_auth_schemas import TeaserUserSchema
+from core.schemas.user_auth_schemas import TeaserUserSchema, LoginUserSchema
 
 # Basic Sanitizers
 from core.utils import sanitization_utils
 
-api = NinjaAPI()
+api = NinjaAPI(csrf=True)
 # Define exceptions
 
 from core.errors.user_auth_errors import *
@@ -70,6 +70,15 @@ def invalid_dob_validation_error(request, exc):
     )
 
 
+@api.exception_handler(InvalidLoginCredentialsValidationError)
+def invalid_dob_validation_error(request, exc):
+    return api.create_response(
+        request,
+        {"message": f"Could not login: {exc}"},
+        status=414,
+    )
+
+
 # Define API urls here
 @api.post("register")
 def register_user_endpoint(request, payload: TeaserUserSchema):
@@ -102,6 +111,28 @@ def register_user_endpoint(request, payload: TeaserUserSchema):
         s_dob=s_dob,
         s_terms_of_service_accepted=s_terms_of_service_accepted,
     )
+
+
+@api.post("login")
+def login_user_endpoint(request, payload: LoginUserSchema):
+    teaser_user_dict = payload.dict()
+    # Get unsafe fields from payload
+    us_username = teaser_user_dict["username"]
+    us_password = teaser_user_dict["password"]
+    # Sanitize username input
+    s_username = sanitization_utils.sanitize_str(us_username)
+    return login_user_service(
+        request=request, s_username=s_username, us_password=us_password
+    )
+
+
+@api.get("get_data", auth=django_auth)
+def get_data(request, payload):
+    if not request.user.is_authenticated:
+        raise InvalidLoginCredentialsValidationError(414, "amongus")
+    else:
+        print(request.headers)
+        return {"Hello": "world"}
 
 
 urlpatterns = [

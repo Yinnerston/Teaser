@@ -15,3 +15,7 @@ class PatternMatchValidationError(HttpError):
 
 class UserAlreadyExistsValidationError(HttpError):
     pass
+
+
+class InvalidLoginCredentialsValidationError(HttpError):
+    pass

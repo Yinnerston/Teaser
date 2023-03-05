@@ -109,3 +109,10 @@ def validate_register(
             s_terms_of_service_accepted
         ),
     }
+
+
+def validate_login(s_username: str, us_password: str):
+    return {
+        "username": validate_username(s_username),
+        "password": validate_password(us_password),
+    }

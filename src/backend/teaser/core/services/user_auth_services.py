@@ -3,9 +3,13 @@ Services layer for user_auth_services models.
 """
 
 from core.models.user_auth_models import TeaserUserModel
-from core.utils.user_auth_validator import validate_register
-from core.errors.user_auth_errors import UserAlreadyExistsValidationError
+from core.utils.user_auth_validator import validate_register, validate_login
+from core.errors.user_auth_errors import (
+    UserAlreadyExistsValidationError,
+    InvalidLoginCredentialsValidationError,
+)
 import unicodedata
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db import transaction
 
@@ -90,5 +94,23 @@ def update_user_account_service(s_auth_token: str, s_payload: dict):
     pass
 
 
-def login_user_service(s_username: str, us_password: str):
-    pass
+def login_user_service(request, s_username: str, us_password: str):
+    if request.user.is_authenticated:
+        # User already logged in
+        # TODO: Raise an error?
+        return {"is_authenticated": request.user.is_authenticated}
+
+    # Validate input
+    validated_dict = validate_login(s_username, us_password)
+    # Normalize
+    nfkc_username = unicodedata.normalize("NFKC", validated_dict["username"]).casefold()
+    # Authenticate
+    authenticated_user = authenticate(
+        username=nfkc_username, password=validated_dict["password"]
+    )
+    if authenticated_user is not None:
+        # Backend authenticated the credentials
+        login(request, authenticated_user)
+    else:
+        # failed authentication
+        raise InvalidLoginCredentialsValidationError(414, "Invalid login credentials!")

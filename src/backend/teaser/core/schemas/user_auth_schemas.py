@@ -12,3 +12,8 @@ class TeaserUserSchema(Schema):
     password: str = Field(example="AmongUsS8SSY!FR")
     dob: str = Field(example="21/12/1995")
     terms_of_service_accepted: bool = Field(default=True)
+
+
+class LoginUserSchema(Schema):
+    username: str = Field(example="testuser1")
+    password: str = Field(example="AmongUsS8SSY!FR")
