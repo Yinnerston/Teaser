@@ -1,7 +1,7 @@
-# 41X
+# 46X
 - User Authentication Errors + Account Creation Errors
-- 410: Invalid DOB error
-- 411: ToS not accepted error
-- 412: Input validation error
-- 413: Registered User already exists
-- 414: Attempt to login with invalid credentials
+- 460: Invalid DOB error
+- 461: ToS not accepted error
+- 462: Input validation error
+- 463: Registered User already exists
+- 464: Attempt to login with invalid credentials
