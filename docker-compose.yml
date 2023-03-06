@@ -38,8 +38,32 @@ services:
       - POSTGRES_DB=teaser
     networks:
       - teaser-network
+  nginx:
+    restart: unless-stopped
+    image: nginx:1.21-alpine
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - static_volume:/app/static
+      - ./nginx:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    depends_on:
+      - backend-django
+    networks:
+      - teaser-network
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
 
 
-
+volumes:
+  static_volume:
 networks:
   teaser-network:

@@ -14,3 +14,14 @@ Unable to determine base domain for _acme-challenge.infranet.teasernsfw.com usin
 # Production:
 
 - TODO: Let's encrypt
+
+# Nginx and Let's Encrypt
+
+- Using wocchit.com as a dev domain
+- Using teasernsfw.com as a prod domain
+- TODO: Make init-letsencrypt-prod.sh for prod domain teasernsfw.com
+
+# Running with HTTPS certificate:
+- docker-compose -f docker-compose.prod.yml build
+- ./init-letsencrypt.sh
+- docker-compose -f docker-compose.prod.yml up -d

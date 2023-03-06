@@ -4,6 +4,9 @@ data/
 # mkcert self-signed certificates
 *.pem
 
+# Certbot
+certbot
+
 # .env files
 *.env
 .env

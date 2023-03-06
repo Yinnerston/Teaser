@@ -28,12 +28,28 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [
+    "0.0.0.0",
+    "localhost",
+    "127.0.0.1",
+    "wocchit",
+    ".wocchit.com",
+    "teasernsfw",
+    ".teasernsfw.com",
+]
 
 if env("DEBUG") == "1":
     DEBUG = True
     # TODO: Check if exposing these are security vulnerabilities / remove for prod
-    ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1"]
+    ALLOWED_HOSTS = [
+        "0.0.0.0",
+        "localhost",
+        "127.0.0.1",
+        "wocchit",
+        ".wocchit.com",
+        "teasernsfw",
+        ".teasernsfw.com",
+    ]
 
 # Application definition
 
