@@ -74,7 +74,7 @@ def invalid_dob_validation_error(request, exc):
 
 
 @api.exception_handler(InvalidLoginCredentialsValidationError)
-def invalid_dob_validation_error(request, exc):
+def invalid_login_credentials_validation_error(request, exc):
     return api.create_response(
         request,
         {"message": f"Could not login: {exc}"},
