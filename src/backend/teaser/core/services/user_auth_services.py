@@ -14,6 +14,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db import transaction
 import json
+from ninja_jwt.tokens import RefreshToken
 
 
 def register_user_service(
@@ -159,3 +160,9 @@ def login_user_service(request, s_username: str, us_password: str):
                 user_id=logged_in_user,
             )
         raise InvalidLoginCredentialsValidationError(414, "Invalid login credentials!")
+    refresh = RefreshToken.for_user(logged_in_user.user_model)
+    return {
+        "refresh": str(refresh),
+        "access": str(refresh.access_token),
+        "username": logged_in_user.nfc_username,
+    }

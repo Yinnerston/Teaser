@@ -21,7 +21,7 @@ from ninja.security import django_auth
 from core.services.user_auth_services import register_user_service, login_user_service
 
 # Import schemas
-from core.schemas.user_auth_schemas import TeaserUserSchema, LoginUserSchema
+from core.schemas.user_auth_schemas import *
 
 # Basic Sanitizers
 from core.utils import sanitization_utils
@@ -42,7 +42,7 @@ def invalid_dob_validation_error(request, exc):
     return api.create_response(
         request,
         {"message": f"Invalid DOB: {exc}"},
-        status=410,
+        status=460,
     )
 
 
@@ -51,7 +51,7 @@ def terms_of_service_not_accepted_validation_error(request, exc):
     return api.create_response(
         request,
         {"message": f"Must accept ToS to use Teaser: {exc}"},
-        status=411,
+        status=461,
     )
 
 
@@ -60,7 +60,7 @@ def terms_of_service_not_accepted_validation_error(request, exc):
     return api.create_response(
         request,
         {"message": f"Invalid input: {exc}"},
-        status=412,
+        status=462,
     )
 
 
@@ -69,7 +69,7 @@ def invalid_dob_validation_error(request, exc):
     return api.create_response(
         request,
         {"message": f"User already exists: {exc}"},
-        status=413,
+        status=463,
     )
 
 
@@ -78,12 +78,21 @@ def invalid_login_credentials_validation_error(request, exc):
     return api.create_response(
         request,
         {"message": f"Could not login: {exc}"},
-        status=414,
+        status=464,
     )
 
 
 # Define API urls here
-@api.post("register")
+@api.post(
+    "register",
+    response={
+        200: RegisterUserOutSchema,
+        460: UserAuthError,
+        461: UserAuthError,
+        462: UserAuthError,
+        463: UserAuthError,
+    },
+)
 def register_user_endpoint(request, payload: TeaserUserSchema):
     """
     Register user endpoint.
@@ -116,7 +125,7 @@ def register_user_endpoint(request, payload: TeaserUserSchema):
     )
 
 
-@api.post("login")
+@api.post("login", response={200: LoginUserOutSchema, 464: UserAuthError})
 def login_user_endpoint(request, payload: LoginUserSchema):
     teaser_user_dict = payload.dict()
     # Get unsafe fields from payload

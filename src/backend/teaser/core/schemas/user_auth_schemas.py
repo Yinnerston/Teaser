@@ -14,6 +14,36 @@ class TeaserUserSchema(Schema):
     terms_of_service_accepted: bool = Field(default=True)
 
 
+class RegisterUserOutSchema(Schema):
+    """
+    TODO: Output for 2fa?
+    """
+
+    pass
+
+
 class LoginUserSchema(Schema):
+    """
+    Schema input for /api/v1/login endpoint.
+    """
+
     username: str = Field(example="testuser1")
     password: str = Field(example="AmongUsS8SSY!FR")
+
+
+class LoginUserOutSchema(Schema):
+    """
+    Schema output for /api/v1/login endpoint.
+    """
+
+    username: str = Field(example="testuser1")
+    access: str = Field(example="Access Token")
+    refresh: str = Field(example="Refresh Token")
+
+
+class UserAuthError(Schema):
+    """
+    Format of an error.
+    """
+
+    message: str = Field(example="See docs/error_codes/ERRORS.md")
