@@ -20,6 +20,7 @@ import json
 from ninja_jwt.tokens import RefreshToken
 from ninja.security import HttpBearer
 from datetime import datetime, timedelta
+from pytz import UTC
 
 
 class AuthBearer(HttpBearer):
@@ -68,8 +69,9 @@ def create_auth_token(s_username, us_password):
             new_token = AuthTokenModel.objects.create(
                 teaser_user_id=teaser_user,
                 token_hash=new_token_hash,
-                expiry_date=datetime.now()
-                + timedelta(days=60),  # TODO: Change this to smaller window?
+                expiry_date=UTC.localize(
+                    datetime.now() + timedelta(days=60)
+                ),  # TODO: Change this to smaller window?
             )
         return (new_token.token_hash, new_token.expiry_date)
     else:
@@ -84,8 +86,9 @@ def refresh_auth_token_service(s_token):
     new_token = AuthTokenModel.objects.create(
         teaser_user_id=teaser_user_id,
         token_hash=new_token_hash,
-        expiry_date=datetime.now()
-        + timedelta(days=60),  # TODO: Change this to smaller window?
+        expiry_date=UTC.localize(
+            datetime.now() + timedelta(days=60)
+        ),  # TODO: Change this to smaller window?
     )
     return (new_token.token_hash, new_token.expiry_date)
 
