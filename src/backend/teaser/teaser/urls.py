@@ -22,6 +22,7 @@ from core.services.user_auth_services import (
     login_user_service,
     invalidate_auth_token_service,
     create_auth_token,
+    refresh_auth_token_service,
 )
 
 # Import schemas
@@ -164,7 +165,7 @@ def login_user_endpoint(request, payload: LoginUserSchema):
 @api.get("get_data", auth=AuthBearer())
 def get_data(request, payload):
     if not request.user.is_authenticated:
-        raise InvalidLoginCredentialsValidationError(414, request.user)
+        raise InvalidLoginCredentialsValidationError(464, request.user)
     else:
         return f"Authenticated user {request.auth} {request.user}"
 
@@ -175,6 +176,7 @@ def invalidate_token(request, payload: AuthTokenSchema):
     """
     Invalidate a token.
     @raises 401 InvalidTokenError
+    @returns {}
     """
     teaser_user_dict = payload.dict()
     # Get unsafe fields from payload
@@ -185,6 +187,11 @@ def invalidate_token(request, payload: AuthTokenSchema):
 
 @api.post("token/create", tags=["token"])  # , auth=AuthBearer()
 def create_token(request, payload: LoginUserSchema):
+    """
+    Create a new token given a username and password
+    @raises 464 InvalidLoginCredentialsValidationError
+    @returns {token_hash: str, token_expiry_date: datetime}
+    """
     teaser_user_dict = payload.dict()
     # Get unsafe fields from payload
     us_username = teaser_user_dict["username"]
@@ -192,6 +199,21 @@ def create_token(request, payload: LoginUserSchema):
     # Sanitize username input
     s_username = sanitization_utils.sanitize_str(us_username)
     token_hash, token_expiry_datetime = create_auth_token(s_username, us_password)
+    return {"token_hash": token_hash, "token_expiry_date": token_expiry_datetime}
+
+
+@api.get("token/refresh", tags=["token"], auth=AuthBearer())
+def refresh_token(request):
+    """
+    Refresh an access token.
+    Requires an valid bearer token in the Authorization header.
+    @raises 401 Unauthorized User
+    @returns {token_hash: str, token_expiry_date: datetime}
+    """
+    # Get unsafe fields from payload
+    us_token = request.auth
+    s_token = sanitization_utils.sanitize_str(us_token)
+    token_hash, token_expiry_datetime = refresh_auth_token_service(s_token)
     return {"token_hash": token_hash, "token_expiry_date": token_expiry_datetime}
 
 

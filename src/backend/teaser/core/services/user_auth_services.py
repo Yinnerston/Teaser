@@ -27,13 +27,13 @@ class AuthBearer(HttpBearer):
         return check_auth_token_is_valid(token)
 
 
-def invalidate_auth_token_service(token: str):
+def invalidate_auth_token_service(s_token: str):
     """
     Invalidate auth token.
     Example use cases: Change of password, user logout.
     @raises 401 InvalidTokenError
     """
-    invalidate_auth_token(token)
+    invalidate_auth_token(s_token)
     # TODO: Return success?
 
 
@@ -76,16 +76,18 @@ def create_auth_token(s_username, us_password):
         raise InvalidLoginCredentialsValidationError(464, "Invalid login credentials!")
 
 
-def refresh_auth_token_service(token):
-    # Get hash for new token
+def refresh_auth_token_service(s_token):
     # Invalidate old token
-    correct_token, teaser_user = invalidate_auth_token(token)
+    invalid_token_hash, teaser_user_id = invalidate_auth_token(s_token)
+    # Create new token
     new_token_hash = make_auth_token_hash()
     new_token = AuthTokenModel.objects.create(
-        teaser_user_id=teaser_user,
+        teaser_user_id=teaser_user_id,
         token_hash=new_token_hash,
-        expiry_date=datetime.now() + timedelta(days=60),
+        expiry_date=datetime.now()
+        + timedelta(days=60),  # TODO: Change this to smaller window?
     )
+    return (new_token.token_hash, new_token.expiry_date)
 
     # create new auth token
     # TODO: Race condition where the same token is getting refreshed by two API calls

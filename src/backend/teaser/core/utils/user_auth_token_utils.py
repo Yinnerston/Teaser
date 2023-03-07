@@ -15,6 +15,7 @@ def invalidate_auth_token(token_hash):
     """
     Set the is_valid field of a token to false.
     @raises 401 InvalidTokenError
+    @returns (token_hash: str, teaser_user_id: int)
     """
     try:
         auth_token = AuthTokenModel.objects.get(token_hash=token_hash)
@@ -22,7 +23,7 @@ def invalidate_auth_token(token_hash):
         auth_token.save()
     except AuthTokenModel.DoesNotExist:
         raise InvalidTokenError(401, "Invalid Token")
-    return (auth_token.token_hash == token_hash, auth_token.teaser_user_id)
+    return (token_hash, auth_token.teaser_user_id)
 
 
 def check_auth_token_is_valid(token_hash) -> str:
