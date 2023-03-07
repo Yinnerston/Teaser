@@ -59,8 +59,7 @@ def create_auth_token(
         # Create new token
         new_token_hash = make_auth_token_hash()
         with transaction.atomic():
-            user = User.objects.get(username=nfkc_username)
-            teaser_user = TeaserUserModel.objects.get(user_id=user)
+            teaser_user = TeaserUserModel.objects.get(user_id=authenticated_user)
             # Invalidate all Tokens belonging to a user
             if invalidate_other_tokens:
                 AuthTokenModel.objects.filter(
@@ -88,17 +87,9 @@ def refresh_auth_token_service(s_token):
         token_hash=new_token_hash,
         expiry_date=UTC.localize(
             datetime.now() + timedelta(days=BEARER_TOKEN_VALID_DAYS_DURATION)
-        ),  # TODO: Change this to smaller window?
+        ),
     )
     return (new_token.token_hash, new_token.expiry_date)
-
-    # create new auth token
-    # TODO: Race condition where the same token is getting refreshed by two API calls
-    # TODO: Race condition where a token was refreshed, but
-
-
-def validate_auth_token_service(token):
-    check_auth_token_is_valid(token)
 
 
 def register_user_service(
@@ -193,17 +184,17 @@ def update_user_account_service(s_auth_token: str, s_payload: dict):
 
 
 def login_user_service(request, s_username: str, us_password: str):
-    # if request.user.is_authenticated:
-    #     # User already logged in
-    #     # TODO: Raise an error?
-    #     return {"is_authenticated": request.user.is_authenticated}
-
+    """
+    Login a user.
+    @raises 464 InvalidLoginCredentialsValidationError
+    @returns {token_hash: str, token_expiry_date: datetime, username: str}
+    """
     # Validate input
     validated_dict = validate_login_params(s_username, us_password)
     # Normalize
     nfc_username = unicodedata.normalize("NFC", validated_dict["username"])
     nfkc_username = unicodedata.normalize("NFKC", validated_dict["username"]).casefold()
-    # Authenticate
+    # Authenticate the user
     authenticated_user = authenticate(
         username=nfkc_username, password=validated_dict["password"]
     )
@@ -212,8 +203,9 @@ def login_user_service(request, s_username: str, us_password: str):
         login(request, authenticated_user)
         with transaction.atomic():
             # Get logged in user
-            logged_in_user = User.objects.get(username=nfkc_username)
-            logged_in_teaser_user = TeaserUserModel.objects.get(user_id=logged_in_user)
+            logged_in_teaser_user = TeaserUserModel.objects.get(
+                user_id=authenticated_user
+            )
             # Log login Action
             # TODO: Should I have the logging in the same atomic commit or another commit?
             login_event_type, created = EventMetricsTypeModel.objects.get_or_create(
@@ -224,8 +216,6 @@ def login_user_service(request, s_username: str, us_password: str):
                 event_data=json.loads("{}"),
                 user_id=logged_in_teaser_user,
             )
-            # TODO: https://eadwincode.github.io/django-ninja-jwt/creating_tokens_manually/
-            # Return auth token, username, expiry date
     else:
         # failed authentication
         # Get logged in user
@@ -245,7 +235,7 @@ def login_user_service(request, s_username: str, us_password: str):
                 user_id=logged_in_user,
             )
         raise InvalidLoginCredentialsValidationError(464, "Invalid login credentials!")
-    # Generate new token
+    # No error raised, Generate new token
     token_hash, token_expiry_datetime = create_auth_token(
         s_username, us_password, invalidate_other_tokens=False
     )
@@ -257,10 +247,16 @@ def login_user_service(request, s_username: str, us_password: str):
 
 
 def logout_user_service(request: HttpRequest, s_auth_token: str):
+    """
+    Logout a user and invalidate their corresponding auth_token
+    @raises 401 InvalidTokenError
+    @returns {}
+    """
     logout(request)
     # Invalidate bearer token
     auth_token = AuthTokenModel.objects.get(token_hash=s_auth_token)
     if auth_token is None:
         raise InvalidTokenError(401, "Invalid Token")
     auth_token.is_valid = False
+    auth_token.full_clean()
     auth_token.save()
