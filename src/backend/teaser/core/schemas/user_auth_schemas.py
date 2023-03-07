@@ -1,4 +1,5 @@
 from ninja import Schema, Field
+from datetime import datetime
 
 
 class TeaserUserSchema(Schema):
@@ -37,8 +38,8 @@ class LoginUserOutSchema(Schema):
     """
 
     username: str = Field(example="testuser1")
-    access: str = Field(example="Access Token")
-    refresh: str = Field(example="Refresh Token")
+    token_hash: str = Field(example="Bearer Token")
+    token_expiry_date: datetime = Field(example="Time the token expires")
 
 
 class AuthTokenSchema(Schema):

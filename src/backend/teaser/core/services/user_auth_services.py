@@ -240,9 +240,10 @@ def login_user_service(request, s_username: str, us_password: str):
                 user_id=logged_in_user,
             )
         raise InvalidLoginCredentialsValidationError(464, "Invalid login credentials!")
-    refresh = RefreshToken.for_user(logged_in_user.user_model)
+    # Generate new token
+    token_hash, token_expiry_datetime = create_auth_token(s_username, us_password)
     return {
-        "refresh": str(refresh),
-        "access": str(refresh.access_token),
-        "username": logged_in_user.nfc_username,
+        "token_hash": token_hash,
+        "token_expiry_date": token_expiry_datetime,
+        "username": logged_in_teaser_user.nfc_username,
     }

@@ -158,10 +158,10 @@ def login_user_endpoint(request, payload: LoginUserSchema):
     )
 
 
-@api.get("get_data", auth=JWTAuth())
+@api.get("get_data", auth=AuthBearer())
 def get_data(request, payload):
     if not request.user.is_authenticated:
-        raise InvalidLoginCredentialsValidationError(414, "amongus")
+        raise InvalidLoginCredentialsValidationError(414, request.user)
     else:
         return f"Authenticated user {request.auth} {request.user}"
 
@@ -188,8 +188,8 @@ def create_token(request, payload: LoginUserSchema):
     us_password = teaser_user_dict["password"]
     # Sanitize username input
     s_username = sanitization_utils.sanitize_str(us_username)
-    token_hash, token_expiry_date = create_auth_token(s_username, us_password)
-    return {"token_hash": token_hash, "token_expiry_date": token_expiry_date}
+    token_hash, token_expiry_datetime = create_auth_token(s_username, us_password)
+    return {"token_hash": token_hash, "token_expiry_date": token_expiry_datetime}
 
 
 urlpatterns = [
