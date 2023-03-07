@@ -8,6 +8,9 @@ utc = pytz.UTC
 
 
 def make_auth_token_hash():
+    """
+    Returns random 32-character lowercase hexadecimal string.
+    """
     return uuid.uuid4().hex
 
 
@@ -20,6 +23,7 @@ def invalidate_auth_token(token_hash):
     try:
         auth_token = AuthTokenModel.objects.get(token_hash=token_hash)
         auth_token.is_valid = False
+        auth_token.full_clean()
         auth_token.save()
     except AuthTokenModel.DoesNotExist:
         raise InvalidTokenError(401, "Invalid Token")
@@ -27,6 +31,11 @@ def invalidate_auth_token(token_hash):
 
 
 def check_auth_token_is_valid(token_hash) -> str:
+    """
+    Check token is valid and not expired.
+    @raises 401 InvalidTokenError
+    @returns token_hash: str
+    """
     auth_token = AuthTokenModel.objects.get(token_hash=token_hash)
     token_expiry_datetime = auth_token.expiry_date.replace(tzinfo=utc)
     utc_now_datetime = utc.localize(datetime.now())
