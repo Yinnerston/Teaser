@@ -38,11 +38,14 @@ def invalidate_auth_token_service(token: str):
 
 
 def create_auth_token(s_username, us_password):
+    """
+    Create a new auth bearer token for a user.
+    """
     pass
     # TODO: Validate user
     validated_dict = validate_login(s_username, us_password)
     # Normalize
-    nfc_username = unicodedata.normalize("NFC", validated_dict["username"]).casefold()
+    nfc_username = unicodedata.normalize("NFC", validated_dict["username"])
     nfkc_username = unicodedata.normalize("NFKC", validated_dict["username"]).casefold()
     # Authenticate
     authenticated_user = authenticate(
@@ -180,7 +183,7 @@ def login_user_service(request, s_username: str, us_password: str):
     # Validate input
     validated_dict = validate_login(s_username, us_password)
     # Normalize
-    nfc_username = unicodedata.normalize("NFC", validated_dict["username"]).casefold()
+    nfc_username = unicodedata.normalize("NFC", validated_dict["username"])
     nfkc_username = unicodedata.normalize("NFKC", validated_dict["username"]).casefold()
     # Authenticate
     authenticated_user = authenticate(
@@ -191,7 +194,8 @@ def login_user_service(request, s_username: str, us_password: str):
         login(request, authenticated_user)
         with transaction.atomic():
             # Get logged in user
-            logged_in_user = TeaserUserModel.objects.get(nfc_username=nfc_username)
+            logged_in_user = User.objects.get(username=nfkc_username)
+            logged_in_teaser_user = TeaserUserModel.objects.get(user_id=logged_in_user)
             # Log login Action
             # TODO: Should I have the logging in the same atomic commit or another commit?
             login_event_type, created = EventMetricsTypeModel.objects.get_or_create(
@@ -200,7 +204,7 @@ def login_user_service(request, s_username: str, us_password: str):
             register_event_metric = EventMetricsModel.objects.create(
                 event_type=login_event_type,
                 event_data=json.loads("{}"),
-                user_id=logged_in_user,
+                user_id=logged_in_teaser_user,
             )
             # TODO: https://eadwincode.github.io/django-ninja-jwt/creating_tokens_manually/
             # Return auth token, username, expiry date
