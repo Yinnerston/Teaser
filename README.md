@@ -1,3 +1,3 @@
 # Teaser
 
-Add `.frontend.env` and `.backend.env` files with env variables (see DOCUMENTATION.md)
+Add `.frontend.env` and `.backend.env` files with env variables (see docs/DOCUMENTATION.md)
