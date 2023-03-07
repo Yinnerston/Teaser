@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from ninja.security import django_auth
 
 # Import services
 from core.services.user_auth_services import (
@@ -34,12 +33,13 @@ from core.utils import sanitization_utils
 # Auth bearer token
 from core.services.user_auth_services import AuthBearer
 
-from ninja_jwt.controller import NinjaJWTDefaultController
-from ninja_extra import NinjaExtraAPI
-from ninja_jwt.authentication import JWTAuth
+from ninja import NinjaAPI
 
-api = NinjaExtraAPI()
-api.register_controllers(NinjaJWTDefaultController)
+api = NinjaAPI(
+    description="""
+    # Documentation for Teaser API V1
+    """
+)
 # Define exceptions
 
 from core.errors.user_auth_errors import *
@@ -112,6 +112,7 @@ def invalid_login_credentials_validation_error(request, exc):
         462: UserAuthError,
         463: UserAuthError,
     },
+    tags=["users"],
 )
 def register_user_endpoint(request, payload: TeaserUserSchema):
     """
@@ -145,7 +146,9 @@ def register_user_endpoint(request, payload: TeaserUserSchema):
     )
 
 
-@api.post("login", response={200: LoginUserOutSchema, 464: UserAuthError})
+@api.post(
+    "login", response={200: LoginUserOutSchema, 464: UserAuthError}, tags=["users"]
+)
 def login_user_endpoint(request, payload: LoginUserSchema):
     teaser_user_dict = payload.dict()
     # Get unsafe fields from payload
@@ -167,7 +170,7 @@ def get_data(request, payload):
 
 
 # Token routes
-@api.post("token/invalidate")  # TODO: add this back?, auth=AuthBearer()
+@api.post("token/invalidate", tags=["token"])  # TODO: add this back?, auth=AuthBearer()
 def invalidate_token(request, payload: AuthTokenSchema):
     """
     Invalidate a token.
@@ -180,7 +183,7 @@ def invalidate_token(request, payload: AuthTokenSchema):
     invalidate_auth_token_service(s_token)
 
 
-@api.post("token/create")  # , auth=AuthBearer()
+@api.post("token/create", tags=["token"])  # , auth=AuthBearer()
 def create_token(request, payload: LoginUserSchema):
     teaser_user_dict = payload.dict()
     # Get unsafe fields from payload
