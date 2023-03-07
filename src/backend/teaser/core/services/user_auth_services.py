@@ -19,7 +19,7 @@ from django.db import transaction
 import json
 from ninja_jwt.tokens import RefreshToken
 from ninja.security import HttpBearer
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class AuthBearer(HttpBearer):
@@ -40,6 +40,8 @@ def invalidate_auth_token_service(token: str):
 def create_auth_token(s_username, us_password):
     """
     Create a new auth bearer token for a user.
+    @raises 464 InvalidLoginCredentialsValidationError
+    @returns (token_hash: str, token_expiry_date: datetime)
     """
     pass
     # TODO: Validate user
@@ -51,16 +53,27 @@ def create_auth_token(s_username, us_password):
     authenticated_user = authenticate(
         username=nfkc_username, password=validated_dict["password"]
     )
+    if authenticated_user is not None:
+        # Invalidate user's auth tokens
 
-    # Invalidate user's auth tokens
-    # Create new token
-    new_token_hash = make_auth_token_hash()
-    new_token = AuthTokenModel.objects.create(
-        teaser_user_id=teaser_user,
-        token_has=new_token_hash,
-        expiry_date=datetime.now() + datetime.timedelta(days=60),
-    )
-    # Return to user
+        # Create new token
+        new_token_hash = make_auth_token_hash()
+        with transaction.atomic():
+            user = User.objects.get(username=nfkc_username)
+            teaser_user = TeaserUserModel.objects.get(user_id=user)
+            # Invalidate all Tokens belonging to a user
+            AuthTokenModel.objects.filter(
+                teaser_user_id=teaser_user, is_valid=True
+            ).update(is_valid=False)
+            new_token = AuthTokenModel.objects.create(
+                teaser_user_id=teaser_user,
+                token_hash=new_token_hash,
+                expiry_date=datetime.now()
+                + timedelta(days=60),  # TODO: Change this to smaller window?
+            )
+        return (new_token.token_hash, new_token.expiry_date)
+    else:
+        raise InvalidLoginCredentialsValidationError(464, "Invalid login credentials!")
 
 
 def refresh_auth_token_service(token):
@@ -70,8 +83,8 @@ def refresh_auth_token_service(token):
     new_token_hash = make_auth_token_hash()
     new_token = AuthTokenModel.objects.create(
         teaser_user_id=teaser_user,
-        token_has=new_token_hash,
-        expiry_date=datetime.now() + datetime.timedelta(days=60),
+        token_hash=new_token_hash,
+        expiry_date=datetime.now() + timedelta(days=60),
     )
 
     # create new auth token
@@ -108,11 +121,11 @@ def register_user_service(
     # Check that the username, phone, email is unique.
     if User.objects.filter(username=nfkc_username).exists():
         # TODO: Can you overload User^ object with nfkc_username attr or put in TeaserUser?
-        raise UserAlreadyExistsValidationError(413, "Duplicate username!")
+        raise UserAlreadyExistsValidationError(463, "Duplicate username!")
     if User.objects.filter(email=nfkc_email_address).exists():
-        raise UserAlreadyExistsValidationError(413, "Duplicate email!")
+        raise UserAlreadyExistsValidationError(463, "Duplicate email!")
     if TeaserUserModel.objects.filter(phone_str=validated_dict["phone"]).exists():
-        raise UserAlreadyExistsValidationError(413, "Duplicate phone number!")
+        raise UserAlreadyExistsValidationError(463, "Duplicate phone number!")
     # Persist the model to the database
     with transaction.atomic():
         # TODO: This needs to have fields username
@@ -126,7 +139,7 @@ def register_user_service(
         user_model.save()
         # Update or create TeaserUserModel
         teaser_user_model = TeaserUserModel.objects.create(
-            user_model=user_model,
+            user_id=user_model,
             nfc_username=nfc_username,
             nfc_email_address=nfc_email_address,
             phone_str=validated_dict["phone"],
@@ -226,7 +239,7 @@ def login_user_service(request, s_username: str, us_password: str):
                 event_data=json.loads('{"login_fail": true}'),
                 user_id=logged_in_user,
             )
-        raise InvalidLoginCredentialsValidationError(414, "Invalid login credentials!")
+        raise InvalidLoginCredentialsValidationError(464, "Invalid login credentials!")
     refresh = RefreshToken.for_user(logged_in_user.user_model)
     return {
         "refresh": str(refresh),

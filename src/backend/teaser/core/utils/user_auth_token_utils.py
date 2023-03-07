@@ -2,7 +2,6 @@ from core.models.user_auth_models import TeaserUserModel, AuthTokenModel
 from datetime import datetime
 from core.errors.user_auth_errors import InvalidTokenError
 import uuid
-from django.db.models import Model
 
 
 def make_auth_token_hash():
@@ -18,7 +17,7 @@ def invalidate_auth_token(token_hash):
         auth_token = AuthTokenModel.objects.get(token_hash=token_hash)
         auth_token.is_valid = False
         auth_token.save()
-    except Model.DoesNotExist:
+    except AuthTokenModel.DoesNotExist:
         raise InvalidTokenError(401, "Invalid Token")
     return (auth_token.token_hash == token_hash, auth_token.teaser_user_id)
 

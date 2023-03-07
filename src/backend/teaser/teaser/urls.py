@@ -22,6 +22,7 @@ from core.services.user_auth_services import (
     register_user_service,
     login_user_service,
     invalidate_auth_token_service,
+    create_auth_token,
 )
 
 # Import schemas
@@ -166,7 +167,7 @@ def get_data(request, payload):
 
 
 # Token routes
-@api.get("token/invalidate", auth=AuthBearer())
+@api.post("token/invalidate")  # TODO: add this back?, auth=AuthBearer()
 def invalidate_token(request, payload: AuthTokenSchema):
     """
     Invalidate a token.
@@ -179,13 +180,16 @@ def invalidate_token(request, payload: AuthTokenSchema):
     invalidate_auth_token_service(s_token)
 
 
-@api.get("token/invalidate", auth=AuthBearer())
-def invalidate_token(request, payload: AuthTokenSchema):
+@api.post("token/create")  # , auth=AuthBearer()
+def create_token(request, payload: LoginUserSchema):
     teaser_user_dict = payload.dict()
     # Get unsafe fields from payload
-    us_token = teaser_user_dict["token"]
-    s_token = sanitization_utils.sanitize_str(us_token)
-    invalidate_auth_token_service(s_token)
+    us_username = teaser_user_dict["username"]
+    us_password = teaser_user_dict["password"]
+    # Sanitize username input
+    s_username = sanitization_utils.sanitize_str(us_username)
+    token_hash, token_expiry_date = create_auth_token(s_username, us_password)
+    return {"token_hash": token_hash, "token_expiry_date": token_expiry_date}
 
 
 urlpatterns = [

@@ -23,7 +23,7 @@ class TeaserUserModel(models.Model):
     TODO: Define some indexes to improve performance?
     """
 
-    user_model = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     nfc_username = models.CharField(max_length=32)
     nfc_email_address = models.CharField(max_length=255)
     phone_str = models.CharField(max_length=16)

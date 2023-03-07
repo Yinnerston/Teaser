@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.models.user_auth_models import TeaserUserModel, LocationsModel
+from core.models.user_auth_models import TeaserUserModel, LocationsModel, AuthTokenModel
 
 
 @admin.register(TeaserUserModel)
@@ -9,7 +9,7 @@ class TeaserUserModelAdmin(admin.ModelAdmin):
         "nfc_email_address",
         "phone_str",
         "dob_date",
-        "user_model",
+        "user_id",
         "location_id",
     )
 
@@ -17,3 +17,14 @@ class TeaserUserModelAdmin(admin.ModelAdmin):
 @admin.register(LocationsModel)
 class LocationsModelAdmin(admin.ModelAdmin):
     list_display = ("address", "country_code", "state", "city")
+
+
+@admin.register(AuthTokenModel)
+class AuthTokenModelAdmin(admin.ModelAdmin):
+    list_display = (
+        "token_hash",
+        "teaser_user_id",
+        "expiry_date",
+        "created_date",
+        "is_valid",
+    )
