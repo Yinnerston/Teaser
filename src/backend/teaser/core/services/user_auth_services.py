@@ -5,7 +5,7 @@ Services layer for user_auth_services models.
 from django.http import HttpRequest
 from core.models.user_auth_models import TeaserUserModel, AuthTokenModel
 from core.models.event_metric_models import EventMetricsModel, EventMetricsTypeModel
-from core.utils.user_auth_validator import validate_register, validate_login
+from core.utils.user_auth_validator import validate_register, validate_login_params
 from core.errors.user_auth_errors import (
     UserAlreadyExistsValidationError,
     InvalidLoginCredentialsValidationError,
@@ -47,7 +47,7 @@ def create_auth_token(
     """
     pass
     # TODO: Validate user
-    validated_dict = validate_login(s_username, us_password)
+    validated_dict = validate_login_params(s_username, us_password)
     # Normalize
     nfc_username = unicodedata.normalize("NFC", validated_dict["username"])
     nfkc_username = unicodedata.normalize("NFKC", validated_dict["username"]).casefold()
@@ -201,7 +201,7 @@ def login_user_service(request, s_username: str, us_password: str):
     #     return {"is_authenticated": request.user.is_authenticated}
 
     # Validate input
-    validated_dict = validate_login(s_username, us_password)
+    validated_dict = validate_login_params(s_username, us_password)
     # Normalize
     nfc_username = unicodedata.normalize("NFC", validated_dict["username"])
     nfkc_username = unicodedata.normalize("NFKC", validated_dict["username"]).casefold()

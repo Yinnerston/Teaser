@@ -111,7 +111,7 @@ def validate_register(
     }
 
 
-def validate_login(s_username: str, us_password: str):
+def validate_login_params(s_username: str, us_password: str):
     return {
         "username": validate_username(s_username),
         "password": validate_password(us_password),
