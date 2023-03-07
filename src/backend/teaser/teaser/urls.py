@@ -18,13 +18,20 @@ from django.urls import include, path
 from ninja.security import django_auth
 
 # Import services
-from core.services.user_auth_services import register_user_service, login_user_service
+from core.services.user_auth_services import (
+    register_user_service,
+    login_user_service,
+    invalidate_auth_token_service,
+)
 
 # Import schemas
 from core.schemas.user_auth_schemas import *
 
 # Basic Sanitizers
 from core.utils import sanitization_utils
+
+# Auth bearer token
+from core.services.user_auth_services import AuthBearer
 
 from ninja_jwt.controller import NinjaJWTDefaultController
 from ninja_extra import NinjaExtraAPI
@@ -35,6 +42,15 @@ api.register_controllers(NinjaJWTDefaultController)
 # Define exceptions
 
 from core.errors.user_auth_errors import *
+
+
+@api.exception_handler(InvalidTokenError)
+def invalid_dob_validation_error(request, exc):
+    return api.create_response(
+        request,
+        {"message": f"User Unauthorized: {exc}"},
+        status=401,
+    )
 
 
 @api.exception_handler(InvalidDOBValidationError)
@@ -80,6 +96,9 @@ def invalid_login_credentials_validation_error(request, exc):
         {"message": f"Could not login: {exc}"},
         status=464,
     )
+
+
+# Define Auth Bearer
 
 
 # Define API urls here
@@ -144,6 +163,29 @@ def get_data(request, payload):
         raise InvalidLoginCredentialsValidationError(414, "amongus")
     else:
         return f"Authenticated user {request.auth} {request.user}"
+
+
+# Token routes
+@api.get("token/invalidate", auth=AuthBearer())
+def invalidate_token(request, payload: AuthTokenSchema):
+    """
+    Invalidate a token.
+    @raises 401 InvalidTokenError
+    """
+    teaser_user_dict = payload.dict()
+    # Get unsafe fields from payload
+    us_token = teaser_user_dict["token"]
+    s_token = sanitization_utils.sanitize_str(us_token)
+    invalidate_auth_token_service(s_token)
+
+
+@api.get("token/invalidate", auth=AuthBearer())
+def invalidate_token(request, payload: AuthTokenSchema):
+    teaser_user_dict = payload.dict()
+    # Get unsafe fields from payload
+    us_token = teaser_user_dict["token"]
+    s_token = sanitization_utils.sanitize_str(us_token)
+    invalidate_auth_token_service(s_token)
 
 
 urlpatterns = [

@@ -41,6 +41,14 @@ class LoginUserOutSchema(Schema):
     refresh: str = Field(example="Refresh Token")
 
 
+class AuthTokenSchema(Schema):
+    """
+    Schema containing the token.
+    """
+
+    token: str = Field(example="token")
+
+
 class UserAuthError(Schema):
     """
     Format of an error.

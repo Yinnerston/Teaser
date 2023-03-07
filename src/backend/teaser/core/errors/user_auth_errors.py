@@ -19,3 +19,7 @@ class UserAlreadyExistsValidationError(HttpError):
 
 class InvalidLoginCredentialsValidationError(HttpError):
     pass
+
+
+class InvalidTokenError(HttpError):
+    pass

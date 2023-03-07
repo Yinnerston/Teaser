@@ -2,19 +2,82 @@
 Services layer for user_auth_services models.
 """
 
-from core.models.user_auth_models import TeaserUserModel
+from django.http import HttpRequest
+from core.models.user_auth_models import TeaserUserModel, AuthTokenModel
 from core.models.event_metric_models import EventMetricsModel, EventMetricsTypeModel
 from core.utils.user_auth_validator import validate_register, validate_login
 from core.errors.user_auth_errors import (
     UserAlreadyExistsValidationError,
     InvalidLoginCredentialsValidationError,
+    InvalidTokenError,
 )
+from core.utils.user_auth_token_utils import *
 import unicodedata
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db import transaction
 import json
 from ninja_jwt.tokens import RefreshToken
+from ninja.security import HttpBearer
+from datetime import datetime
+
+
+class AuthBearer(HttpBearer):
+    def authenticate(self, request: HttpRequest, token: str):
+        return check_auth_token_is_valid(token)
+
+
+def invalidate_auth_token_service(token: str):
+    """
+    Invalidate auth token.
+    Example use cases: Change of password, user logout.
+    @raises 401 InvalidTokenError
+    """
+    invalidate_auth_token(token)
+    # TODO: Return success?
+
+
+def create_auth_token(s_username, us_password):
+    pass
+    # TODO: Validate user
+    validated_dict = validate_login(s_username, us_password)
+    # Normalize
+    nfc_username = unicodedata.normalize("NFC", validated_dict["username"]).casefold()
+    nfkc_username = unicodedata.normalize("NFKC", validated_dict["username"]).casefold()
+    # Authenticate
+    authenticated_user = authenticate(
+        username=nfkc_username, password=validated_dict["password"]
+    )
+
+    # Invalidate user's auth tokens
+    # Create new token
+    new_token_hash = make_auth_token_hash()
+    new_token = AuthTokenModel.objects.create(
+        teaser_user_id=teaser_user,
+        token_has=new_token_hash,
+        expiry_date=datetime.now() + datetime.timedelta(days=60),
+    )
+    # Return to user
+
+
+def refresh_auth_token_service(token):
+    # Get hash for new token
+    # Invalidate old token
+    correct_token, teaser_user = invalidate_auth_token(token)
+    new_token_hash = make_auth_token_hash()
+    new_token = AuthTokenModel.objects.create(
+        teaser_user_id=teaser_user,
+        token_has=new_token_hash,
+        expiry_date=datetime.now() + datetime.timedelta(days=60),
+    )
+
+    # create new auth token
+    # TODO: Race condition where the same token is getting refreshed by two API calls
+    # TODO: Race condition where a token was refreshed, but
+
+
+def validate_auth_token_service(token):
+    check_auth_token_is_valid(token)
 
 
 def register_user_service(

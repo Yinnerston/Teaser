@@ -3,6 +3,7 @@ Models for the user, and the related categories.
 """
 from django.contrib.auth.models import User
 from django.db import models
+from datetime import datetime
 
 
 class LocationsModel(models.Model):
@@ -34,3 +35,13 @@ class TeaserUserModel(models.Model):
         LocationsModel, on_delete=models.DO_NOTHING, null=True, blank=True
     )
     terms_of_service_accepted = models.BooleanField(default=False)
+
+
+class AuthTokenModel(models.Model):
+    teaser_user_id = models.ForeignKey(
+        TeaserUserModel, on_delete=models.CASCADE, db_index=True
+    )
+    token_hash = models.CharField(max_length=32, primary_key=True)
+    expiry_date = models.DateTimeField()
+    created_date = models.DateTimeField(auto_now_add=True)
+    is_valid = models.BooleanField(default=True)
