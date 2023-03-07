@@ -20,6 +20,7 @@ import json
 from ninja.security import HttpBearer
 from datetime import datetime, timedelta
 from pytz import UTC
+from . import BEARER_TOKEN_VALID_DAYS_DURATION
 
 
 class AuthBearer(HttpBearer):
@@ -49,15 +50,12 @@ def create_auth_token(
     # TODO: Validate user
     validated_dict = validate_login_params(s_username, us_password)
     # Normalize
-    nfc_username = unicodedata.normalize("NFC", validated_dict["username"])
     nfkc_username = unicodedata.normalize("NFKC", validated_dict["username"]).casefold()
     # Authenticate
     authenticated_user = authenticate(
         username=nfkc_username, password=validated_dict["password"]
     )
     if authenticated_user is not None:
-        # Invalidate user's auth tokens
-
         # Create new token
         new_token_hash = make_auth_token_hash()
         with transaction.atomic():
@@ -72,7 +70,7 @@ def create_auth_token(
                 teaser_user_id=teaser_user,
                 token_hash=new_token_hash,
                 expiry_date=UTC.localize(
-                    datetime.now() + timedelta(days=60)
+                    datetime.now() + timedelta(days=BEARER_TOKEN_VALID_DAYS_DURATION)
                 ),  # TODO: Change this to smaller window?
             )
         return (new_token.token_hash, new_token.expiry_date)
@@ -89,7 +87,7 @@ def refresh_auth_token_service(s_token):
         teaser_user_id=teaser_user_id,
         token_hash=new_token_hash,
         expiry_date=UTC.localize(
-            datetime.now() + timedelta(days=60)
+            datetime.now() + timedelta(days=BEARER_TOKEN_VALID_DAYS_DURATION)
         ),  # TODO: Change this to smaller window?
     )
     return (new_token.token_hash, new_token.expiry_date)
