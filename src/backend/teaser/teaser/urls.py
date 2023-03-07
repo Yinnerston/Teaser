@@ -20,6 +20,7 @@ from django.urls import include, path
 from core.services.user_auth_services import (
     register_user_service,
     login_user_service,
+    logout_user_service,
     invalidate_auth_token_service,
     create_auth_token,
     refresh_auth_token_service,
@@ -162,6 +163,25 @@ def login_user_endpoint(request, payload: LoginUserSchema):
     )
 
 
+@api.post(
+    "logout",
+    response={200: LoginUserOutSchema, 464: UserAuthError},
+    tags=["users"],
+    auth=AuthBearer(),
+)
+def logout_user_endpoint(request):
+    """
+    Logout a user.
+    TODO: Logout on all devices?
+    """
+    s_auth_token = sanitization_utils.sanitize_str(request.auth)
+    logout_user_service(request, s_auth_token)
+
+
+# TODO: Change password endpoint
+# Creates another token with invalidate_other_tokens=True
+
+
 @api.get("get_data", auth=AuthBearer())
 def get_data(request, payload):
     if not request.user.is_authenticated:
@@ -188,7 +208,8 @@ def invalidate_token(request, payload: AuthTokenSchema):
 @api.post("token/create", tags=["token"])  # , auth=AuthBearer()
 def create_token(request, payload: LoginUserSchema):
     """
-    Create a new token given a username and password
+    Create a new token given a username and password.
+    Does not invalidation other tokens for the user.
     @raises 464 InvalidLoginCredentialsValidationError
     @returns {token_hash: str, token_expiry_date: datetime}
     """
@@ -198,7 +219,9 @@ def create_token(request, payload: LoginUserSchema):
     us_password = teaser_user_dict["password"]
     # Sanitize username input
     s_username = sanitization_utils.sanitize_str(us_username)
-    token_hash, token_expiry_datetime = create_auth_token(s_username, us_password)
+    token_hash, token_expiry_datetime = create_auth_token(
+        s_username, us_password, invalidate_other_tokens=False
+    )
     return {"token_hash": token_hash, "token_expiry_date": token_expiry_datetime}
 
 

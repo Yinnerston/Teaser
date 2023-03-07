@@ -38,7 +38,9 @@ def invalidate_auth_token_service(s_token: str):
     # TODO: Return success?
 
 
-def create_auth_token(s_username, us_password):
+def create_auth_token(
+    s_username: str, us_password: str, invalidate_other_tokens: bool = False
+):
     """
     Create a new auth bearer token for a user.
     @raises 464 InvalidLoginCredentialsValidationError
@@ -63,9 +65,10 @@ def create_auth_token(s_username, us_password):
             user = User.objects.get(username=nfkc_username)
             teaser_user = TeaserUserModel.objects.get(user_id=user)
             # Invalidate all Tokens belonging to a user
-            AuthTokenModel.objects.filter(
-                teaser_user_id=teaser_user, is_valid=True
-            ).update(is_valid=False)
+            if invalidate_other_tokens:
+                AuthTokenModel.objects.filter(
+                    teaser_user_id=teaser_user, is_valid=True
+                ).update(is_valid=False)
             new_token = AuthTokenModel.objects.create(
                 teaser_user_id=teaser_user,
                 token_hash=new_token_hash,
@@ -246,9 +249,17 @@ def login_user_service(request, s_username: str, us_password: str):
             )
         raise InvalidLoginCredentialsValidationError(464, "Invalid login credentials!")
     # Generate new token
-    token_hash, token_expiry_datetime = create_auth_token(s_username, us_password)
+    token_hash, token_expiry_datetime = create_auth_token(
+        s_username, us_password, invalidate_other_tokens=False
+    )
     return {
         "token_hash": token_hash,
         "token_expiry_date": token_expiry_datetime,
         "username": logged_in_teaser_user.nfc_username,
     }
+
+
+def logout_user_service(request: HttpRequest, s_auth_token: str):
+    logout(request)
+    # Invalidate bearer token
+    AuthTokenModel.objects.get(token_hash=s_auth_token).update(is_valid=False)

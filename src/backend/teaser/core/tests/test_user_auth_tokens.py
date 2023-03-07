@@ -41,3 +41,9 @@ class TestUserAuthRegisterService(TestCase):
         login_auth_token = AuthTokenModel.objects.first()
         login_teaser_user = TeaserUserModel.objects.first()
         self.assertEquals(login_auth_token.teaser_user_id, login_teaser_user)
+
+    def test_refresh_token_invalidates_previous_token():
+        pass
+
+    def test_create_new_token_invalidates_previous_tokens():
+        pass

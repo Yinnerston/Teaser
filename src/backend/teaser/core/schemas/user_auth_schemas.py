@@ -42,6 +42,14 @@ class LoginUserOutSchema(Schema):
     token_expiry_date: datetime = Field(example="Time the token expires")
 
 
+class LogoutUserSchema(Schema):
+    """
+    Schema output for /api/v1/logout endpoint.
+    """
+
+    username: str = Field(example="testuser1")
+
+
 class AuthTokenSchema(Schema):
     """
     Schema containing the token.
