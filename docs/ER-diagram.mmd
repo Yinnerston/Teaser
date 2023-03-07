@@ -178,3 +178,12 @@
         EVENT_METRIC_TYPES {
             string type "PK clicks, watch, swipe right, etc."
         }
+
+        AUTH_TOKEN }o--o| USERS : has
+        AUTH_TOKEN  {
+            string token_hash PK
+            int teaser_user_id FK
+            date expiry_date
+            date created_date
+            boolean is_valid
+        }
