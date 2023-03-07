@@ -3,6 +3,8 @@
 
 # Hungarian Notation
 
-# Function Naming
+# Function/Class Naming
+
+- Foreign Key fields either are the name of the model they reference or have an `_id` suffix
 
 # Python Black
