@@ -315,3 +315,5 @@ class TestUserAuthRegisterService(TestCase):
                 TestUserAuthRegisterService.register_data["dob"],
                 False,
             )
+
+    # TODO: Login / Logout tests

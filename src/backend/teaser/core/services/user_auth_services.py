@@ -17,7 +17,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db import transaction
 import json
-from ninja_jwt.tokens import RefreshToken
 from ninja.security import HttpBearer
 from datetime import datetime, timedelta
 from pytz import UTC
@@ -262,4 +261,8 @@ def login_user_service(request, s_username: str, us_password: str):
 def logout_user_service(request: HttpRequest, s_auth_token: str):
     logout(request)
     # Invalidate bearer token
-    AuthTokenModel.objects.get(token_hash=s_auth_token).update(is_valid=False)
+    auth_token = AuthTokenModel.objects.get(token_hash=s_auth_token)
+    if auth_token is None:
+        raise InvalidTokenError(401, "Invalid Token")
+    auth_token.is_valid = False
+    auth_token.save()

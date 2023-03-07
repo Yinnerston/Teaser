@@ -165,7 +165,7 @@ def login_user_endpoint(request, payload: LoginUserSchema):
 
 @api.post(
     "logout",
-    response={200: LoginUserOutSchema, 464: UserAuthError},
+    response={200: None, 464: UserAuthError},
     tags=["users"],
     auth=AuthBearer(),
 )
