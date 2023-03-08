@@ -35,7 +35,8 @@
     - Linked widgets like services, q&a --> Potentially refetch? Doesn't really change
     - Post video & post details --> Potentially refetch? Doesn't really change
 - Video Editor:
-  -
+  - jotai: https://github.com/pmndrs/jotai/discussions/826
+  - react query: Get list of songs
 - User Profile:
   - React query:
     - Just use this to fetch user profile + prop drilling
@@ -52,4 +53,5 @@
 - Services:
   - React Query
 - Search:
-  - zustand for local search history?
+  - jotai for search history
+  - react query for refetch
