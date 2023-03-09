@@ -63,7 +63,6 @@ INSTALLED_APPS = [
     "django_extensions",
     "admin_honeypot",  # TODO: Setup listener on admin_honeypot.signals.honeypot() signal
     "ninja_extra",
-    "ninja_jwt",
     "core",
 ]
 
@@ -165,8 +164,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # HSTS
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-
-NINJA_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=69),
-}
