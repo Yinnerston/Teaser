@@ -11,7 +11,7 @@ import SignUpScreen from "./auth/SignUpScreen";
 export default function SubscriptionsScreen({ navigation }) {
   const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
 
-  const signUpScreen = <SignUpScreen></SignUpScreen>;
+  const signUpScreen = <SignUpScreen navigation={navigation}></SignUpScreen>;
   const subscriptionsScreen = <View></View>;
 
   return userAuthAtomValue ? subscriptionsScreen : signUpScreen;

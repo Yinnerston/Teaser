@@ -11,7 +11,7 @@ import SignUpScreen from "./auth/SignUpScreen";
 export default function UploadTeaserScreen({ navigation }) {
   const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
 
-  const signUpScreen = <SignUpScreen></SignUpScreen>;
+  const signUpScreen = <SignUpScreen navigation={navigation}></SignUpScreen>;
   const uploadScreen = <View></View>;
 
   return userAuthAtomValue ? uploadScreen : signUpScreen;

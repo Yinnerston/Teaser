@@ -11,7 +11,7 @@ import SignUpScreen from "./auth/SignUpScreen";
 export default function ProfileScreen({ navigation }) {
   const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
 
-  const signUpScreen = <SignUpScreen />;
+  const signUpScreen = <SignUpScreen navigation={navigation} />;
 
   const inboxScreen = <ProfileView></ProfileView>;
 
