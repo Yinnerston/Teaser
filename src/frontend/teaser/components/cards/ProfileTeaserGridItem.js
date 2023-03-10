@@ -1,9 +1,9 @@
 import { View } from "react-native";
 
 /**
- * Grid Item displayed by ProfileTeaserGridView
+ * Grid Item (Card) displayed by ProfileTeaserGridView
  */
-export default function ProfileTeaserGridItem() {
+export default function ProfileTeaserGridCard() {
   // https://github.com/wonday/react-native-image-cache-wrapper
   // TODO: Cachable image?
   return <View></View>;
