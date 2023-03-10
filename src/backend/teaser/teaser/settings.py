@@ -49,6 +49,7 @@ if env("DEBUG") == "1":
         ".wocchit.com",
         "teasernsfw",
         ".teasernsfw.com",
+        env("PUBLIC_IP"),
     ]
 
 # Application definition
