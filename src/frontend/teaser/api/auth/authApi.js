@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "react-query";
 import { BASE_URL } from "../../Constants";
 import axiosAPIClient from "../axiosAPIClient";
 
-authApi.defaults.headers.common["Content-Type"] = "application/json";
+// axiosAPIClient.defaults.headers.common["Content-Type"] = "application/json";
 
 export const registerUserFunction = async (user) => {
   const response = await axiosAPIClient.post("register", user);
@@ -11,13 +11,23 @@ export const registerUserFunction = async (user) => {
 };
 
 export const loginUserFunction = async (username, password) => {
-  const response = await axiosAPIClient.post("login", {
-    params: {
-      username: username,
-      password: password,
-    },
-  });
-  return response.data;
+  console.log("LOGIN");
+  var statusCode = 200;
+  var data;
+  try {
+    const response = await axiosAPIClient.post("login", {
+      params: {
+        username: username,
+        password: password,
+      },
+    });
+    data = response.data;
+  } catch (error) {
+    console.log("LOGIN ERROR: ", error);
+    statusCode = 400;
+    data = error.message;
+  }
+  return { statusCode, data };
 };
 
 export const tokenPairFunction = async (user) => {

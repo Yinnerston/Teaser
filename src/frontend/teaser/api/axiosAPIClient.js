@@ -7,6 +7,6 @@ const axiosAPIClient = axios.create({
 });
 
 // TODO: Use global state manager to set this?
-axiosAPIClient.defaults.headers.common["Authorization"] = "";
+// axiosAPIClient.defaults.headers.common["Authorization"] = "";
 
 export default axiosAPIClient;
