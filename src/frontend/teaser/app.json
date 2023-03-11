@@ -35,6 +35,16 @@
       "eas": {
         "projectId": "0b49e2a4-25c5-4697-9438-9fb3e960e78f"
       }
-    }
+    },
+    "plugins": [
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "Teaser needs access to your Camera.",
+          "enableMicrophonePermission": true,
+          "microphonePermissionText": "Teaser needs access to your Microphone."
+        }
+      ]
+    ]
   }
 }
