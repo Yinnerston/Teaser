@@ -9,6 +9,11 @@ REACT_NATIVE_PACKAGER_HOSTNAME='???'
 - `.backend.env`:
 ```bash
 DJANGO_SECRET_KEY=???
+POSTGRES_PASSWORD=???
+```
+- `.env`:
+```bash
+POSTGRES_PASSWORD=???
 ```
 - Unicode: https://unicode.org/faq/normalization.html
   - nfkc_username --> Use for identifier
