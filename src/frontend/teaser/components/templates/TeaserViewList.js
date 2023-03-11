@@ -22,11 +22,11 @@ const PLAYLIST = [
         username: "@myself",
         stageName: "Cat Person",
         songId: "",
-        songTitle: "",
+        songTitle: "ORIGINAL SOUND",
         // actors: []
       },
       sidebarData: {
-        likes: 21,
+        likeCount: 21,
         bookmarkCount: 0,
         commentCount: 0,
         shareCount: 0,
@@ -46,11 +46,11 @@ const PLAYLIST = [
         username: "@BeansOnToast",
         stageName: "",
         songId: "",
-        songTitle: "",
+        songTitle: "ORIGINAL SOUND",
         // actors: []
       },
       sidebarData: {
-        likes: 21,
+        likeCount: 21,
         bookmarkCount: 33,
         commentCount: 0,
         shareCount: 0,
@@ -70,11 +70,11 @@ const PLAYLIST = [
         username: "@drmanhattan",
         stageName: "Doctor Manhattan",
         songId: "",
-        songTitle: "",
+        songTitle: "ORIGINAL SOUND",
         // actors: []
       },
       sidebarData: {
-        likes: 21,
+        likeCount: 21,
         bookmarkCount: 49,
         commentCount: 0,
         shareCount: 0,
@@ -94,11 +94,11 @@ const PLAYLIST = [
         username: "@audreyT",
         stageName: "Audrey Tate",
         songId: "",
-        songTitle: "",
+        songTitle: "ORIGINAL SOUND",
         // actors: []
       },
       sidebarData: {
-        likes: 24,
+        likeCount: 24,
         bookmarkCount: 23,
         commentCount: 22,
         shareCount: 21,
@@ -118,11 +118,11 @@ const PLAYLIST = [
         username: "@theExpert",
         stageName: "",
         songId: "",
-        songTitle: "",
+        songTitle: "ORIGINAL SOUND",
         // actors: []
       },
       sidebarData: {
-        likes: 6,
+        likeCount: 6,
         bookmarkCount: 6,
         commentCount: 6,
         shareCount: 6,
@@ -142,11 +142,11 @@ const PLAYLIST = [
         username: "@marissa",
         stageName: "Marissa Touhou",
         songId: "",
-        songTitle: "",
+        songTitle: "ORIGINAL SOUND",
         // actors: []
       },
       sidebarData: {
-        likes: 44,
+        likeCount: 44,
         bookmarkCount: 46,
         commentCount: 6,
         shareCount: 6,
@@ -230,6 +230,7 @@ export default function TeaserViewList({ navigation }) {
         videoIdx={item.data.id}
         ref={videoRefs}
         navigation={navigation}
+        // Post data for UI
         captionData={item.data.captionData}
         sidebarData={item.data.sidebarData}
       ></TeaserView>

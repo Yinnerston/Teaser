@@ -7,18 +7,27 @@ import SharePostButton from "../../elements/button/SharePostButton";
 /**
  * Container for the sidebar of a teaser.
  * Handles likes, user profiles, comments, etc.
+ * @param sidebarData
+ *  @param sidebarData.likeCount
+ *  @param sidebarData.bookmarkCount
+ *  @param sidebarData.commentCount
+ *  @param sidebarData.shareCount
  * @returns
  */
 export default function TeaserSidebar(props) {
   const { navigation, sidebarData } = props;
+  const { likeCount, bookmarkCount, commentCount, shareCount } = sidebarData;
   const styles = useSidebarStyle();
   return (
     <View style={styles.container}>
       <ProfilePhoto></ProfilePhoto>
-      <LikePostButton numLikes={"TODO:"} style={styles.sidebarItem} />
-      <CommentPostButton numLikes={"TODO:"} style={styles.sidebarItem} />
-      <BookmarkPostButton numBookmarks={"TODO:"} style={styles.sidebarItem} />
-      <SharePostButton numShares={"TODO:"} style={styles.sidebarItem} />
+      <LikePostButton numLikes={likeCount} style={styles.sidebarItem} />
+      <CommentPostButton numLikes={commentCount} style={styles.sidebarItem} />
+      <BookmarkPostButton
+        numBookmarks={bookmarkCount}
+        style={styles.sidebarItem}
+      />
+      <SharePostButton numShares={shareCount} style={styles.sidebarItem} />
     </View>
   );
 }
