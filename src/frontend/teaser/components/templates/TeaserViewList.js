@@ -17,11 +17,20 @@ const PLAYLIST = [
   {
     data: {
       id: "7b01992c65d10978a5cbb0ccc5e83ef0",
-      title: "Most awesome Cat Video",
-      author: "Myself",
-      likes: 21,
-      commentCount: 0,
-      playingIdx: 0,
+      captionData: {
+        description: "Most awesome Cat Video",
+        username: "@myself",
+        stageName: "Cat Person",
+        songId: "",
+        songTitle: "",
+        // actors: []
+      },
+      sidebarData: {
+        likes: 21,
+        bookmarkCount: 0,
+        commentCount: 0,
+        shareCount: 0,
+      },
     },
     video: {
       videoURL: "https://i.imgur.com/xaAAjDk.mp4",
@@ -29,14 +38,23 @@ const PLAYLIST = [
       videoMode: VIDEO_PORTRAIT,
     },
   },
-
   {
     data: {
       id: "254aed11d93529b5c0413cb44b86d16c",
-      title: "I heckin' love beans on toast",
-      author: "BeansOnToast",
-      likes: 12,
-      commentCount: 0,
+      captionData: {
+        description: "I heckin' love beans on toast",
+        username: "@BeansOnToast",
+        stageName: "",
+        songId: "",
+        songTitle: "",
+        // actors: []
+      },
+      sidebarData: {
+        likes: 21,
+        bookmarkCount: 33,
+        commentCount: 0,
+        shareCount: 0,
+      },
     },
     video: {
       videoURL: "https://i.imgur.com/9RwUfgJ.mp4",
@@ -47,10 +65,20 @@ const PLAYLIST = [
   {
     data: {
       id: "62927b9918c2868d1dc29cd355cb74f1",
-      title: "It's so sad..",
-      author: "Dr Manhatten",
-      likes: 23,
-      commentCount: 0,
+      captionData: {
+        description: "It's so sad..",
+        username: "@drmanhattan",
+        stageName: "Doctor Manhattan",
+        songId: "",
+        songTitle: "",
+        // actors: []
+      },
+      sidebarData: {
+        likes: 21,
+        bookmarkCount: 49,
+        commentCount: 0,
+        shareCount: 0,
+      },
     },
     video: {
       videoURL: "https://i.imgur.com/6UGTKlH.mp4",
@@ -61,10 +89,20 @@ const PLAYLIST = [
   {
     data: {
       id: "31fc4e5909e09bf3163be8cbacce6250",
-      title: "Sigma Female",
-      author: "Audrey Tate",
-      likes: 24,
-      commentCount: 0,
+      captionData: {
+        description: "Sigma Female",
+        username: "@audreyT",
+        stageName: "Audrey Tate",
+        songId: "",
+        songTitle: "",
+        // actors: []
+      },
+      sidebarData: {
+        likes: 24,
+        bookmarkCount: 23,
+        commentCount: 22,
+        shareCount: 21,
+      },
     },
     video: {
       videoURL: "https://i.imgur.com/7JTRTzw.mp4",
@@ -75,10 +113,20 @@ const PLAYLIST = [
   {
     data: {
       id: "8c4183952b01b88ac9707e34bb21ae26",
-      title: "Sharkskin Warning",
-      author: "The Expert",
-      likes: 6,
-      commentCount: 0,
+      captionData: {
+        description: "Sharkskin warning",
+        username: "@theExpert",
+        stageName: "",
+        songId: "",
+        songTitle: "",
+        // actors: []
+      },
+      sidebarData: {
+        likes: 6,
+        bookmarkCount: 6,
+        commentCount: 6,
+        shareCount: 6,
+      },
     },
     video: {
       videoURL: "https://i.imgur.com/OO6Yk2f.mp4",
@@ -89,10 +137,20 @@ const PLAYLIST = [
   {
     data: {
       id: "5ef0c224edb9d7adaa6bae1c43152fb4",
-      title: "CAM ON INGERLAND",
-      author: "Marissa Touhou",
-      likes: 44,
-      commentCount: 0,
+      captionData: {
+        description: "CAM ON INGERLAND",
+        username: "@marissa",
+        stageName: "Marissa Touhou",
+        songId: "",
+        songTitle: "",
+        // actors: []
+      },
+      sidebarData: {
+        likes: 44,
+        bookmarkCount: 46,
+        commentCount: 6,
+        shareCount: 6,
+      },
     },
     video: {
       videoURL: "https://i.imgur.com/QlHUHfc.mp4",
@@ -171,6 +229,9 @@ export default function TeaserViewList({ navigation }) {
         videoMode={item.video.videoMode}
         videoIdx={item.data.id}
         ref={videoRefs}
+        navigation={navigation}
+        captionData={item.data.captionData}
+        sidebarData={item.data.sidebarData}
       ></TeaserView>
     );
   }, []);

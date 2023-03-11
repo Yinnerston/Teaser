@@ -15,7 +15,15 @@ import { forwardRef } from "react";
  * @returns
  */
 export const TeaserView = forwardRef(function TeaserView(props, ref) {
-  const { videoURL, thumbnailURL, videoMode, videoIdx } = props;
+  const {
+    videoURL,
+    thumbnailURL,
+    videoMode,
+    videoIdx,
+    navigation,
+    captionData,
+    sidebarData,
+  } = props;
   const styles = useTeaserViewStyle();
   return (
     <View style={styles.container}>
@@ -27,8 +35,8 @@ export const TeaserView = forwardRef(function TeaserView(props, ref) {
         ref={ref}
       ></TeaserVideo>
       <TeaserHeader></TeaserHeader>
-      <TeaserSidebar></TeaserSidebar>
-      <TeaserCaption></TeaserCaption>
+      <TeaserSidebar navigation={navigation} sidebarData={sidebarData} />
+      <TeaserCaption navigation={navigation} captionData={captionData} />
     </View>
   );
 });

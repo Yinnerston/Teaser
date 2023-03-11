@@ -9,7 +9,8 @@ import SharePostButton from "../../elements/button/SharePostButton";
  * Handles likes, user profiles, comments, etc.
  * @returns
  */
-export default function TeaserSidebar() {
+export default function TeaserSidebar(props) {
+  const { navigation, sidebarData } = props;
   const styles = useSidebarStyle();
   return (
     <View style={styles.container}>
