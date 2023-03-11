@@ -1,3 +1,4 @@
+import { Video } from "expo-av";
 import { View } from "react-native";
 
 /**
@@ -6,5 +7,9 @@ import { View } from "react-native";
 export default function ProfileTeaserGridCard() {
   // https://github.com/wonday/react-native-image-cache-wrapper
   // TODO: Cachable image?
-  return <View></View>;
+  return (
+    <View>
+      <Video></Video>
+    </View>
+  );
 }
