@@ -3,14 +3,8 @@ import SeeMoreTextExpandable from "../../elements/text/SeeMoreTextExpandable";
 
 /**
  * Container for the captions and tags of a teaser.
- * @param navigation
- * @param captionData
- *  @param captionData.description
- *  @param captionData.username
- *  @param captionData.stageName
- *  @param captionData.songId
- *  @param captionData.songTitle
- * @returns
+ * @param {navigation, captionData} props
+ * @param {description, username, stageName, songId, songTitle} ^^captionData
  */
 export default function TeaserCaption(props) {
   // TODO: Linkify #tags / actors with navigation?

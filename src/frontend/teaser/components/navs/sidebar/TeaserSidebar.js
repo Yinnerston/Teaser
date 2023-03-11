@@ -4,15 +4,12 @@ import LikePostButton from "../../elements/button/LikePostButton";
 import CommentPostButton from "../../elements/button/CommentPostButton";
 import BookmarkPostButton from "../../elements/button/BookmarkPostButton";
 import SharePostButton from "../../elements/button/SharePostButton";
+
 /**
  * Container for the sidebar of a teaser.
  * Handles likes, user profiles, comments, etc.
- * @param sidebarData
- *  @param sidebarData.likeCount
- *  @param sidebarData.bookmarkCount
- *  @param sidebarData.commentCount
- *  @param sidebarData.shareCount
- * @returns
+ * @param {navigation, sidebarData} props
+ * @param {likeCount, bookmarkCount, commentCount, shareCount} ^^sidebarData
  */
 export default function TeaserSidebar(props) {
   const { navigation, sidebarData } = props;
