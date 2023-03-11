@@ -18,7 +18,8 @@ const PLAYLIST = [
     data: {
       id: "7b01992c65d10978a5cbb0ccc5e83ef0",
       captionData: {
-        description: "Most awesome Cat Video",
+        description:
+          "Most awesome Cat Video! Most awesome Cat Video! Most awesome Cat Video! Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video! #cat #catVideo",
         username: "@myself",
         stageName: "Cat Person",
         songId: "",

@@ -1,5 +1,6 @@
 import { StyleSheet, View, Text } from "react-native";
-import SeeMore from "react-native-see-more-inline";
+import SeeMoreTextExpandable from "../../elements/text/SeeMoreTextExpandable";
+
 /**
  * Container for the captions and tags of a teaser.
  * @param navigation
@@ -22,20 +23,16 @@ export default function TeaserCaption(props) {
       <Text style={styles.captionTitle}>
         {stageName ? stageName : username}
       </Text>
-      <SeeMore
+      <SeeMoreTextExpandable
         numberOfLines={2}
-        linkColor="white"
-        style={styles.captionDescription}
-      >
-        {description}
-      </SeeMore>
-      <SeeMore
+        textBody={description}
+        textStyle={styles.captionDescription}
+      ></SeeMoreTextExpandable>
+      <SeeMoreTextExpandable
         numberOfLines={1}
-        linkColor="white"
-        style={styles.captionDescription}
-      >
-        {songTitle}
-      </SeeMore>
+        textBody={songTitle}
+        textStyle={styles.captionDescription}
+      ></SeeMoreTextExpandable>
     </View>
   );
 }
@@ -47,6 +44,7 @@ const styles = StyleSheet.create({
     left: 16,
     right: "auto",
     backgroundColor: "green",
+    maxWidth: 200,
   },
   captionTitle: {
     fontWeight: "bold",
