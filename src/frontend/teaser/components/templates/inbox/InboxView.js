@@ -52,6 +52,7 @@ export default function InboxView({ navigation }) {
   const renderInboxMessageCard = () => (
     <InboxMessageCard
     // TODO: Props
+      navigation={navigation}
     />
   );
 

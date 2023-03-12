@@ -28,7 +28,7 @@ export default function InboxScreen({ navigation }) {
     </SafeAreaView>
   );
 
-  const inboxScreen = <InboxView />;
+  const inboxScreen = <InboxView navigation={navigation}/>;
 
   return userAuthAtomValue ? inboxScreen : signUpScreen;
 }

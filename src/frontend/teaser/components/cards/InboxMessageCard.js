@@ -6,7 +6,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-export default function InboxMessageCard() {
+export default function InboxMessageCard(props) {
+  const {navigation} = props;
   const styles = useInboxMessageCardStyle();
   return (
     <View style={styles.container}>
