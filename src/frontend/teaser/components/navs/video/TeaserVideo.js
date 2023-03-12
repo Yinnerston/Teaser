@@ -23,7 +23,7 @@ import { AntDesign } from "@expo/vector-icons";
  */
 export const TeaserVideo = forwardRef(function TeaserVideo(props, ref) {
   const { videoURL, thumbnailURL, videoMode, videoIdx, style } = props;
-  // Styles prop is optional
+  // Styles prop is optional. It must have video and playIcon objects in stylesheet
   const styles = style ? style : useTeaserVideoStyle();
   // State variable for rendering play icon on pause
   const [videoPlayingStatus, setVideoPlayingStatus] = useState({
