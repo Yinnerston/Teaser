@@ -62,7 +62,18 @@ services:
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-
+  prosody:
+    image: prosody/prosody
+    ports:
+      - 5222:5222
+      - 5269:5269
+    volumes:
+      - ./prosody/config:/etc/prosody
+      - ./prosody/log:/var/log/prosody
+      - ./prosody/modules:/usr/lib/prosody-modules
+    environment:
+      - PROSODY_PASSWORD=${PROSODY_PASSWORD}
+      - PROSODY_DOMAIN=${PROSODY_DOMAIN}
 
 volumes:
   static_volume:
