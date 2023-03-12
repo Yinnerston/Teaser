@@ -6,6 +6,7 @@ import AuthButton from "../components/elements/button/AuthButton";
 import { REGISTER_BUTTON_COLOR } from "../Constants";
 import { readOnlyUserAuthAtom } from "../hooks/auth/useUserAuth";
 import { useAtom } from "jotai";
+import InboxView from "../components/templates/inbox/InboxView";
 /**
  * Screen for Inbox.
  * @returns Currently logged in user's inbox.
@@ -27,18 +28,7 @@ export default function InboxScreen({ navigation }) {
     </SafeAreaView>
   );
 
-  const inboxScreen = (
-    <SafeAreaView style={signUpViewStyles.container}>
-      <SpeechIcon size={SIGN_UP_VIEW_ICON_SIZE} color="#B0AFB4"></SpeechIcon>
-      <Text style={signUpViewStyles.textBodyStyle}>Amongus</Text>
-      <AuthButton
-        color={REGISTER_BUTTON_COLOR}
-        routeName="Auth"
-        buttonText="Sign Up"
-        navigation={navigation}
-      />
-    </SafeAreaView>
-  );
+  const inboxScreen = <InboxView />;
 
   return userAuthAtomValue ? inboxScreen : signUpScreen;
 }

@@ -1,7 +1,8 @@
-import { View } from "react-native";
-import { readOnlyUserAuthAtom } from "../hooks/auth/useUserAuth";
+import { View, Button } from "react-native";
+import { userAuthAtom } from "../hooks/auth/useUserAuth";
 import { useAtom } from "jotai";
 import SignUpScreen from "./auth/SignUpScreen";
+import { clearUserAuth } from "../hooks/auth/useUserAuth";
 
 /**
  * Screen for Subscriptions.
@@ -9,10 +10,21 @@ import SignUpScreen from "./auth/SignUpScreen";
  * @returns otherwise the AuthScreen to register/login.
  */
 export default function SubscriptionsScreen({ navigation }) {
-  const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
+  const [userAuth, setUserAuth] = useAtom(userAuthAtom);
 
   const signUpScreen = <SignUpScreen navigation={navigation}></SignUpScreen>;
-  const subscriptionsScreen = <View></View>;
+  const subscriptionsScreen = (
+    <View>
+      <Button
+        onPress={() => {
+          clearUserAuth();
+          setUserAuth(null);
+        }}
+        title="logout"
+        color="red"
+      ></Button>
+    </View>
+  );
 
-  return userAuthAtomValue ? subscriptionsScreen : signUpScreen;
+  return userAuth ? subscriptionsScreen : signUpScreen;
 }
