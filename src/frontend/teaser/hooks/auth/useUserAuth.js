@@ -13,7 +13,8 @@ export const writeOnlyUserAuthAtom = atom(
 );
 
 /**
- * Write auth data to secure store
+ * Write auth data to secure store.
+ * Need to set userAuthAtom in the caller.
  * @param {*} data
  */
 export async function setUserAuthStore(data) {
@@ -34,8 +35,9 @@ export async function setUserAuthFromStore() {
 }
 
 /**
- * Clears the user auth data and store.
+ * Clears the user auth data in the store.
+ * Need to set userAuthAtom in the caller.
  */
 export async function clearUserAuth() {
-  setUserAuth(null);
+  await SecureStore.deleteItemAsync("auth");
 }
