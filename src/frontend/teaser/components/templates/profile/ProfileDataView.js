@@ -1,6 +1,4 @@
 import {
-  SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -11,8 +9,12 @@ import { readOnlyUserAuthAtom } from "../../../hooks/auth/useUserAuth";
 import { useAtom } from "jotai";
 import ProfileButtonsTable from "../../elements/table/ProfileButtonsTable";
 import ProfileStatsTable from "../../elements/table/ProfileStatsTable";
-import ProfileTeaserGridView from "./ProfileTeaserGridView";
 
+/**
+ * User profile's data.
+ * Contains profile picture, description, etc.
+ * @returns
+ */
 export default function ProfileDataView() {
   const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
   const styles = useProfileViewStyle();

@@ -1,22 +1,13 @@
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  useWindowDimensions,
-} from "react-native";
-import { readOnlyUserAuthAtom } from "../../../hooks/auth/useUserAuth";
-import { useAtom } from "jotai";
-import ProfileButtonsTable from "../../elements/table/ProfileButtonsTable";
-import ProfileStatsTable from "../../elements/table/ProfileStatsTable";
+import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
 import ProfileTeaserGridView from "./ProfileTeaserGridView";
-import ProfileDataView from "./ProfileDataView";
 
+/**
+ * Navigation container for ProfileScreen
+ * @param {navigation} props
+ * @returns
+ */
 export default function ProfileView({ navigation }) {
   const styles = useProfileViewStyle();
-  const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
 
   return (
     <SafeAreaView style={styles.container}>

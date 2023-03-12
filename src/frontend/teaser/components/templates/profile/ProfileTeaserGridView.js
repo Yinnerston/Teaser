@@ -10,13 +10,25 @@ import { useRef } from "react";
 import { VIDEO_PORTRAIT } from "../../../Constants";
 import { ProfileTeaserGridCard } from "../../cards/ProfileTeaserGridCard";
 import ProfileDataView from "./ProfileDataView";
+
+/**
+ * Example data in format
+```typescript
+const PROFILE_TEASER_DATA: {
+  video: {
+    videoURL: string;
+    thumbnailURL: string;
+    videoMode: number;
+  };
+  data: {
+    id: string;
+    isPinned: boolean;
+    viewCount: string;
+  };
+}[]
+```
+ */
 const PROFILE_TEASER_DATA = [
-  // {
-  //     id: "FirstGridItem",
-  //     isPinned: true,
-  //     viewCount: "5.5K",
-  //     url: "https://i.imgur.com/5IpDBCk.mp4"
-  // },
   {
     video: {
       videoURL: "https://i.imgur.com/Wk1KyEU.mp4",
