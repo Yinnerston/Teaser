@@ -17,6 +17,7 @@ import { REGISTER_BUTTON_COLOR } from "../../Constants";
 // import { loginUserFunction } from "../../api/auth/authApi";
 import { useAtom } from "jotai";
 import { writeOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
+import { loginUserFunction } from "../../api/auth/authApi";
 /**
  * Login Screen with username and password fields
  * TODO: Add link to TOS.
@@ -41,24 +42,15 @@ export default function LoginScreen({ navigation }) {
   // TODO: Implement Login endpoint
   // On submit, send data to RegisterScreenDOB
   const onSubmit = async (data) => {
-    setWriteUserAuth("some_token");
-    navigation.navigate("Home");
+    const loginResponse = await loginUserFunction({ ...data });
+    console.log(loginResponse);
+    if (loginResponse.status == 200) {
+      setWriteUserAuth(loginResponse.data);
+      navigation.navigate("Home");
+    } else {
+      setIsError(loginResponse.data.toString());
+    }
   };
-
-  // {
-  //   // Attempt login
-  //   const loginResponse = await loginUserFunction(data.username, data.password)
-  //   console.log(loginResponse)
-  //   if (loginResponse.statusCode == 200)  {
-  //     // Login success, set token and goto homepage
-  //     setWriteUserAuth(loginResponse.data)
-  //     navigation.navigate("Home")
-  //   } else  {
-  //     // Login fail, show error message
-  //     setIsError(loginResponse.statusCode.toString() + ": " + loginResponse.data.toString());
-  //   }
-
-  // };
 
   return (
     <SafeAreaView style={{ flex: 6 }}>

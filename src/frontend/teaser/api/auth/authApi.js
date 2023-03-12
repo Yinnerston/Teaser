@@ -13,7 +13,6 @@ export const registerUserFunction = async ({
   dob,
   terms_of_service_accepted,
 }) => {
-  var status_code;
   try {
     const response = await axiosAPIClient.post("register", {
       username: username,
@@ -30,24 +29,18 @@ export const registerUserFunction = async ({
   }
 };
 
-export const loginUserFunction = async (username, password) => {
-  console.log("LOGIN");
-  var statusCode = 200;
-  var data;
+export const loginUserFunction = async ({ username, password }) => {
   try {
+    console.log(username, password);
     const response = await axiosAPIClient.post("login", {
-      params: {
-        username: username,
-        password: password,
-      },
+      username: username,
+      password: password,
     });
-    data = response.data;
+    return { status: response.status, data: response.data };
   } catch (error) {
-    console.log("LOGIN ERROR: ", error);
-    statusCode = 400;
-    data = error.message;
+    console.error(error);
+    return { status: error.response.status, data: error.response.data.message };
   }
-  return { statusCode, data };
 };
 
 export const tokenPairFunction = async (user) => {
