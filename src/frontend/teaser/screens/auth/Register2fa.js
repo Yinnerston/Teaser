@@ -26,7 +26,7 @@ export default function Register2fa({ navigation, route }) {
   // TODO: Add validation / link to backend.
   const [showLoginButton, setShowLoginButton] = useState(false);
   const [is2faAuthorized, setIs2faAuthorized] = useState(false);
-  const [isRegisterSuccess, setIsRegisterSuccess] = useState(false);
+  const [registerResponse, setRegisterResponse] = useState(false);
   // const [otpCode, setOTPCode] = useState("");
   // const maximumCodeLength = 4;
   const styles = useAuthScreenStyle();
@@ -69,7 +69,12 @@ export default function Register2fa({ navigation, route }) {
       ...route.params,
       terms_of_service_accepted: true,
     }); // TODO: Add TOS form
-    setIsRegisterSuccess(registerOutput);
+    if (registerOutput.status == 200) {
+      navigation.navigate("Login");
+    } else {
+      // Go back to Auth Page with Error
+      setRegisterResponse(registerOutput);
+    }
   };
 
   return (
@@ -77,9 +82,10 @@ export default function Register2fa({ navigation, route }) {
       <View style={{ flex: 1 }}>
         <Text style={styles.todoText}>TODO: Add validation using 2fa.</Text>
         <Text style={styles.todoText}>
-          Route params: {JSON.stringify(route.params, null, 2)}
           {"\n"}
-          IS REGISTER SUCCESS: {isRegisterSuccess ? isRegisterSuccess : null}
+          {registerResponse
+            ? registerResponse.status + " " + registerResponse.data
+            : null}
         </Text>
       </View>
 
