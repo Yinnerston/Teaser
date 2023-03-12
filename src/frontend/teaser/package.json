@@ -2,7 +2,7 @@
   "name": "teaser",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start -c --port 42069",
+    "start": "expo start --port 8081 --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web --port 42069"
@@ -36,7 +36,8 @@
     "react-native-screens": "~3.18.0",
     "react-native-vector-icons": "^9.2.0",
     "react-native-vision-camera": "^2.15.4",
-    "react-query": "^3.39.3"
+    "react-query": "^3.39.3",
+    "expo-dev-client": "~2.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
