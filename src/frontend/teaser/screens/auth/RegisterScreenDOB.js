@@ -32,6 +32,16 @@ export default function RegisterScreenDOB({ navigation, route }) {
       return <DOBDatePickerAndroid date={date} setDate={setDate} />;
     }
   };
+
+  function formatDate(dateToFormat) {
+    return (
+      dateToFormat.getDay() +
+      "/" +
+      dateToFormat.getMonth() +
+      "/" +
+      dateToFormat.getFullYear()
+    );
+  }
   // TODO: Allow <18 DOB, just restrict content to SFW
   const onSubmit = (data) => {
     const now = new Date();
@@ -42,7 +52,7 @@ export default function RegisterScreenDOB({ navigation, route }) {
     }
     navigation.navigate("RegisterUsername", {
       ...route.params,
-      date: date.toDateString(),
+      dob: formatDate(date), // Output in format dd/mm/yyyy
     });
   };
 
