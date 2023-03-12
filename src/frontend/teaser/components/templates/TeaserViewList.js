@@ -9,9 +9,10 @@ import {
   VIDEO_LANDSCAPE,
   VIDEO_PORTRAIT,
   VIEWABILITY_CONFIG_THRESHOLD,
+  STATUS_BAR_HEIGHT,
 } from "../../Constants";
 import { TeaserView } from "./TeaserView";
-import { useScrollToTop, useFocusEffect } from "@react-navigation/native";
+import { useScrollToTop } from "@react-navigation/native";
 
 const PLAYLIST = [
   {
@@ -185,12 +186,15 @@ export default function TeaserViewList({ navigation }) {
   useScrollToTop(scrollRef);
   // List of teaser video metadata rendered into a FlatList
   const [feed, setFeed] = useState(PLAYLIST);
-
+  var homeButtonTaps = [];
   // Scroll to top of list on Home tab press
   useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", (e) => {
       // Prevent default behavior
       e.preventDefault();
+      // TODO: Prevent too many consecutive tab presses. E.G. Only do
+      // const now = new Date();
+      // if ((now.getTime() - homeButtonTaps.slice(-1).getTime()) / 1000 < 1)
       // TODO: Get new posts --> Implement in backend
       // TODO: Handle async data get in useEffect
       // This implementation shuffles a copy of PLAYLIST
@@ -268,7 +272,7 @@ export default function TeaserViewList({ navigation }) {
           viewAreaCoveragePercentThreshold: VIEWABILITY_CONFIG_THRESHOLD,
           waitForInteraction: true,
         }}
-        snapToInterval={windowDimensions.height}
+        snapToInterval={windowDimensions.height - STATUS_BAR_HEIGHT}
         decelerationRate="fast"
         snapToAlignment="start"
         // TODO: Load next chunk of flatlist from recommendation algorithm
@@ -282,5 +286,6 @@ export default function TeaserViewList({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: STATUS_BAR_HEIGHT,
   },
 });

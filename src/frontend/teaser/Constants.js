@@ -8,3 +8,6 @@ export const HOME_NAV_ICON_SIZE = 24;
 export const SIGN_UP_VIEW_ICON_SIZE = 100;
 // TODO: Change in production assuming no docker?
 export const BASE_URL = "https://wocchit.com/api/v1/";
+
+import Constants from "expo-constants";
+export const STATUS_BAR_HEIGHT = Constants.statusBarHeight;

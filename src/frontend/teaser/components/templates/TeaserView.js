@@ -4,6 +4,7 @@ import TeaserHeader from "../navs/header/TeaserHeader";
 import TeaserSidebar from "../navs/sidebar/TeaserSidebar";
 import { TeaserVideo } from "../navs/video/TeaserVideo";
 import { forwardRef } from "react";
+import { STATUS_BAR_HEIGHT } from "../../Constants";
 
 /**
  *  Container for all the components that make up a teaser.
@@ -48,7 +49,7 @@ const useTeaserViewStyle = () => {
       backgroundColor: "#25292e",
       alignItems: "center",
       justifyContent: "center",
-      height: height,
+      height: height - STATUS_BAR_HEIGHT,
     },
   });
   return styles;

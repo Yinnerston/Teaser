@@ -7,7 +7,11 @@ import {
 import { Video } from "expo-av";
 // import { Image } from 'expo-image';
 import { forwardRef, useState } from "react";
-import { VIDEO_LANDSCAPE, VIDEO_PORTRAIT } from "../../../Constants";
+import {
+  VIDEO_LANDSCAPE,
+  VIDEO_PORTRAIT,
+  STATUS_BAR_HEIGHT,
+} from "../../../Constants";
 import { AntDesign } from "@expo/vector-icons";
 /**
  * Container for video of a teaser.
@@ -89,7 +93,7 @@ const useTeaserVideoStyle = () => {
   const styles = StyleSheet.create({
     video: {
       alignContent: "center",
-      height: height,
+      height: height - STATUS_BAR_HEIGHT,
       width: width,
       margin: "auto",
     },
