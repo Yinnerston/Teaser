@@ -23,6 +23,9 @@
       "infoPlist": {
         "NSCameraUsageDescription": "Teaser needs access to your Camera.",
         "NSMicrophoneUsageDescription": "Teaser needs access to your Microphone."
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {

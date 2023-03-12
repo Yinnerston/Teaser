@@ -16,7 +16,10 @@ import AuthButton from "../../components/elements/button/AuthButton";
 import { REGISTER_BUTTON_COLOR } from "../../Constants";
 // import { loginUserFunction } from "../../api/auth/authApi";
 import { useAtom } from "jotai";
-import { writeOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
+import {
+  writeOnlyUserAuthAtom,
+  setUserAuthStore,
+} from "../../hooks/auth/useUserAuth";
 import { loginUserFunction } from "../../api/auth/authApi";
 /**
  * Login Screen with username and password fields
@@ -46,6 +49,7 @@ export default function LoginScreen({ navigation }) {
     console.log(loginResponse);
     if (loginResponse.status == 200) {
       setWriteUserAuth(loginResponse.data);
+      setUserAuthStore(JSON.stringify(loginResponse.data));
       navigation.navigate("Home");
     } else {
       setIsError(loginResponse.data.toString());
