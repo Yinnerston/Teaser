@@ -31,7 +31,6 @@ export async function setUserAuthFromStore() {
     let parsed_result = JSON.parse(result);
     setWriteUserAuth(parsed_result);
   }
-  console.log("AUTH" + parsed_result);
 }
 
 /**

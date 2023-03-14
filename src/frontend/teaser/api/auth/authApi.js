@@ -7,7 +7,6 @@ import axiosAPIClient from "../axiosAPIClient";
 
 export const registerUserFunction = async ({
   username,
-  email,
   phone,
   password,
   dob,
@@ -16,7 +15,6 @@ export const registerUserFunction = async ({
   try {
     const response = await axiosAPIClient.post("register", {
       username: username,
-      email: email,
       phone: phone,
       password: password,
       dob: dob,

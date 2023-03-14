@@ -8,11 +8,10 @@ import {
   Alert,
 } from "react-native";
 import { useState, useEffect } from "react";
-import { StackActions } from "@react-navigation/native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import AuthButton from "../../components/elements/button/AuthButton";
 import { REGISTER_BUTTON_COLOR } from "../../Constants";
-import { registerUserFunction } from "../../api/auth/authApi";
+import { authFormStyles } from "./styles";
 // import OTPInput from "../../components/elements/input/OTPInput";
 
 const teaserLogo = require("../../assets/teaser_180x60.png");
@@ -64,38 +63,23 @@ export default function Register2fa({ navigation, route }) {
     setShowLoginButton(true);
   };
 
-  const onRegisterButtonPress = async () => {
-    const registerOutput = await registerUserFunction({
+  const onRegisterButtonPress = async (data) => {
+    const registerOutput = navigation.navigate("RegisterPassword", {
       ...route.params,
-      terms_of_service_accepted: true,
-    }); // TODO: Add TOS form
-    if (registerOutput.status == 200) {
-      navigation.navigate("Login");
-    } else {
-      // Go back to Auth Page with Error
-      setRegisterResponse(registerOutput);
-    }
+      ...data,
+    });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1 }}>
         <Text style={styles.todoText}>TODO: Add validation using 2fa.</Text>
-        <Text style={styles.todoText}>
-          {"\n"}
-          {registerResponse
-            ? registerResponse.status + " " + registerResponse.data
-            : null}
-        </Text>
       </View>
 
       <View style={styles.authContainer}>
-        {/* <OTPInput
-          code={otpCode}
-          setCode={setOTPCode}
-          maximumLength={maximumCodeLength}
-          setIsPinReady={setShowLoginButton}
-        /> */}
+        <Text style={authFormStyles.textInputLabel}>
+          A one-time password was sent to your ???:
+        </Text>
         <Button
           title="2FA Placeholder"
           style={{ marginBotton: 20 }}
@@ -104,10 +88,13 @@ export default function Register2fa({ navigation, route }) {
 
         {showLoginButton ? (
           <AuthButton
+            onPress={() =>
+              navigation.navigate("RegisterPassword", route.params)
+            }
             color={REGISTER_BUTTON_COLOR}
-            routeName="Login"
-            buttonText="Register"
-            onPress={onRegisterButtonPress}
+            routeName="RegisterPassword"
+            buttonText="Next"
+            navigation={navigation}
           />
         ) : null}
       </View>
