@@ -90,7 +90,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(UserAlreadyExistsValidationError):
             register_user_service(
                 TestUserAuthRegisterService.register_data["username"],
-                "isolateUsername@gmail.com",
                 "+61415799799",
                 TestUserAuthRegisterService.register_data["password"],
                 TestUserAuthRegisterService.register_data["dob"],
@@ -224,7 +223,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(UserAlreadyExistsValidationError):
             register_user_service(
                 "someOtherUser",
-                "isolateUsername@gmail.com",
                 TestUserAuthRegisterService.register_data["phone"],
                 TestUserAuthRegisterService.register_data["password"],
                 TestUserAuthRegisterService.register_data["dob"],
