@@ -6,7 +6,6 @@ from core.models.user_auth_models import TeaserUserModel, LocationsModel, AuthTo
 class TeaserUserModelAdmin(admin.ModelAdmin):
     list_display = (
         "nfc_username",
-        "nfc_email_address",
         "phone_str",
         "dob_date",
         "user_id",

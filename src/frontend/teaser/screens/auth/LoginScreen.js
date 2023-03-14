@@ -14,7 +14,13 @@ import { authFormStyles } from "./styles";
 import { useHeaderHeight } from "@react-navigation/elements";
 import AuthButton from "../../components/elements/button/AuthButton";
 import { REGISTER_BUTTON_COLOR } from "../../Constants";
-
+// import { loginUserFunction } from "../../api/auth/authApi";
+import { useAtom } from "jotai";
+import {
+  writeOnlyUserAuthAtom,
+  setUserAuthStore,
+} from "../../hooks/auth/useUserAuth";
+import { loginUserFunction } from "../../api/auth/authApi";
 /**
  * Login Screen with username and password fields
  * TODO: Add link to TOS.
@@ -22,7 +28,7 @@ import { REGISTER_BUTTON_COLOR } from "../../Constants";
  */
 export default function LoginScreen({ navigation }) {
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
-
+  const [_writeUserAuth, setWriteUserAuth] = useAtom(writeOnlyUserAuthAtom);
   const styles = useLoginScreenStyle();
   // TODO: set error if login fails
   const [isError, setIsError] = useState(false);
@@ -38,7 +44,17 @@ export default function LoginScreen({ navigation }) {
   });
   // TODO: Implement Login endpoint
   // On submit, send data to RegisterScreenDOB
-  const onSubmit = (data) => navigation.navigate("Home");
+  const onSubmit = async (data) => {
+    const loginResponse = await loginUserFunction({ ...data });
+    console.log(loginResponse);
+    if (loginResponse.status == 200) {
+      setWriteUserAuth(loginResponse.data);
+      setUserAuthStore(JSON.stringify(loginResponse.data));
+      navigation.navigate("Home");
+    } else {
+      setIsError(loginResponse.data.toString());
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 6 }}>
@@ -48,9 +64,9 @@ export default function LoginScreen({ navigation }) {
           control={control}
           rules={{
             required: true,
-            minLength: 8,
+            minLength: 6,
             maxLength: 32,
-            pattern: /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+            pattern: /^[a-zA-Z0-9_.]+$/,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
@@ -70,7 +86,8 @@ export default function LoginScreen({ navigation }) {
             required: true,
             minLength: 8,
             maxLength: 32,
-            pattern: /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+            pattern:
+              "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$",
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <View>
@@ -104,11 +121,14 @@ export default function LoginScreen({ navigation }) {
           buttonText="Login"
           navigation={navigation}
         />
-        {isError ? (
-          <Text style={authFormStyles.formValidationErrorTextNoFlex}>
-            *Login credentials are incorrect!
-          </Text>
-        ) : null}
+        <Text style={authFormStyles.formValidationErrorTextNoFlex}>
+          {"\n"}
+          {errors.password || errors.username
+            ? "*Login credentials are incorrect!"
+            : null}
+          {"\n"}
+          {!!isError ? isError : null}
+        </Text>
       </View>
       <View style={styles.loginView}>
         <Text style={styles.loginViewTextStyle}>

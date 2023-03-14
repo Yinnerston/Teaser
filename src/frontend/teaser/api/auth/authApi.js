@@ -3,21 +3,42 @@ import { useQuery, useMutation } from "react-query";
 import { BASE_URL } from "../../Constants";
 import axiosAPIClient from "../axiosAPIClient";
 
-authApi.defaults.headers.common["Content-Type"] = "application/json";
+// axiosAPIClient.defaults.headers.common["Content-Type"] = "application/json";
 
-export const registerUserFunction = async (user) => {
-  const response = await axiosAPIClient.post("register", user);
-  return response.data;
+export const registerUserFunction = async ({
+  username,
+  phone,
+  password,
+  dob,
+  terms_of_service_accepted,
+}) => {
+  try {
+    const response = await axiosAPIClient.post("register", {
+      username: username,
+      phone: phone,
+      password: password,
+      dob: dob,
+      terms_of_service_accepted: terms_of_service_accepted,
+    });
+    return { status: response.status, data: response.data };
+  } catch (error) {
+    console.error(error);
+    return { status: error.response.status, data: error.response.data.message };
+  }
 };
 
-export const loginUserFunction = async (username, password) => {
-  const response = await axiosAPIClient.post("login", {
-    params: {
+export const loginUserFunction = async ({ username, password }) => {
+  try {
+    console.log(username, password);
+    const response = await axiosAPIClient.post("login", {
       username: username,
       password: password,
-    },
-  });
-  return response.data;
+    });
+    return { status: response.status, data: response.data };
+  } catch (error) {
+    console.error(error);
+    return { status: error.response.status, data: error.response.data.message };
+  }
 };
 
 export const tokenPairFunction = async (user) => {

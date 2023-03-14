@@ -18,46 +18,21 @@ export default function RegisterScreen({ navigation }) {
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
-      email: "",
       phone: "",
     },
   });
   // TODO: Implement Login endpoint
   // TODO: Pass props to next navigation.navigate("RegisterPassword", data)
-  const onSubmit = (data) => navigation.navigate("RegisterPassword", data);
+  const onSubmit = (data) => navigation.navigate("Register2fa", data);
   // TODO: Grey out button until fields are valid
   // const [buttonColor, setButtonColor] = useState("#e9e7e9")
   // const [phoneNumberValue, setPhoneNumberValue] = useState("")
   // useEffect(() => {
-  // }, [errors.email, erros.phone, phoneInput.current
+  // }, [errors.phone, phoneInput.current
   // ])
 
   return (
     <View style={authFormStyles.container}>
-      <Text style={authFormStyles.textInputLabel}>Email:</Text>
-      <Controller
-        control={control}
-        rules={{
-          required: true,
-          // TODO: Check through verification email
-          pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            style={authFormStyles.textInputStyle}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-        name="email"
-        // style={{flex: 1}}
-      />
-      <Text style={authFormStyles.formValidationErrorTextNoFlex}>
-        {" "}
-        {errors.email && "*A valid email is required"}
-      </Text>
-
       <Text style={authFormStyles.textInputLabel}>Phone Number:</Text>
       {/* TODO: Check phone number validity with 2fa */}
       <Controller
@@ -92,11 +67,40 @@ export default function RegisterScreen({ navigation }) {
         {" "}
         {errors.phone && "*A valid phone number is required."}
       </Text>
+
+      {/* <Text style={authFormStyles.textInputLabel}>Email:</Text>
+      <Controller
+        control={control}
+        rules={{
+          required: false,
+          // TODO: Check through verification email
+          pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            style={authFormStyles.textInputStyle}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+          />
+        )}
+        name="email"
+        // style={{flex: 1}}
+      />
+      <Text style={authFormStyles.formValidationErrorTextNoFlex}>
+        {" "}
+        {errors.email && "*An email must be in a valid format"}
+      </Text>
+ */}
+      <Text style={authFormStyles.formValidationTextNoFlex}>
+        *A phone number is required for 2FA, contact tracing and account
+        recovery so that Teaser is a safe space for creators.
+      </Text>
       <AuthButton
         onPress={handleSubmit(onSubmit)}
         color={REGISTER_BUTTON_COLOR}
-        routeName="RegisterPassword"
-        buttonText="Next"
+        routeName="Register2fa"
+        buttonText="Send Code"
         navigation={navigation}
       />
     </View>

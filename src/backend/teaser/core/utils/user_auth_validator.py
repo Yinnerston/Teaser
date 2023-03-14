@@ -118,7 +118,6 @@ def validate_terms_of_service_accepted(terms_of_service_accepted: bool):
 
 def validate_register(
     s_username: str,
-    s_email: str,
     s_phone: str,
     us_password: str,
     s_dob: str,
@@ -135,7 +134,6 @@ def validate_register(
     # Do regex validation here? YES
     return {
         "username": validate_username(s_username),
-        "email": validate_email(s_email),
         "dob": validate_dob(s_dob),
         "password": validate_password(us_password),
         "phone": validate_phone(s_phone),

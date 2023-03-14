@@ -1,14 +1,16 @@
 import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
 import { useEffect } from "react";
+import { setUserAuthFromStore } from "../hooks/auth/useUserAuth";
 
 /**
  * Splash screen.
- * TODO: load auth context here?
+ * Load auth context here
  * @param {*} navigation
  * @returns
  */
 export default function SplashScreen({ navigation }) {
   const styles = useAuthStyles();
+  setUserAuthFromStore();
 
   useEffect(() => {
     setTimeout(() => {

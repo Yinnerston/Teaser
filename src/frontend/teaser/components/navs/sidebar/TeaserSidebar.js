@@ -1,15 +1,30 @@
 import { StyleSheet, View, Text, useWindowDimensions } from "react-native";
+import ProfilePhoto from "../../elements/photo/ProfilePhoto";
+import LikePostButton from "../../elements/button/LikePostButton";
+import CommentPostButton from "../../elements/button/CommentPostButton";
+import BookmarkPostButton from "../../elements/button/BookmarkPostButton";
+import SharePostButton from "../../elements/button/SharePostButton";
 
 /**
  * Container for the sidebar of a teaser.
  * Handles likes, user profiles, comments, etc.
- * @returns
+ * @param {navigation, sidebarData} props
+ * @param {likeCount, bookmarkCount, commentCount, shareCount} ^^sidebarData
  */
-export default function TeaserSidebar() {
+export default function TeaserSidebar(props) {
+  const { navigation, sidebarData } = props;
+  const { likeCount, bookmarkCount, commentCount, shareCount } = sidebarData;
   const styles = useSidebarStyle();
   return (
     <View style={styles.container}>
-      <Text style={styles.sidebarText}>SIDEBAR</Text>
+      <ProfilePhoto></ProfilePhoto>
+      <LikePostButton numLikes={likeCount} style={styles.sidebarItem} />
+      <CommentPostButton numLikes={commentCount} style={styles.sidebarItem} />
+      <BookmarkPostButton
+        numBookmarks={bookmarkCount}
+        style={styles.sidebarItem}
+      />
+      <SharePostButton numShares={shareCount} style={styles.sidebarItem} />
     </View>
   );
 }
@@ -28,6 +43,10 @@ const useSidebarStyle = () => {
     },
     sidebarText: {
       fontSize: 10,
+    },
+    sidebarItem: {
+      justifyContent: "center",
+      alignItems: "center",
     },
   });
   return styles;

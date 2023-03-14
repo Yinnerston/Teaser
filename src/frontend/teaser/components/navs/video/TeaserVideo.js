@@ -7,7 +7,11 @@ import {
 import { Video } from "expo-av";
 // import { Image } from 'expo-image';
 import { forwardRef, useState } from "react";
-import { VIDEO_LANDSCAPE, VIDEO_PORTRAIT } from "../../../Constants";
+import {
+  VIDEO_LANDSCAPE,
+  VIDEO_PORTRAIT,
+  STATUS_BAR_HEIGHT,
+} from "../../../Constants";
 import { AntDesign } from "@expo/vector-icons";
 /**
  * Container for video of a teaser.
@@ -18,8 +22,9 @@ import { AntDesign } from "@expo/vector-icons";
  * @returns
  */
 export const TeaserVideo = forwardRef(function TeaserVideo(props, ref) {
-  const { videoURL, thumbnailURL, videoMode, videoIdx } = props;
-  const styles = useTeaserVideoStyle();
+  const { videoURL, thumbnailURL, videoMode, videoIdx, style } = props;
+  // Styles prop is optional. It must have video and playIcon objects in stylesheet
+  const styles = style ? style : useTeaserVideoStyle();
   // State variable for rendering play icon on pause
   const [videoPlayingStatus, setVideoPlayingStatus] = useState({
     isPlaying: true,
@@ -89,7 +94,7 @@ const useTeaserVideoStyle = () => {
   const styles = StyleSheet.create({
     video: {
       alignContent: "center",
-      height: height,
+      height: height - STATUS_BAR_HEIGHT,
       width: width,
       margin: "auto",
     },

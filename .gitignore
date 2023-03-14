@@ -7,6 +7,10 @@ data/
 # Certbot
 certbot
 
+# Android build files
+*.apk
+*.aab
+
 # .env files
 *.env
 .env

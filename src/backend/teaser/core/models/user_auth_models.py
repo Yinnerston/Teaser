@@ -25,7 +25,6 @@ class TeaserUserModel(models.Model):
 
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     nfc_username = models.CharField(max_length=32)
-    nfc_email_address = models.CharField(max_length=255)
     phone_str = models.CharField(max_length=16)
     profile_photo_url = models.URLField(default="", blank=True)
     stage_name = models.CharField(max_length=64, default="", blank=True)

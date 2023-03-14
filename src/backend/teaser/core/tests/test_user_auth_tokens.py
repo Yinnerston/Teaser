@@ -11,7 +11,6 @@ class TestUserAuthTokenService(TestCase):
     def setUpTestData(cls):
         cls.register_data = {
             "username": "testuser1",
-            "email": "testuser1@tester.com",
             "phone": "+61499499499",
             "password": "SomeTestPassword1!",
             "dob": "21/12/1995",
@@ -19,7 +18,6 @@ class TestUserAuthTokenService(TestCase):
         }
         cls.test_user = register_user_service(
             TestUserAuthTokenService.register_data["username"],
-            TestUserAuthTokenService.register_data["email"],
             TestUserAuthTokenService.register_data["phone"],
             TestUserAuthTokenService.register_data["password"],
             TestUserAuthTokenService.register_data["dob"],

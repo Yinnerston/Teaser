@@ -1,13 +1,32 @@
 import { StyleSheet, View, Text } from "react-native";
+import SeeMoreTextExpandable from "../../elements/text/SeeMoreTextExpandable";
 
 /**
  * Container for the captions and tags of a teaser.
- * @returns
+ * @param {navigation, captionData} props
+ * @param {description, username, stageName, songId, songTitle} ^^captionData
  */
-export default function TeaserCaption() {
+export default function TeaserCaption(props) {
+  // TODO: Linkify #tags / actors with navigation?
+  const { navigation, captionData } = props;
+  const { description, username, stageName, songId, songTitle } = captionData;
+
+  // const {captionText, tags, actors} = captionData;
   return (
     <View style={styles.container}>
-      <Text style={styles.captionText}>CAPTION</Text>
+      <Text style={styles.captionTitle}>
+        {stageName ? stageName : username}
+      </Text>
+      <SeeMoreTextExpandable
+        numberOfLines={2}
+        textBody={description}
+        textStyle={styles.captionDescription}
+      ></SeeMoreTextExpandable>
+      <SeeMoreTextExpandable
+        numberOfLines={1}
+        textBody={songTitle}
+        textStyle={styles.captionDescription}
+      ></SeeMoreTextExpandable>
     </View>
   );
 }
@@ -19,8 +38,16 @@ const styles = StyleSheet.create({
     left: 16,
     right: "auto",
     backgroundColor: "green",
+    maxWidth: 200,
   },
-  captionText: {
+  captionTitle: {
     fontWeight: "bold",
+    fontSize: 16,
+    color: "white",
+  },
+  captionDescription: {
+    // fontWeight: "bold",
+    fontSize: 12,
+    color: "white",
   },
 });

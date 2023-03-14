@@ -25,3 +25,8 @@ Unable to determine base domain for _acme-challenge.infranet.teasernsfw.com usin
 - docker-compose -f docker-compose.prod.yml build
 - ./init-letsencrypt.sh
 - docker-compose -f docker-compose.prod.yml up -d
+
+# Other
+
+- Django allowed hosts: Added public IP for wocchit.com (dev IP) to allowed hosts
+  - `PUBLIC_IP` variable needs to be defined in `.backend.env`

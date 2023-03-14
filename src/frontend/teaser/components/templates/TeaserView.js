@@ -4,6 +4,7 @@ import TeaserHeader from "../navs/header/TeaserHeader";
 import TeaserSidebar from "../navs/sidebar/TeaserSidebar";
 import { TeaserVideo } from "../navs/video/TeaserVideo";
 import { forwardRef } from "react";
+import { STATUS_BAR_HEIGHT } from "../../Constants";
 
 /**
  *  Container for all the components that make up a teaser.
@@ -15,7 +16,15 @@ import { forwardRef } from "react";
  * @returns
  */
 export const TeaserView = forwardRef(function TeaserView(props, ref) {
-  const { videoURL, thumbnailURL, videoMode, videoIdx } = props;
+  const {
+    videoURL,
+    thumbnailURL,
+    videoMode,
+    videoIdx,
+    navigation,
+    captionData,
+    sidebarData,
+  } = props;
   const styles = useTeaserViewStyle();
   return (
     <View style={styles.container}>
@@ -27,8 +36,8 @@ export const TeaserView = forwardRef(function TeaserView(props, ref) {
         ref={ref}
       ></TeaserVideo>
       <TeaserHeader></TeaserHeader>
-      <TeaserSidebar></TeaserSidebar>
-      <TeaserCaption></TeaserCaption>
+      <TeaserSidebar navigation={navigation} sidebarData={sidebarData} />
+      <TeaserCaption navigation={navigation} captionData={captionData} />
     </View>
   );
 });
@@ -40,7 +49,7 @@ const useTeaserViewStyle = () => {
       backgroundColor: "#25292e",
       alignItems: "center",
       justifyContent: "center",
-      height: height,
+      height: height - STATUS_BAR_HEIGHT,
     },
   });
   return styles;

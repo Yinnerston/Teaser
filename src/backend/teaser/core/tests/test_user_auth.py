@@ -17,7 +17,6 @@ class TestUserAuthRegisterService(TestCase):
     def setUpTestData(cls):
         cls.register_data = {
             "username": "testuser1",
-            "email": "testuser1@tester.com",
             "phone": "+61499499499",
             "password": "SomeTestPassword1!",
             "dob": "21/12/1995",
@@ -28,7 +27,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
                 "X" * 33,
-                TestUserAuthRegisterService.register_data["email"],
                 TestUserAuthRegisterService.register_data["phone"],
                 TestUserAuthRegisterService.register_data["password"],
                 TestUserAuthRegisterService.register_data["dob"],
@@ -40,7 +38,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
                 "Y" * 5,
-                TestUserAuthRegisterService.register_data["email"],
                 TestUserAuthRegisterService.register_data["phone"],
                 TestUserAuthRegisterService.register_data["password"],
                 TestUserAuthRegisterService.register_data["dob"],
@@ -56,7 +53,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
                 "😀🤣kms🙃🙃",
-                TestUserAuthRegisterService.register_data["email"],
                 TestUserAuthRegisterService.register_data["phone"],
                 TestUserAuthRegisterService.register_data["password"],
                 TestUserAuthRegisterService.register_data["dob"],
@@ -68,7 +64,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
                 "<Script src=sussy>",
-                TestUserAuthRegisterService.register_data["email"],
                 TestUserAuthRegisterService.register_data["phone"],
                 TestUserAuthRegisterService.register_data["password"],
                 TestUserAuthRegisterService.register_data["dob"],
@@ -83,7 +78,6 @@ class TestUserAuthRegisterService(TestCase):
         """
         register_user_service(
             TestUserAuthRegisterService.register_data["username"],
-            TestUserAuthRegisterService.register_data["email"],
             TestUserAuthRegisterService.register_data["phone"],
             TestUserAuthRegisterService.register_data["password"],
             TestUserAuthRegisterService.register_data["dob"],
@@ -96,7 +90,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(UserAlreadyExistsValidationError):
             register_user_service(
                 TestUserAuthRegisterService.register_data["username"],
-                "isolateUsername@gmail.com",
                 "+61415799799",
                 TestUserAuthRegisterService.register_data["password"],
                 TestUserAuthRegisterService.register_data["dob"],
@@ -111,75 +104,75 @@ class TestUserAuthRegisterService(TestCase):
         """
         pass
 
-    def test_register_email_invalid_length(self):
-        with self.assertRaises(PatternMatchValidationError):
-            register_user_service(
-                TestUserAuthRegisterService.register_data["username"],
-                "A" * 255 + "@gmail.com",
-                TestUserAuthRegisterService.register_data["phone"],
-                TestUserAuthRegisterService.register_data["password"],
-                TestUserAuthRegisterService.register_data["dob"],
-                TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
-            )
-        self.assertEquals(User.objects.count(), 0)
-        self.assertEquals(TeaserUserModel.objects.count(), 0)
+    # def test_register_email_invalid_length(self):
+    #     with self.assertRaises(PatternMatchValidationError):
+    #         register_user_service(
+    #             TestUserAuthRegisterService.register_data["username"],
+    #             "A" * 255 + "@gmail.com",
+    #             TestUserAuthRegisterService.register_data["phone"],
+    #             TestUserAuthRegisterService.register_data["password"],
+    #             TestUserAuthRegisterService.register_data["dob"],
+    #             TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
+    #         )
+    #     self.assertEquals(User.objects.count(), 0)
+    #     self.assertEquals(TeaserUserModel.objects.count(), 0)
 
-    def test_register_email_invalid_pattern(self):
-        """
-        Test emails must have a valid domain pattern
-        """
-        # Requires "@text.text" --> Missing . for email domain
-        with self.assertRaises(PatternMatchValidationError):
-            register_user_service(
-                TestUserAuthRegisterService.register_data["username"],
-                "Test" + "@gmail",
-                TestUserAuthRegisterService.register_data["phone"],
-                TestUserAuthRegisterService.register_data["password"],
-                TestUserAuthRegisterService.register_data["dob"],
-                TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
-            )
-        self.assertEquals(User.objects.count(), 0)
-        self.assertEquals(TeaserUserModel.objects.count(), 0)
-        # Invalid characters in email
-        with self.assertRaises(PatternMatchValidationError):
-            register_user_service(
-                TestUserAuthRegisterService.register_data["username"],
-                "🤡🤡🤡" + "@gmail.com",
-                TestUserAuthRegisterService.register_data["phone"],
-                TestUserAuthRegisterService.register_data["password"],
-                TestUserAuthRegisterService.register_data["dob"],
-                TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
-            )
-        self.assertEquals(User.objects.count(), 0)
-        self.assertEquals(TeaserUserModel.objects.count(), 0)
+    # def test_register_email_invalid_pattern(self):
+    #     """
+    #     Test emails must have a valid domain pattern
+    #     """
+    #     # Requires "@text.text" --> Missing . for email domain
+    #     with self.assertRaises(PatternMatchValidationError):
+    #         register_user_service(
+    #             TestUserAuthRegisterService.register_data["username"],
+    #             "Test" + "@gmail",
+    #             TestUserAuthRegisterService.register_data["phone"],
+    #             TestUserAuthRegisterService.register_data["password"],
+    #             TestUserAuthRegisterService.register_data["dob"],
+    #             TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
+    #         )
+    #     self.assertEquals(User.objects.count(), 0)
+    #     self.assertEquals(TeaserUserModel.objects.count(), 0)
+    #     # Invalid characters in email
+    #     with self.assertRaises(PatternMatchValidationError):
+    #         register_user_service(
+    #             TestUserAuthRegisterService.register_data["username"],
+    #             "🤡🤡🤡" + "@gmail.com",
+    #             TestUserAuthRegisterService.register_data["phone"],
+    #             TestUserAuthRegisterService.register_data["password"],
+    #             TestUserAuthRegisterService.register_data["dob"],
+    #             TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
+    #         )
+    #     self.assertEquals(User.objects.count(), 0)
+    #     self.assertEquals(TeaserUserModel.objects.count(), 0)
 
-    def test_register_email_uniqueness(self):
-        """
-        Test emails are unique
-        """
-        register_user_service(
-            TestUserAuthRegisterService.register_data["username"],
-            TestUserAuthRegisterService.register_data["email"],
-            TestUserAuthRegisterService.register_data["phone"],
-            TestUserAuthRegisterService.register_data["password"],
-            TestUserAuthRegisterService.register_data["dob"],
-            TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
-        )
-        # Check user has been created
-        self.assertEquals(User.objects.count(), 1)
-        self.assertEquals(TeaserUserModel.objects.count(), 1)
-        # Duplicate user email
-        with self.assertRaises(UserAlreadyExistsValidationError):
-            register_user_service(
-                "isolateUsername",
-                TestUserAuthRegisterService.register_data["email"],
-                "+61415799799",
-                TestUserAuthRegisterService.register_data["password"],
-                TestUserAuthRegisterService.register_data["dob"],
-                TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
-            )
-        self.assertEquals(User.objects.count(), 1)
-        self.assertEquals(TeaserUserModel.objects.count(), 1)
+    # def test_register_email_uniqueness(self):
+    #     """
+    #     Test emails are unique
+    #     """
+    #     register_user_service(
+    #         TestUserAuthRegisterService.register_data["username"],
+    #         TestUserAuthRegisterService.register_data["email"],
+    #         TestUserAuthRegisterService.register_data["phone"],
+    #         TestUserAuthRegisterService.register_data["password"],
+    #         TestUserAuthRegisterService.register_data["dob"],
+    #         TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
+    #     )
+    #     # Check user has been created
+    #     self.assertEquals(User.objects.count(), 1)
+    #     self.assertEquals(TeaserUserModel.objects.count(), 1)
+    #     # Duplicate user email
+    #     with self.assertRaises(UserAlreadyExistsValidationError):
+    #         register_user_service(
+    #             "isolateUsername",
+    #             TestUserAuthRegisterService.register_data["email"],
+    #             "+61415799799",
+    #             TestUserAuthRegisterService.register_data["password"],
+    #             TestUserAuthRegisterService.register_data["dob"],
+    #             TestUserAuthRegisterService.register_data["terms_of_service_accepted"],
+    #         )
+    #     self.assertEquals(User.objects.count(), 1)
+    #     self.assertEquals(TeaserUserModel.objects.count(), 1)
 
     def test_register_phone_invalid_length(self):
         """
@@ -188,7 +181,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
                 TestUserAuthRegisterService.register_data["username"],
-                TestUserAuthRegisterService.register_data["email"],
                 "+61415415415415415415",
                 TestUserAuthRegisterService.register_data["password"],
                 TestUserAuthRegisterService.register_data["dob"],
@@ -205,7 +197,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(PatternMatchValidationError):
             register_user_service(
                 TestUserAuthRegisterService.register_data["username"],
-                TestUserAuthRegisterService.register_data["email"],
                 "0415466466",
                 TestUserAuthRegisterService.register_data["password"],
                 TestUserAuthRegisterService.register_data["dob"],
@@ -220,7 +211,6 @@ class TestUserAuthRegisterService(TestCase):
         """
         register_user_service(
             TestUserAuthRegisterService.register_data["username"],
-            TestUserAuthRegisterService.register_data["email"],
             TestUserAuthRegisterService.register_data["phone"],
             TestUserAuthRegisterService.register_data["password"],
             TestUserAuthRegisterService.register_data["dob"],
@@ -233,7 +223,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(UserAlreadyExistsValidationError):
             register_user_service(
                 "someOtherUser",
-                "isolateUsername@gmail.com",
                 TestUserAuthRegisterService.register_data["phone"],
                 TestUserAuthRegisterService.register_data["password"],
                 TestUserAuthRegisterService.register_data["dob"],
@@ -250,7 +239,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(InvalidDOBValidationError):
             register_user_service(
                 TestUserAuthRegisterService.register_data["username"],
-                TestUserAuthRegisterService.register_data["email"],
                 TestUserAuthRegisterService.register_data["phone"],
                 TestUserAuthRegisterService.register_data["password"],
                 "01/01/94",
@@ -262,7 +250,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(InvalidDOBValidationError):
             register_user_service(
                 TestUserAuthRegisterService.register_data["username"],
-                TestUserAuthRegisterService.register_data["email"],
                 TestUserAuthRegisterService.register_data["phone"],
                 TestUserAuthRegisterService.register_data["password"],
                 "January 1st 1994",
@@ -274,7 +261,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(InvalidDOBValidationError):
             register_user_service(
                 TestUserAuthRegisterService.register_data["username"],
-                TestUserAuthRegisterService.register_data["email"],
                 TestUserAuthRegisterService.register_data["phone"],
                 TestUserAuthRegisterService.register_data["password"],
                 "915148800.75",
@@ -293,7 +279,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(InvalidDOBValidationError):
             register_user_service(
                 TestUserAuthRegisterService.register_data["username"],
-                TestUserAuthRegisterService.register_data["email"],
                 TestUserAuthRegisterService.register_data["phone"],
                 TestUserAuthRegisterService.register_data["password"],
                 last_week_str,
@@ -309,7 +294,6 @@ class TestUserAuthRegisterService(TestCase):
         with self.assertRaises(TermsOfServiceNotAcceptedValidationError):
             register_user_service(
                 TestUserAuthRegisterService.register_data["username"],
-                TestUserAuthRegisterService.register_data["email"],
                 TestUserAuthRegisterService.register_data["phone"],
                 TestUserAuthRegisterService.register_data["password"],
                 TestUserAuthRegisterService.register_data["dob"],
