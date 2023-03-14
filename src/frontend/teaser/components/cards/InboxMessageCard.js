@@ -4,6 +4,7 @@ import {
   Image,
   StyleSheet,
   useWindowDimensions,
+  TouchableOpacity,
 } from "react-native";
 
 /**
@@ -16,7 +17,7 @@ export default function InboxMessageCard(props) {
   const { navigation } = props;
   const styles = useInboxMessageCardStyle();
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={() => {}}>
       <View style={styles.profilePhotoContainer}>
         <Image
           style={styles.profilePhoto}
@@ -30,7 +31,7 @@ export default function InboxMessageCard(props) {
         <Text>Username HERE</Text>
         <Text>Text body HERE</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
