@@ -8,7 +8,6 @@ class TeaserUserSchema(Schema):
     """
 
     username: str = Field(example="testuser1")
-    email: str = Field(example="testuser1@tester.com")
     phone: str = Field(example="+61499499499")
     password: str = Field(example="AmongUsS8SSY!FR")
     dob: str = Field(example="21/12/1995")

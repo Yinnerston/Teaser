@@ -5,7 +5,11 @@ Services layer for user_auth_services models.
 from django.http import HttpRequest
 from core.models.user_auth_models import TeaserUserModel, AuthTokenModel
 from core.models.event_metric_models import EventMetricsModel, EventMetricsTypeModel
-from core.utils.user_auth_validator import validate_register, validate_login_params
+from core.utils.user_auth_validator import (
+    validate_register,
+    validate_login_params,
+    validate_phone,
+)
 from core.errors.user_auth_errors import (
     UserAlreadyExistsValidationError,
     InvalidLoginCredentialsValidationError,
@@ -94,7 +98,6 @@ def refresh_auth_token_service(s_token):
 
 def register_user_service(
     s_username: str,
-    s_email: str,
     s_phone: str,
     us_password: str,
     s_dob: str,
@@ -105,21 +108,15 @@ def register_user_service(
     """
     # Validate user input is syntactically correct
     validated_dict = validate_register(
-        s_username, s_email, s_phone, us_password, s_dob, s_terms_of_service_accepted
+        s_username, s_phone, us_password, s_dob, s_terms_of_service_accepted
     )
     # Normalize unicode text
     nfc_username = unicodedata.normalize("NFC", validated_dict["username"])
     nfkc_username = unicodedata.normalize("NFKC", validated_dict["username"]).casefold()
-    nfc_email_address = unicodedata.normalize("NFC", validated_dict["email"])
-    nfkc_email_address = unicodedata.normalize(
-        "NFKC", validated_dict["email"]
-    ).casefold()
-    # Check that the username, phone, email is unique.
+    # Check that the username, phone is unique.
     if User.objects.filter(username=nfkc_username).exists():
         # TODO: Can you overload User^ object with nfkc_username attr or put in TeaserUser?
         raise UserAlreadyExistsValidationError(463, "Duplicate username!")
-    if User.objects.filter(email=nfkc_email_address).exists():
-        raise UserAlreadyExistsValidationError(463, "Duplicate email!")
     if TeaserUserModel.objects.filter(phone_str=validated_dict["phone"]).exists():
         raise UserAlreadyExistsValidationError(463, "Duplicate phone number!")
     # Persist the model to the database
@@ -128,7 +125,6 @@ def register_user_service(
         # Not nfkc_* / nfc_&
         user_model = User.objects.create_user(
             username=nfkc_username,
-            email=nfkc_email_address,
             password=validated_dict["password"],
         )
         user_model.full_clean()
@@ -137,7 +133,6 @@ def register_user_service(
         teaser_user_model = TeaserUserModel.objects.create(
             user_id=user_model,
             nfc_username=nfc_username,
-            nfc_email_address=nfc_email_address,
             phone_str=validated_dict["phone"],
             dob_date=validated_dict["dob"],
             terms_of_service_accepted=validated_dict["terms_of_service"],
@@ -163,7 +158,6 @@ def register_user_service(
         "username": teaser_user_model.nfc_username,
         "dob": teaser_user_model.dob_date,
         "phone": teaser_user_model.phone_str,
-        "email": teaser_user_model.nfc_email_address,
         "terms_of_service_accepted": teaser_user_model.terms_of_service_accepted,
     }
 
@@ -260,3 +254,13 @@ def logout_user_service(request: HttpRequest, s_auth_token: str):
     auth_token.is_valid = False
     auth_token.full_clean()
     auth_token.save()
+
+
+# from pyotp.totp import TOTP
+# def verify_phone_number_2fa_service(s_phone):
+#     # Validate Phone Input
+#     validate_phone(s_phone)
+#     # Enforce Phone Uniqueness
+
+#     TOTP_2FA_SECRET = str(env("2FA_SECRET"))
+#     TOTP(TOTP_2FA_SECRET).provisioning_uri(name=s_phone, issuer_name='Teaser')

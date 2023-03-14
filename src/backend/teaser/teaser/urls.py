@@ -120,13 +120,12 @@ def register_user_endpoint(request, payload: TeaserUserSchema):
     """
     Register user endpoint.
     Try it out:
-    curl -X POST -d '{"username": "", "password":"", "email":"", "phone":"", "dob":"", "terms_of_service_accepted":true}' http://localhost:8000/api/v1/register
+    curl -X POST -d '{"username": "", "password":"", "phone":"", "dob":"", "terms_of_service_accepted":true}' http://localhost:8000/api/v1/register
     TODO: Restrict permission for AccountCreation?
     """
     teaser_user_dict = payload.dict()
     # Get unsafe fields from payload
     us_username = teaser_user_dict["username"]
-    us_email = teaser_user_dict["email"]
     us_phone = teaser_user_dict["phone"]
     us_password = teaser_user_dict["password"]
     us_dob = teaser_user_dict["dob"]
@@ -134,13 +133,11 @@ def register_user_endpoint(request, payload: TeaserUserSchema):
     s_terms_of_service_accepted = teaser_user_dict["terms_of_service_accepted"]
     # Sanitize the input
     s_username = sanitization_utils.sanitize_str(us_username)
-    s_email = sanitization_utils.sanitize_str(us_email)
     s_phone = sanitization_utils.sanitize_str(us_phone)
     s_dob = sanitization_utils.sanitize_str(us_dob)
     # Call the service layer to run business logic --> Returns JSON to return
     return register_user_service(
         s_username=s_username,
-        s_email=s_email,
         s_phone=s_phone,
         us_password=us_password,
         s_dob=s_dob,
