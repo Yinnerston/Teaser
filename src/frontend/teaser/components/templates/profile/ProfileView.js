@@ -30,7 +30,7 @@ const PROFILE_TEASER_DATA = [
   {
     video: {
       videoURL: "https://i.imgur.com/Wk1KyEU.mp4",
-      thumbnailURL: "",
+      thumbnailURL: "https://i.imgur.com/Xi20BYv.gif",
       videoMode: VIDEO_PORTRAIT,
     },
     data: {
@@ -42,7 +42,7 @@ const PROFILE_TEASER_DATA = [
   {
     video: {
       videoURL: "https://i.imgur.com/Wk1KyEU.mp4",
-      thumbnailURL: "",
+      thumbnailURL: "https://i.imgur.com/Xi20BYv.gif",
       videoMode: VIDEO_PORTRAIT,
     },
     data: {
@@ -55,7 +55,7 @@ const PROFILE_TEASER_DATA = [
   {
     video: {
       videoURL: "https://i.imgur.com/Wk1KyEU.mp4",
-      thumbnailURL: "",
+      thumbnailURL: "https://i.imgur.com/Xi20BYv.gif",
       videoMode: VIDEO_PORTRAIT,
     },
     data: {
@@ -68,7 +68,7 @@ const PROFILE_TEASER_DATA = [
   {
     video: {
       videoURL: "https://i.imgur.com/Wk1KyEU.mp4",
-      thumbnailURL: "",
+      thumbnailURL: "https://i.imgur.com/Xi20BYv.gif",
       videoMode: VIDEO_PORTRAIT,
     },
     data: {

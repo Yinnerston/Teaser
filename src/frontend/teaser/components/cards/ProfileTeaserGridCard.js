@@ -1,5 +1,11 @@
-import { TeaserVideo } from "../navs/video/TeaserVideo";
-import { View, StyleSheet, Text, useWindowDimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { forwardRef } from "react";
 
 /**
@@ -9,22 +15,17 @@ export const ProfileTeaserGridCard = forwardRef(
   function ProfileTeaserGridCard(props, ref) {
     const { videoIdx, viewCount, isPinned, videoURL, thumbnailURL, videoMode } =
       props;
-    const { styles, profileTeaserVideoStyles } =
-      useProfileTeaserGridCardStyle();
+    const styles = useProfileTeaserGridCardStyle();
     // https://github.com/wonday/react-native-image-cache-wrapper
     // TODO: Cachable image?
+
     return (
       <View style={styles.container}>
-        <TeaserVideo
-          videoURL={{ uri: videoURL }}
-          thumbnailURL={{ uri: thumbnailURL }}
-          videoMode={videoMode}
-          videoIdx={videoIdx}
-          ref={ref}
-          style={profileTeaserVideoStyles}
-        ></TeaserVideo>
-        <Text style={styles.isPinnedText}>{isPinned ? "Pinned" : null}</Text>
-        <Text style={styles.viewCountText}>{viewCount}</Text>
+        <TouchableOpacity style={styles.image} onPress={() => {}}>
+          <Image source={{ uri: thumbnailURL }} style={styles.image} />
+          <Text style={styles.isPinnedText}>{isPinned ? "Pinned" : null}</Text>
+          <Text style={styles.viewCountText}>{viewCount}</Text>
+        </TouchableOpacity>
       </View>
     );
   },
@@ -39,6 +40,7 @@ const useProfileTeaserGridCardStyle = () => {
     },
     isPinnedText: {
       backgroundColor: "red",
+      color: "white",
       position: "absolute",
       top: 0,
     },
@@ -48,22 +50,12 @@ const useProfileTeaserGridCardStyle = () => {
       position: "absolute",
       bottom: 0,
     },
-  });
-  const profileTeaserVideoStyles = StyleSheet.create({
-    video: {
+    image: {
       height: height / 3,
       width: width / 3,
       alignContent: "center",
       margin: "auto",
     },
-    playIcon: {
-      position: "absolute",
-      top: height / 6 - 24,
-      left: width / 6 - 24,
-      justifyContent: "center",
-      alignItems: "center",
-      opacity: 0.7,
-    },
   });
-  return { styles, profileTeaserVideoStyles };
+  return styles;
 };
