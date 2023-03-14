@@ -6,8 +6,14 @@ import {
   useWindowDimensions,
 } from "react-native";
 
+/**
+ * Card body for a inbox message.
+ * TODO: Add touchable Opacity and navigator to expand the message.
+ * @param {navigation} props
+ * @returns
+ */
 export default function InboxMessageCard(props) {
-  const {navigation} = props;
+  const { navigation } = props;
   const styles = useInboxMessageCardStyle();
   return (
     <View style={styles.container}>
