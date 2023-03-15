@@ -33,4 +33,9 @@ export const authFormStyles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
   },
+  loginLinkStyle: {
+    color: "#fe2c55",
+    justifyContent: "center",
+    textAlign: "center",
+  },
 });

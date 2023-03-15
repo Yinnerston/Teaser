@@ -40,3 +40,5 @@ export async function setUserAuthFromStore() {
 export async function clearUserAuth() {
   await SecureStore.deleteItemAsync("auth");
 }
+
+export const userTCAcceptedAtom = atom(false);

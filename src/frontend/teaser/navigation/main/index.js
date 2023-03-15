@@ -6,6 +6,7 @@ import RegisterScreenDOB from "../../screens/auth/RegisterScreenDOB";
 import RegisterScreenPassword from "../../screens/auth/RegisterScreenPassword";
 import RegisterScreenUsername from "../../screens/auth/RegisterScreenUsername";
 import RegisterScreen2fa from "../../screens/auth/Register2fa";
+import RegisterTermsAndConditionsScreen from "../../screens/auth/RegisterTermsAndConditionsScreen";
 import LoginScreen from "../../screens/auth/LoginScreen";
 import ForgotPasswordScreen from "../../screens/auth/ForgotPasswordScreen";
 import HomeNavigator from "../home";
@@ -60,7 +61,11 @@ export default function MainNavigator() {
           component={RegisterScreen2fa}
           options={{ title: "Two Factor Authentication", headerShown: false }}
         />
-
+        <Stack.Screen
+          name="RegisterTermsAndConditions"
+          component={RegisterTermsAndConditionsScreen}
+          options={{ title: "Terms And Conditions", headerShown: true }}
+        />
         <Stack.Screen
           name="Login"
           component={LoginScreen}

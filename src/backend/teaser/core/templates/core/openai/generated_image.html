@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE HTML>
+<!--
+	Parallelism by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Generated Images</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	</head>
+	<body class="is-preload">
+        <h1>Images:</h1>
+		<!-- Wrapper -->
+			<div id="wrapper">
+			<!-- Main -->
+                <section id="main">
+                    {% for generated_image in generated_images %}
+                        <div class="column" style="float: left; width: 33%">
+                            <h1>{{ generated_image.prompt }}</h1>
+							<img src="{{generated_image.url}}" alt="Couldn't show the image"  style="width:100%">
+                        </div>
+                    {% endfor %}
+                </section>
+			</div>
+	</body>
+</html>

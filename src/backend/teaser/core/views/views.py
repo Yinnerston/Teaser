@@ -1,3 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_list_or_404
+from core.models.openai_models import OpenaiGeneratedImagesModel
 
-# Create your views here.
+
+def OpenAIGeneratedImageView(request, request_id):
+    generated_images = get_list_or_404(
+        OpenaiGeneratedImagesModel, request_id=request_id
+    )
+    return render(
+        request,
+        "core/openai/generated_image.html",
+        {"generated_images": generated_images},
+    )

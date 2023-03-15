@@ -39,7 +39,7 @@ export default function ForgotPasswordScreen({ navigation }) {
       <View style={styles.loginView}>
         <Text style={styles.loginViewTextStyle}>
           Already have an account?{"  "}
-          <Link to={{ screen: "Login" }} style={styles.loginLinkStyle}>
+          <Link to={{ screen: "Login" }} style={authFormStyles.loginLinkStyle}>
             Log in
           </Link>
         </Text>
@@ -83,9 +83,6 @@ const useAuthScreenStyle = () => {
       margin: "auto",
       textAlign: "center",
       justifyContent: "flex-start",
-    },
-    loginLinkStyle: {
-      color: "#fe2c55",
     },
   });
   return styles;
