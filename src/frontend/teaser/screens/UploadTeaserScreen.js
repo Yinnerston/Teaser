@@ -11,8 +11,8 @@ import UploadTeaserView from "../components/templates/upload/UploadTeaserView";
 export default function UploadTeaserScreen({ navigation }) {
   const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
 
-  const signUpScreen = <SignUpScreen navigation={navigation}></SignUpScreen>;
-  const uploadScreen = <UploadTeaserView />;
+  const signUpScreen = <SignUpScreen navigation={navigation} />;
+  const uploadScreen = <UploadTeaserView navigation={navigation} />;
 
   return userAuthAtomValue ? uploadScreen : signUpScreen;
 }

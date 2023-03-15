@@ -1,9 +1,13 @@
-import { View, TextInput, Text } from "react-native";
+import { View, TextInput, Text, ScrollView, Button } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { authFormStyles } from "./styles";
 import AuthButton from "../../components/elements/button/AuthButton";
 import { REGISTER_BUTTON_COLOR } from "../../Constants";
 import { registerUserFunction } from "../../api/auth/authApi";
+import { Link } from "@react-navigation/native";
+import { useAtom } from "jotai";
+import { userTCAcceptedAtom } from "../../hooks/auth/useUserAuth";
+
 /**
  * Register Screen for a user's username.
  * TODO: Validate username is not already taken.
@@ -19,12 +23,12 @@ export default function RegisterScreenUsername({ navigation, route }) {
       username: "",
     },
   });
-
+  const [isChecked, setIsChecked] = useAtom(userTCAcceptedAtom);
   const onRegisterButtonPress = async (data) => {
     const registerOutput = await registerUserFunction({
       ...route.params,
       ...data,
-      terms_of_service_accepted: true,
+      terms_of_service_accepted: isChecked,
     }); // TODO: Add TOS form
     if (registerOutput.status == 200) {
       navigation.navigate("Login");
@@ -66,18 +70,20 @@ export default function RegisterScreenUsername({ navigation, route }) {
         {" "}
         {errors.username && "*Username does not fit criteria."}
       </Text>
+      <Link
+        to={{ screen: "RegisterTermsAndConditions" }}
+        style={authFormStyles.loginLinkStyle}
+      >
+        You must accept the Terms and Conditions to register.
+        {"\n"}
+      </Link>
       <AuthButton
-        onPress={handleSubmit(onRegisterButtonPress)}
-        color={REGISTER_BUTTON_COLOR}
+        onPress={isChecked ? handleSubmit(onRegisterButtonPress) : () => {}}
+        color={isChecked ? REGISTER_BUTTON_COLOR : "gray"}
         routeName="Login"
         buttonText="Register your account"
       />
       <Text style={authFormStyles.formValidationTextNoFlex}>
-        {route.params["phone"] +
-          " " +
-          route.params["password"] +
-          " " +
-          route.params["dob"]}
         *Usernames must be 6-32 characters long. *You can only use letters,
         numbers, periods and underscores in your username.
       </Text>
