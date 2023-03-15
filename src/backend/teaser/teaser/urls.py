@@ -25,9 +25,11 @@ from core.services.user_auth_services import (
     create_auth_token,
     refresh_auth_token_service,
 )
+from core.services.openai_service import text_completion_service
 
 # Import schemas
 from core.schemas.user_auth_schemas import *
+from core.schemas.openai_schemas import *
 
 # Basic Sanitizers
 from core.utils import sanitization_utils
@@ -235,6 +237,22 @@ def refresh_token(request):
     s_token = sanitization_utils.sanitize_str(us_token)
     token_hash, token_expiry_datetime = refresh_auth_token_service(s_token)
     return {"token_hash": token_hash, "token_expiry_date": token_expiry_datetime}
+
+
+@api.post("openai/text_completion", tags=["openai"], auth=AuthBearer())
+def complete_text(request, payload: OpenaiTextCompletionSchema):
+    openai_text_completion_dict = payload.dict()
+    # Get unsafe fields from payload
+    us_prompt = openai_text_completion_dict["prompt"]
+    s_temperature = openai_text_completion_dict["temperature"]
+    # Sanitize username input
+    s_prompt = sanitization_utils.sanitize_str(us_prompt)
+    outputs = text_completion_service(s_prompt=s_prompt, s_temperature=s_temperature)
+    return {
+        "output1": outputs[0].text,
+        "output2": outputs[1].text,
+        "output3": outputs[2].text,
+    }
 
 
 urlpatterns = [
