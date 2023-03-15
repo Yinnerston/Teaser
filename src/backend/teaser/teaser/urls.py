@@ -25,7 +25,10 @@ from core.services.user_auth_services import (
     create_auth_token,
     refresh_auth_token_service,
 )
-from core.services.openai_service import text_completion_service
+from core.services.openai_service import (
+    text_completion_service,
+    image_generation_service,
+)
 
 # Import schemas
 from core.schemas.user_auth_schemas import *
@@ -36,6 +39,9 @@ from core.utils import sanitization_utils
 
 # Auth bearer token
 from core.services.user_auth_services import AuthBearer
+
+# Views
+from core.views.views import OpenAIGeneratedImageView
 
 from ninja import NinjaAPI
 
@@ -182,7 +188,7 @@ def logout_user_endpoint(request):
 
 
 @api.get("get_data", auth=AuthBearer())
-def get_data(request, payload):
+def get_data_endpoint(request, payload):
     if not request.user.is_authenticated:
         raise InvalidLoginCredentialsValidationError(464, request.user)
     else:
@@ -191,7 +197,7 @@ def get_data(request, payload):
 
 # Token routes
 @api.post("token/invalidate", tags=["token"])  # TODO: add this back?, auth=AuthBearer()
-def invalidate_token(request, payload: AuthTokenSchema):
+def invalidate_token_endpoint(request, payload: AuthTokenSchema):
     """
     Invalidate a token.
     @raises 401 InvalidTokenError
@@ -205,7 +211,7 @@ def invalidate_token(request, payload: AuthTokenSchema):
 
 
 @api.post("token/create", tags=["token"])  # , auth=AuthBearer()
-def create_token(request, payload: LoginUserSchema):
+def create_token_endpoint(request, payload: LoginUserSchema):
     """
     Create a new token given a username and password.
     Does not invalidation other tokens for the user.
@@ -225,7 +231,7 @@ def create_token(request, payload: LoginUserSchema):
 
 
 @api.get("token/refresh", tags=["token"], auth=AuthBearer())
-def refresh_token(request):
+def refresh_token_endpoint(request):
     """
     Refresh an access token.
     Requires an valid bearer token in the Authorization header.
@@ -240,7 +246,7 @@ def refresh_token(request):
 
 
 @api.post("openai/text_completion", tags=["openai"], auth=AuthBearer())
-def complete_text(request, payload: OpenaiTextCompletionSchema):
+def complete_text_endpoint(request, payload: OpenaiTextCompletionSchema):
     openai_text_completion_dict = payload.dict()
     # Get unsafe fields from payload
     us_prompt = openai_text_completion_dict["prompt"]
@@ -255,8 +261,24 @@ def complete_text(request, payload: OpenaiTextCompletionSchema):
     }
 
 
+@api.post("openai/image_generation", tags=["openai"], auth=AuthBearer())
+def generate_image(request, payload: OpenaiImageGenerationSchema):
+    openai_text_completion_dict = payload.dict()
+    # Get unsafe fields from payload
+    us_prompt = openai_text_completion_dict["prompt"]
+    # Sanitize username input
+    s_prompt = sanitization_utils.sanitize_str(us_prompt)
+    outputs = image_generation_service(s_prompt=s_prompt)
+    return {"output": outputs}
+
+
 urlpatterns = [
     path("admin/", include("admin_honeypot.urls", namespace="admin_honeypot")),
     path("ratio/", admin.site.urls),
     path("api/v1/", api.urls),
+    path(
+        "openai/image/<uuid:request_id>",
+        OpenAIGeneratedImageView,
+        name="OpenAI Images",
+    ),
 ]
