@@ -15,7 +15,7 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import AuthButton from "../../components/elements/button/AuthButton";
 import { REGISTER_BUTTON_COLOR } from "../../Constants";
 // import { loginUserFunction } from "../../api/auth/authApi";
-import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import {
   writeOnlyUserAuthAtom,
   setUserAuthStore,
@@ -28,7 +28,7 @@ import { loginUserFunction } from "../../api/auth/authApi";
  */
 export default function LoginScreen({ navigation }) {
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
-  const [_writeUserAuth, setWriteUserAuth] = useAtom(writeOnlyUserAuthAtom);
+  const setWriteUserAuth = useSetAtom(writeOnlyUserAuthAtom);
   const styles = useLoginScreenStyle();
   // TODO: set error if login fails
   const [isError, setIsError] = useState(false);
