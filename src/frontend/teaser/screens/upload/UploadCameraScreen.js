@@ -1,14 +1,11 @@
 import { Camera, useCameraDevices } from "react-native-vision-camera";
 import { useIsFocused } from "@react-navigation/native";
-import {
-  View,
-  Text,
-  StyleSheet,
-  useWindowDimensions,
-  Button,
-} from "react-native";
+import { StyleSheet, useWindowDimensions } from "react-native";
 import { useRef } from "react";
-import LoadingView from "../LoadingView";
+import LoadingView from "../../components/templates/LoadingView";
+import { SafeAreaView } from "react-native-safe-area-context";
+import UploadCameraShutterView from "../../components/templates/upload/UploadCameraShutterView";
+import CameraSidebar from "../../components/navs/sidebar/CameraSidebar";
 /**
  * View for uploading videos
  * TODO: Rename this? Should have it's own sub nav stack for:
@@ -17,7 +14,7 @@ import LoadingView from "../LoadingView";
  * --> Post details
  * @returns
  */
-export default function UploadTeaserView() {
+export default function UploadCameraScreen() {
   const newCameraPermission = Camera.requestCameraPermission();
   const newMicrophonePermission = Camera.requestMicrophonePermission();
   const devices = useCameraDevices();
@@ -41,7 +38,10 @@ export default function UploadTeaserView() {
   const recordVideo = () => {
     if (cameraRef.current != null) {
       cameraRef.current.startRecording({
-        onRecordingFinished: (video) => console.log(video),
+        onRecordingFinished: (video) => {
+          console.log(video);
+          setIsRecording(false);
+        },
         onRecordingError: (error) => console.error(error),
       });
       // E.G. Set timeout for 15 seconds
@@ -53,7 +53,7 @@ export default function UploadTeaserView() {
     return <LoadingView />;
   }
   return (
-    <View>
+    <SafeAreaView>
       <Camera
         style={styles.camera}
         device={device}
@@ -62,7 +62,9 @@ export default function UploadTeaserView() {
         video={true}
         audio={true}
       />
-    </View>
+      <CameraSidebar></CameraSidebar>
+      <UploadCameraShutterView></UploadCameraShutterView>
+    </SafeAreaView>
   );
 }
 

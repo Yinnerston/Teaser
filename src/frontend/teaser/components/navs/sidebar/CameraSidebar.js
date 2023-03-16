@@ -1,27 +1,28 @@
 import { StyleSheet, View, Text, useWindowDimensions } from "react-native";
-import ProfilePhoto from "../../elements/photo/ProfilePhoto";
-import LikePostButton from "../../elements/button/LikePostButton";
-import CommentPostButton from "../../elements/button/CommentPostButton";
-import BookmarkPostButton from "../../elements/button/BookmarkPostButton";
-import SharePostButton from "../../elements/button/SharePostButton";
+import FlipCameraButton from "../../elements/button/upload/FlipCameraButton";
+import CameraFlashButton from "../../elements/button/upload/CameraFlashButton";
+import RecordingCountdownButton from "../../elements/button/upload/RecordingCountdownButton";
 
+import { readOnlyIsRecordingAtom } from "../../../hooks/upload/useIsRecording";
+import { useAtom } from "jotai";
 /**
- * Container for the sidebar of a teaser.
- * Handles likes, user profiles, comments, etc.
+ * Container for the sidebar of a Camera View.
  */
-export default function TeaserSidebar() {
+export default function CameraSidebar() {
+  const [isRecording, _setIsRecording] = useAtom(readOnlyIsRecordingAtom);
   const styles = useSidebarStyle();
-  return (
-    <View style={styles.container}>
-      <LikePostButton numLikes={likeCount} style={styles.sidebarItem} />
-      <CommentPostButton numLikes={commentCount} style={styles.sidebarItem} />
-      <BookmarkPostButton
-        numBookmarks={bookmarkCount}
-        style={styles.sidebarItem}
-      />
-      <SharePostButton numShares={shareCount} style={styles.sidebarItem} />
-    </View>
-  );
+
+  if (!isRecording) {
+    return (
+      <View style={styles.container}>
+        <FlipCameraButton></FlipCameraButton>
+        <RecordingCountdownButton></RecordingCountdownButton>
+        <CameraFlashButton></CameraFlashButton>
+      </View>
+    );
+  } else {
+    return <View>{}</View>;
+  }
 }
 
 const useSidebarStyle = () => {
@@ -29,8 +30,16 @@ const useSidebarStyle = () => {
   const styles = StyleSheet.create({
     container: {
       position: "absolute",
-      top: "auto",
-      bottom: 16,
+      top: 16,
+      bottom: "auto",
+      left: "auto",
+      right: 16,
+      height: height / 2,
+    },
+    isRecordingContainer: {
+      position: "absolute",
+      top: 16,
+      bottom: "auto",
       left: "auto",
       right: 16,
       height: height / 2,

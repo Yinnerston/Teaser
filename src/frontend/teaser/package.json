@@ -38,7 +38,8 @@
     "react-native-vision-camera": "^2.15.4",
     "react-query": "^3.39.3",
     "expo-dev-client": "~2.0.1",
-    "expo-constants": "~14.0.2"
+    "expo-constants": "~14.0.2",
+    "@shopify/react-native-skia": "0.1.157"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

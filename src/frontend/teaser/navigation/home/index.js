@@ -48,6 +48,7 @@ export default function HomeNavigator() {
         component={UploadTeaserScreen}
         options={{
           tabBarIcon: ({ color }) => <UploadIcon color={color}></UploadIcon>,
+          headerShown: false,
           ...iconParameters,
         }}
       />
