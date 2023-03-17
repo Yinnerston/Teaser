@@ -5,6 +5,7 @@ import { clearUserAuth } from "../hooks/auth/useUserAuth";
 import {
   dequeueAtomAtom,
   enqueueAtomAtom,
+  stackPopAtomAtom,
   queueAtom,
 } from "../hooks/upload/useMainVideoQueue";
 import { useAtom, useSetAtom } from "jotai";
@@ -18,6 +19,7 @@ export default function SubscriptionsScreen({ navigation }) {
 
   const setDequeueAtomAtom = useSetAtom(dequeueAtomAtom);
   const setEnqueueAtomAtom = useSetAtom(enqueueAtomAtom);
+  const setStackPopAtomAtom = useSetAtom(stackPopAtomAtom);
   const [cameraVideoQueue] = useAtom(queueAtom);
   // const [_dequeuedAtom, _setDequeuedAtoms] = useAtom(dequeuedAtoms)
 
@@ -53,6 +55,13 @@ export default function SubscriptionsScreen({ navigation }) {
           setDequeueAtomAtom();
         }}
         title="DEQUEUE"
+        color="red"
+      ></Button>
+      <Button
+        onPress={() => {
+          setStackPopAtomAtom();
+        }}
+        title="STACK POP"
         color="red"
       ></Button>
       {cameraVideoQueue ? (

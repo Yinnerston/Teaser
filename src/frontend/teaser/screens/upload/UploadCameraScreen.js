@@ -4,9 +4,12 @@ import { StyleSheet, useWindowDimensions, Platform } from "react-native";
 import { useRef, useState, useEffect } from "react";
 import LoadingView from "../../components/templates/LoadingView";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { START_FROM_PREV_VIDEO_END } from "../../Constants";
 import UploadCameraShutterView from "../../components/templates/upload/UploadCameraShutterView";
 import CameraSidebar from "../../components/navs/sidebar/CameraSidebar";
 import { writeOnlyIsRecordingAtomAtom } from "../../hooks/upload/useIsRecording";
+import { enqueueAtomAtom } from "../../hooks/upload/useMainVideoQueue";
+// import { queueAtom, enqueueAtomAtom, dequeueAtomAtom } from "../../hooks/upload/useMainVideoQueue";
 import { useSetAtom } from "jotai";
 /**
  * View for uploading videos
@@ -20,6 +23,10 @@ export default function UploadCameraScreen() {
   const setIsRecording = useSetAtom(writeOnlyIsRecordingAtomAtom);
   const [cameraPermission, setCameraPermission] = useState();
   const [microphonePermission, setMicrophonePermission] = useState();
+  // Queue video from camera output
+  // const setDequeueAtomAtom = useSetAtom(dequeueAtomAtom);
+  const setEnqueueAtomAtom = useSetAtom(enqueueAtomAtom);
+  // const [cameraVideoQueue] = useAtom(queueAtom);
 
   useEffect(() => {
     // Get camera and microphone positions on initial mount
@@ -58,7 +65,11 @@ export default function UploadCameraScreen() {
     setIsRecording();
     const start = cameraRef.current.startRecording({
       onRecordingFinished: (video) => {
-        console.log("ON RECORDING FINISHED");
+        // TODO: get Start time
+        setEnqueueAtomAtom({
+          video: video,
+          startTime: START_FROM_PREV_VIDEO_END,
+        });
         console.log(video);
       },
       onRecordingError: (error) => console.error(error),

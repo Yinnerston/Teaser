@@ -6,7 +6,11 @@ import {
   Text,
 } from "react-native";
 import { isRecordingAtom } from "../../../hooks/upload/useIsRecording";
-import { useAtom } from "jotai";
+import {
+  dequeueAtomAtom,
+  queueAtom,
+} from "../../../hooks/upload/useMainVideoQueue";
+import { useAtom, useSetAtom } from "jotai";
 /**
  * Template View for how the shutter is displayed in relation
  * to the Upload / Effects components on the UploadCameraScreen.
@@ -14,10 +18,15 @@ import { useAtom } from "jotai";
 export default function UploadCameraShutterView(props) {
   const { handleRecordVideo, handleStopRecordingVideo } = props;
   const [isRecording, setIsRecording] = useAtom(isRecordingAtom);
+  // Camera video queue
+  const [cameraVideoQueue] = useAtom(queueAtom);
+  const setDequeueAtomAtom = useSetAtom(dequeueAtomAtom);
   const styles = useCameraShutterViewStyle();
+
   return (
     <View style={styles.container}>
       {isRecording ? (
+        // Recording state
         <TouchableOpacity
           style={styles.cameraIsRecordingShutterView}
           onPress={handleStopRecordingVideo}
@@ -25,6 +34,7 @@ export default function UploadCameraShutterView(props) {
           <View style={styles.cameraShutter}></View>
         </TouchableOpacity>
       ) : (
+        // Not recording state
         <TouchableOpacity
           style={styles.cameraShutterView}
           onPress={handleRecordVideo}

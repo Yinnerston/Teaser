@@ -80,7 +80,7 @@ export const dequeueAtomAtom = atom(
     if (front == null) return;
     // Replace front of queue and add the key to dequeuedAtoms
     let temp = front.next;
-    set(dequeuedAtoms, [...prev, front.key]);
+    set(dequeuedAtoms, [...prev, front]);
     set(frontAtom, temp);
     // Set the rear to null if temp is null
     if (temp == null) {
@@ -88,3 +88,28 @@ export const dequeueAtomAtom = atom(
     }
   },
 );
+
+/**
+ * Gives stack-like pop functionality to the queue.
+ */
+export const stackPopAtomAtom = atom(null, (get, set, update) => {
+  let front = get(frontAtom);
+  let rear = get(rearAtom);
+  const prev = get(dequeuedAtoms);
+  // Return undefined if no items in queue
+  if (rear == null) return;
+  // Only one item in the queue
+  if (front == rear) {
+    set(frontAtom, null);
+    set(rearAtom, null);
+    return;
+  }
+  // Iterate through queue to get all items in sequence
+  while (front.next != rear) {
+    front = front.next;
+  }
+  // Pop off rear item from 'stack'
+  set(dequeuedAtoms, [...prev, front.next]);
+  front.next = null;
+  set(rearAtom, front);
+});

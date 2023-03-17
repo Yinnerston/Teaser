@@ -11,3 +11,6 @@ export const BASE_URL = "https://wocchit.com/api/v1/";
 
 import Constants from "expo-constants";
 export const STATUS_BAR_HEIGHT = Constants.statusBarHeight;
+
+// Video Editor
+export const START_FROM_PREV_VIDEO_END = -1;
