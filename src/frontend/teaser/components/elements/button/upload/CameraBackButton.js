@@ -5,15 +5,19 @@ import { VIDEO_EDITOR_SIDEBAR_BUTTON_SIZE } from "../../../../Constants";
 
 /**
  * Back button used to pop the previous recording off the stack
- * @param {onPress} props
+ * @param {onPress, cameraBackButtonStyle} props
  * @returns
  */
 export default function CameraBackButton(props) {
-  const { onPress } = props;
+  const { onPress, cameraBackButtonStyle } = props;
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={shutterViewStyles.cameraBackButton}
+      style={
+        cameraBackButtonStyle
+          ? cameraBackButtonStyle
+          : shutterViewStyles.cameraBackButton
+      }
     >
       <FontAwesome5
         name="backspace"

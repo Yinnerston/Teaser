@@ -49,7 +49,10 @@ export default function UploadCameraShutterView(props) {
         >
           <View style={styles.cameraShutter}></View>
         </TouchableOpacity>
-        <CameraBackButton onPress={handlePopLatestRecordedVideo} />
+        <CameraBackButton
+          onPress={handlePopLatestRecordedVideo}
+          cameraBackButtonStyle={styles.cameraBackButton}
+        />
       </View>
     );
   }
@@ -97,6 +100,15 @@ const useCameraShutterViewStyle = () => {
       alignItems: "center",
       justifyContent: "center",
       opacity: 0.5,
+    },
+    cameraBackButton: {
+      position: "relative",
+      // justifyContent: "center",
+      // alignItems: "center",
+      top: height / 8 - 30,
+      left: (width * 2) / 3,
+      height: 40,
+      width: 40,
     },
   });
   return styles;
