@@ -3,6 +3,11 @@ import { atom } from "jotai";
  * Node in the queue
  */
 class QVideoNode {
+  /**
+   * Constructor
+   * @param {*} video
+   * @param {*} startTime
+   */
   constructor(video, startTime) {
     this.video = video; // {path: str, duration: float, size: float}
     this.startTime = startTime;
@@ -44,6 +49,7 @@ export const queueAtom = atom((get) => {
 
 /**
  * Write only Enqueue atom
+ * @param {video, startTime} update
  */
 export const enqueueAtomAtom = atom(null, (get, set, update) => {
   // Create a new LL node

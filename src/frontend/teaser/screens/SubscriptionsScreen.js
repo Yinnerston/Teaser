@@ -16,9 +16,9 @@ import { useAtom, useSetAtom } from "jotai";
 export default function SubscriptionsScreen({ navigation }) {
   const [userAuth, setUserAuth] = useAtom(userAuthAtom);
 
-  const _setDequeueAtomAtom = useSetAtom(dequeueAtomAtom);
-  const _setEnqueueAtomAtom = useSetAtom(enqueueAtomAtom);
-  const [_queueAtom] = useAtom(queueAtom);
+  const setDequeueAtomAtom = useSetAtom(dequeueAtomAtom);
+  const setEnqueueAtomAtom = useSetAtom(enqueueAtomAtom);
+  const [cameraVideoQueue] = useAtom(queueAtom);
   // const [_dequeuedAtom, _setDequeuedAtoms] = useAtom(dequeuedAtoms)
 
   const signUpScreen = <SignUpScreen navigation={navigation}></SignUpScreen>;
@@ -35,7 +35,7 @@ export default function SubscriptionsScreen({ navigation }) {
       <Text>Example Queue behaviour:</Text>
       <Button
         onPress={() => {
-          _setEnqueueAtomAtom({
+          setEnqueueAtomAtom({
             video: {
               duration: 0,
               path: Math.random().toString(),
@@ -50,13 +50,13 @@ export default function SubscriptionsScreen({ navigation }) {
       ></Button>
       <Button
         onPress={() => {
-          _setDequeueAtomAtom();
+          setDequeueAtomAtom();
         }}
         title="DEQUEUE"
         color="red"
       ></Button>
-      {_queueAtom ? (
-        _queueAtom.map((item) => {
+      {cameraVideoQueue ? (
+        cameraVideoQueue.map((item) => {
           return <Text key={item.video.path}>{item.video.path}</Text>;
         })
       ) : (
