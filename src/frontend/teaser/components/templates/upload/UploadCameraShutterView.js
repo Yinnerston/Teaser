@@ -6,12 +6,11 @@ import {
   Text,
 } from "react-native";
 import { isRecordingAtom } from "../../../hooks/upload/useIsRecording";
-// import {
-//   stackPopAtomAtom,
-//   queueAtom,
-// } from "../../../hooks/upload/useMainVideoQueue";
+import { queueAtom } from "../../../hooks/upload/useMainVideoQueue";
 import { useAtom, useSetAtom } from "jotai";
 import CameraBackButton from "../../elements/button/upload/CameraBackButton";
+import UploadImageButton from "../../elements/button/upload/UploadImageButton";
+import CameraScreenCheckButton from "../../elements/button/upload/CameraScreenCheckButton";
 
 /**
  * Template View for how the shutter is displayed in relation
@@ -19,16 +18,16 @@ import CameraBackButton from "../../elements/button/upload/CameraBackButton";
  */
 export default function UploadCameraShutterView(props) {
   const {
+    navigation,
     handleRecordVideo,
     handleStopRecordingVideo,
     handlePopLatestRecordedVideo,
   } = props;
   const [isRecording, setIsRecording] = useAtom(isRecordingAtom);
   // Camera video queue
-  // const [cameraVideoQueue] = useAtom(queueAtom);
+  const [cameraVideoQueue] = useAtom(queueAtom);
   // const setStackPopAtomAtom = useSetAtom(stackPopAtomAtom);
   const styles = useCameraShutterViewStyle();
-
   if (isRecording) {
     return (
       <View style={styles.container}>
@@ -49,10 +48,24 @@ export default function UploadCameraShutterView(props) {
         >
           <View style={styles.cameraShutter}></View>
         </TouchableOpacity>
-        <CameraBackButton
-          onPress={handlePopLatestRecordedVideo}
-          cameraBackButtonStyle={styles.cameraBackButton}
-        />
+        {cameraVideoQueue ? (
+          <View>
+            <CameraScreenCheckButton
+              navigation={navigation}
+              cameraScreenCheckButtonStyle={styles.cameraScreenCheckButton}
+            />
+            <CameraBackButton
+              onPress={handlePopLatestRecordedVideo}
+              cameraBackButtonStyle={styles.cameraBackButton}
+            />
+          </View>
+        ) : (
+          <View>
+            <UploadImageButton
+              uploadImageButtonStyle={styles.uploadImageButton}
+            />
+          </View>
+        )}
       </View>
     );
   }
@@ -102,13 +115,33 @@ const useCameraShutterViewStyle = () => {
       opacity: 0.5,
     },
     cameraBackButton: {
-      position: "relative",
-      // justifyContent: "center",
-      // alignItems: "center",
+      position: "absolute",
+      justifyContent: "center",
+      alignItems: "center",
       top: height / 8 - 30,
       left: (width * 2) / 3,
       height: 40,
       width: 40,
+    },
+    uploadImageButton: {
+      position: "absolute",
+      justifyContent: "center",
+      alignItems: "center",
+      top: height / 8 - 30,
+      left: (width * 5) / 6,
+      height: 40,
+      width: 40,
+    },
+    cameraScreenCheckButton: {
+      position: "absolute",
+      justifyContent: "center",
+      alignItems: "center",
+      top: height / 8 - 26,
+      left: (width * 5) / 6,
+      height: 32,
+      width: 32,
+      borderRadius: 16,
+      backgroundColor: "#fe2c55",
     },
   });
   return styles;

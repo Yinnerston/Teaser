@@ -22,7 +22,8 @@ import { useSetAtom } from "jotai";
  * --> Post details
  * @returns
  */
-export default function UploadCameraScreen() {
+export default function UploadCameraScreen(props) {
+  const { navigation } = props;
   const setIsRecording = useSetAtom(writeOnlyIsRecordingAtomAtom);
   const [cameraPermission, setCameraPermission] = useState();
   const [microphonePermission, setMicrophonePermission] = useState();
@@ -121,6 +122,7 @@ export default function UploadCameraScreen() {
       />
       <CameraSidebar></CameraSidebar>
       <UploadCameraShutterView
+        navigation={navigation}
         handleRecordVideo={handleRecordVideo}
         handleStopRecordingVideo={handleStopRecordingVideo}
         handlePopLatestRecordedVideo={handlePopLatestRecordedVideo}

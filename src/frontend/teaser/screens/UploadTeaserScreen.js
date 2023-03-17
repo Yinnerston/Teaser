@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { readOnlyUserAuthAtom } from "../hooks/auth/useUserAuth";
 import { useAtom } from "jotai";
 import SignUpScreen from "./auth/SignUpScreen";
-import UploadTeaserView from "./upload/UploadCameraScreen";
+import UploadCameraScreen from "./upload/UploadCameraScreen";
 /**
  * Screen for the video editor.
  * @returns Currently logged in user's profile
@@ -12,7 +12,7 @@ export default function UploadTeaserScreen({ navigation }) {
   const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
 
   const signUpScreen = <SignUpScreen navigation={navigation} />;
-  const uploadScreen = <UploadTeaserView navigation={navigation} />;
+  const uploadScreen = <UploadCameraScreen navigation={navigation} />;
 
   return userAuthAtomValue ? uploadScreen : signUpScreen;
 }

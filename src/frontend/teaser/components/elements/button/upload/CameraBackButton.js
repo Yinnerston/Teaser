@@ -1,7 +1,7 @@
 import { FontAwesome5 } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { shutterViewStyles } from "./styles";
-import { VIDEO_EDITOR_SIDEBAR_BUTTON_SIZE } from "../../../../Constants";
+import { CAMERA_SHUTTER_VIEW_ICON_SIZE } from "../../../../Constants";
 
 /**
  * Back button used to pop the previous recording off the stack
@@ -21,7 +21,7 @@ export default function CameraBackButton(props) {
     >
       <FontAwesome5
         name="backspace"
-        size={VIDEO_EDITOR_SIDEBAR_BUTTON_SIZE}
+        size={CAMERA_SHUTTER_VIEW_ICON_SIZE}
         color="white"
       />
     </TouchableOpacity>
