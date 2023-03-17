@@ -8,3 +8,10 @@ export const editorSidebarStyles = StyleSheet.create({
     color: "white",
   },
 });
+
+export const shutterViewStyles = StyleSheet.create({
+  cameraBackButton: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
