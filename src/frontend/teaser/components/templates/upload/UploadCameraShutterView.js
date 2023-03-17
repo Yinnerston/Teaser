@@ -6,44 +6,53 @@ import {
   Text,
 } from "react-native";
 import { isRecordingAtom } from "../../../hooks/upload/useIsRecording";
-import {
-  dequeueAtomAtom,
-  queueAtom,
-} from "../../../hooks/upload/useMainVideoQueue";
+// import {
+//   stackPopAtomAtom,
+//   queueAtom,
+// } from "../../../hooks/upload/useMainVideoQueue";
 import { useAtom, useSetAtom } from "jotai";
+import CameraBackButton from "../../elements/button/upload/CameraBackButton";
+
 /**
  * Template View for how the shutter is displayed in relation
  * to the Upload / Effects components on the UploadCameraScreen.
  */
 export default function UploadCameraShutterView(props) {
-  const { handleRecordVideo, handleStopRecordingVideo } = props;
+  const {
+    handleRecordVideo,
+    handleStopRecordingVideo,
+    handlePopLatestRecordedVideo,
+  } = props;
   const [isRecording, setIsRecording] = useAtom(isRecordingAtom);
   // Camera video queue
-  const [cameraVideoQueue] = useAtom(queueAtom);
-  const setDequeueAtomAtom = useSetAtom(dequeueAtomAtom);
+  // const [cameraVideoQueue] = useAtom(queueAtom);
+  // const setStackPopAtomAtom = useSetAtom(stackPopAtomAtom);
   const styles = useCameraShutterViewStyle();
 
-  return (
-    <View style={styles.container}>
-      {isRecording ? (
-        // Recording state
+  if (isRecording) {
+    return (
+      <View style={styles.container}>
         <TouchableOpacity
           style={styles.cameraIsRecordingShutterView}
           onPress={handleStopRecordingVideo}
         >
           <View style={styles.cameraShutter}></View>
         </TouchableOpacity>
-      ) : (
-        // Not recording state
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.container}>
         <TouchableOpacity
           style={styles.cameraShutterView}
           onPress={handleRecordVideo}
         >
           <View style={styles.cameraShutter}></View>
         </TouchableOpacity>
-      )}
-    </View>
-  );
+        <CameraBackButton onPress={handlePopLatestRecordedVideo} />
+      </View>
+    );
+  }
 }
 
 const useCameraShutterViewStyle = () => {
