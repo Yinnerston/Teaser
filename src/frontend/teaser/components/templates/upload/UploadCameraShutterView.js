@@ -11,23 +11,23 @@ import { useAtom } from "jotai";
  * Template View for how the shutter is displayed in relation
  * to the Upload / Effects components on the UploadCameraScreen.
  */
-export default function UploadCameraShutterView() {
+export default function UploadCameraShutterView(props) {
+  const { handleRecordVideo, handleStopRecordingVideo } = props;
   const [isRecording, setIsRecording] = useAtom(isRecordingAtom);
   const styles = useCameraShutterViewStyle();
   return (
     <View style={styles.container}>
-      <Text>{isRecording ? "YES" : "NO"}</Text>
       {isRecording ? (
         <TouchableOpacity
           style={styles.cameraIsRecordingShutterView}
-          onPress={() => setIsRecording(false)}
+          onPress={handleStopRecordingVideo}
         >
           <View style={styles.cameraShutter}></View>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
           style={styles.cameraShutterView}
-          onPress={() => setIsRecording(true)}
+          onPress={handleRecordVideo}
         >
           <View style={styles.cameraShutter}></View>
         </TouchableOpacity>
