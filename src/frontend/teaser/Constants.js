@@ -18,3 +18,6 @@ export const VIDEO_EDITOR_SIDEBAR_BUTTON_SIZE = 32;
 export const CAMERA_SHUTTER_VIEW_ICON_SIZE = 24;
 export const TEASER_VIDEO_MAX_LENGTH_MS = 15000; // 15 seconds.
 export const TEASER_VIDEO_REFRESH_RATE_MS = 33; // Around 30fps
+// Video Editing Screen heights
+export const VIDEO_CONTROL_TOOLBAR_HEIGHT = 32;
+export const VIDEO_TOOLS_FOOTER_NAV_HEIGHT = 48;

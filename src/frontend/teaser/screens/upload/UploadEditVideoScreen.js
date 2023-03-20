@@ -15,7 +15,11 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { START_FROM_PREV_VIDEO_END } from "../../Constants";
+import {
+  START_FROM_PREV_VIDEO_END,
+  VIDEO_CONTROL_TOOLBAR_HEIGHT,
+  VIDEO_TOOLS_FOOTER_NAV_HEIGHT,
+} from "../../Constants";
 
 export default function UploadEditVideoScreen() {
   const styles = useUploadEditVideoScreenStyles();
@@ -73,7 +77,10 @@ export default function UploadEditVideoScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View key="CameraView-UploadEditVideoScreen" style={styles.videoContainer}>
+      <View
+        key="CameraView-UploadEditVideoScreen"
+        style={styles.videoContainer}
+      >
         <Video
           ref={(_videoRef) => {
             videoRef.current = _videoRef;
@@ -86,32 +93,22 @@ export default function UploadEditVideoScreen() {
           shouldPlay={true}
         />
       </View>
-      <View key="VideoControlToolbar-UploadEditVideoScreen">
+      <View
+        key="VideoControlToolbar-UploadEditVideoScreen"
+        style={styles.videoControlToolbarContainer}
+      >
         <TouchableOpacity onPress={() => handlePressTogglePlayPause()}>
           <AntDesign name="caretright" size={24} color="white" />
-          {editorVideoIsPlaying ? (
-            <Text>IS PLAYING</Text>
-          ) : (
-            <Text>NOT PLAYING</Text>
-          )}
-          {videoIsFinished ? (
-            <Text>IS FINSIHED</Text>
-          ) : (
-            <Text>NOT FINSIHED</Text>
-          )}
         </TouchableOpacity>
       </View>
-      <View key="TimelineView-UploadEditVideoScreen">
-        <Text>{JSON.stringify(curPlayingVideo)}</Text>
-        {/* <Text>{curPlayingVideo.video.toString()}</Text> */}
-
-        {curPlayingVideo ? (
-          <Text key={curPlayingVideo.video.path}>{curPlayingVideo.video.path}</Text>
-        ) : (
-          <Text>Undefined</Text>
-        )}
-      </View>
-      <View key="VideoToolsFooterNav-UploadEditVideoScreen">
+      <View
+        key="TimelineView-UploadEditVideoScreen"
+        style={styles.timelineContainer}
+      ></View>
+      <View
+        key="VideoToolsFooterNav-UploadEditVideoScreen"
+        style={styles.videoToolsFooterNavContainer}
+      >
         <Text>Some Icons Here</Text>
       </View>
     </SafeAreaView>
@@ -120,20 +117,40 @@ export default function UploadEditVideoScreen() {
 
 const useUploadEditVideoScreenStyles = () => {
   const { height, width } = useWindowDimensions();
+  const VIDEO_CONTAINER_HEIGHT = (width * 32) / 27;
+  const TIMELINE_CONTAINER_HEIGHT =
+    height -
+    VIDEO_CONTAINER_HEIGHT -
+    VIDEO_TOOLS_FOOTER_NAV_HEIGHT -
+    VIDEO_CONTROL_TOOLBAR_HEIGHT;
   const styles = StyleSheet.create({
     container: {
-      backgroundColor: "gray",
+      backgroundColor: "#121212",
     },
     videoContainer: {
-      height: width * 32 / 27,
+      height: VIDEO_CONTAINER_HEIGHT,
       width: width,
       justifyContent: "center",
       alignItems: "center",
     },
     video: {
-      height: width * 32 / 27,
-      width: width * 2 / 3,
+      height: VIDEO_CONTAINER_HEIGHT,
+      width: (width * 2) / 3,
       alignContent: "center",
+    },
+    videoControlToolbarContainer: {
+      height: VIDEO_CONTROL_TOOLBAR_HEIGHT,
+      width: width,
+      backgroundColor: "black",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    timelineContainer: {
+      height: TIMELINE_CONTAINER_HEIGHT,
+      backgroundColor: "#121212",
+    },
+    videoToolsFooterNavContainer: {
+      height: VIDEO_TOOLS_FOOTER_NAV_HEIGHT,
     },
   });
   return styles;
