@@ -57,13 +57,19 @@ export default function UploadEditVideoScreen() {
   };
 
   const handlePressTogglePlayPause = async () => {
-    if (videoIsFinished) {
-      setCurPlayingVideo(START_FROM_PREV_VIDEO_END);
-      setEditorVideoIsPlaying(true);
-      setVideoIsFinished(false);
-      return;
-    }
     if (videoRef.current != null) {
+      if (videoIsFinished) {
+        if (queue.length == 1) {
+          // If only one video, seek to beginning
+          videoRef.current.playFromPositionAsync(0);
+        } else {
+          // Replace curPlayingVideo with first video in queue
+          setCurPlayingVideo(START_FROM_PREV_VIDEO_END);
+        }
+        setEditorVideoIsPlaying(true);
+        setVideoIsFinished(false);
+        return;
+      }
       // Play / Pause video if we haven't reached the end
       if (editorVideoIsPlaying) {
         setEditorVideoIsPlaying(false);
@@ -104,7 +110,13 @@ export default function UploadEditVideoScreen() {
       <View
         key="TimelineView-UploadEditVideoScreen"
         style={styles.timelineContainer}
-      ></View>
+      >
+        <Text style={{ color: "white" }}>
+          {editorVideoIsPlaying ? "PLAY" : "STOP"}
+          {"\n"}
+          {videoIsFinished ? "FIN" : "NUP"}
+        </Text>
+      </View>
       <View
         key="VideoToolsFooterNav-UploadEditVideoScreen"
         style={styles.videoToolsFooterNavContainer}
