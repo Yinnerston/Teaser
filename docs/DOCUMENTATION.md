@@ -23,3 +23,7 @@ POSTGRES_PASSWORD=???
 # Known Bugs:
 - `... Invariant Violation:` --> Check first error
 - https://github.com/henninghall/react-native-date-picker#why-does-the-android-app-crash-in-production
+- ```
+Error: Call to function 'ExponentImagePicker.launchImageLibraryAsync' has been rejected.
+Caused by: kotlin.UninitializedPropertyAccessException: lateinit property imageLibraryLauncher has not been initialized
+``` https://github.com/expo/expo/issues/19512
