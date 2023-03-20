@@ -6,7 +6,7 @@ import LoadingView from "../../components/templates/LoadingView";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { START_FROM_PREV_VIDEO_END } from "../../Constants";
 import UploadCameraShutterView from "../../components/templates/upload/UploadCameraShutterView";
-import CameraSidebar from "../../components/navs/sidebar/CameraSidebar";
+import EditorSidebar from "../../components/navs/sidebar/EditorSidebar";
 import { writeOnlyIsRecordingAtomAtom } from "../../hooks/upload/useIsRecording";
 import {
   enqueueAtomAtom,
@@ -120,7 +120,7 @@ export default function UploadCameraScreen(props) {
         video={true}
         audio={true}
       />
-      <CameraSidebar></CameraSidebar>
+      <EditorSidebar></EditorSidebar>
       <UploadCameraShutterView
         navigation={navigation}
         handleRecordVideo={handleRecordVideo}

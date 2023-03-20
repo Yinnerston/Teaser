@@ -7,10 +7,12 @@ class QVideoNode {
    * Constructor
    * @param {*} video
    * @param {*} startTime
+   * @attribute key
    */
   constructor(video, startTime) {
     this.video = video; // {path: str, duration: float, size: float}
     this.startTime = startTime;
+    this.key = Math.floor(Math.random() >> 69696969);
     this.next = null;
   }
 }
@@ -18,7 +20,7 @@ class QVideoNode {
 /**
  * Atom at the head of the queue
  */
-const frontAtom = atom(null);
+export const frontAtom = atom(null);
 /**
  * Atom at the back fo the queue
  */
@@ -113,3 +115,10 @@ export const stackPopAtomAtom = atom(null, (get, set, update) => {
   front.next = null;
   set(rearAtom, front);
 });
+
+// TODO: ReorderItemAtom
+// touch frontAtom / rearAtom to rerender list when done
+// Write only Function
+// Iterate through the queue until key
+// this.next = keyNode.next
+// keyNode->next = this

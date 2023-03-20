@@ -8,7 +8,7 @@ import { useAtom } from "jotai";
 /**
  * Container for the sidebar of a Camera View.
  */
-export default function CameraSidebar() {
+export default function EditorSidebar() {
   const [isRecording, _setIsRecording] = useAtom(readOnlyIsRecordingAtom);
   const styles = useSidebarStyle();
 
