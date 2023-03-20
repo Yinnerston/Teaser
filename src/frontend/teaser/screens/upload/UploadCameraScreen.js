@@ -72,7 +72,7 @@ export default function UploadCameraScreen(props) {
       onRecordingFinished: (video) => {
         // TODO: get Start time
         setEnqueueAtomAtom({
-          video: video,
+          video: { ...video, duration: video.duration * 1000 },
           startTime: START_FROM_PREV_VIDEO_END,
         });
         console.log(video);

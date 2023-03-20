@@ -2,7 +2,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAtom, useSetAtom } from "jotai";
 import { queueAtom } from "../../hooks/upload/useMainVideoQueue";
 import { Video } from "expo-av";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import {
   curPlayingVideoAtom,
   editorVideoPlayingStatusAtom,
@@ -14,13 +14,21 @@ import {
   Text,
   View,
   useWindowDimensions,
+  ScrollView,
+  Image,
 } from "react-native";
+import temp from "../../assets/favicon.png";
 import {
   START_FROM_PREV_VIDEO_END,
   VIDEO_CONTROL_TOOLBAR_HEIGHT,
   VIDEO_TOOLS_FOOTER_NAV_HEIGHT,
+  VIDEO_IMAGE_FRAME_WIDTH,
 } from "../../Constants";
 
+/**
+ * Edit your videos in the app.
+ * @returns
+ */
 export default function UploadEditVideoScreen() {
   const styles = useUploadEditVideoScreenStyles();
   const videoRef = useRef(null);
@@ -31,6 +39,7 @@ export default function UploadEditVideoScreen() {
     editorVideoPlayingStatusAtom,
   );
   const [videoIsFinished, setVideoIsFinished] = useState(false);
+  const [selectedComponentKey, setSelectedComponentKey] = useState(null);
 
   useEffect(() => {
     // On first page render, set curPlaying Video
@@ -81,6 +90,51 @@ export default function UploadEditVideoScreen() {
     }
   };
 
+  const handleSelectedVideoKeyChange = (prev, newKey) =>
+    newKey != prev ? newKey : null;
+
+  const videoTimelineElements = useMemo(
+    () =>
+      queue.map((item) => {
+        // Dynamically set width based on the duration in seconds
+        let videoTimelineThumbnailStyle = {
+          width: Math.floor(
+            (item.video.duration * VIDEO_IMAGE_FRAME_WIDTH) / 1000,
+          ),
+          height: VIDEO_IMAGE_FRAME_WIDTH,
+          borderRightWidth: 3,
+          borderRightColor: "white",
+        };
+        return (
+          <TouchableOpacity
+            key={"VideoTimelineThumbnail" + item.key}
+            style={videoTimelineThumbnailStyle}
+            onPress={() =>
+              setSelectedComponentKey((prev) =>
+                handleSelectedVideoKeyChange(prev, item.key),
+              )
+            }
+          >
+            <Image
+              source={{ uri: "https://art.pixilart.com/36051be2145c3c3.png" }}
+              style={videoTimelineThumbnailStyle}
+            />
+            {item.key == selectedComponentKey ? (
+              <View
+                style={{
+                  ...videoTimelineThumbnailStyle,
+                  borderColor: "white",
+                  borderWidth: 3,
+                  position: "absolute",
+                }}
+              />
+            ) : null}
+          </TouchableOpacity>
+        );
+      }),
+    [queue, selectedComponentKey],
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -98,6 +152,16 @@ export default function UploadEditVideoScreen() {
           style={styles.video}
           shouldPlay={true}
         />
+        {curPlayingVideo.key == selectedComponentKey ? (
+          <View
+            style={{
+              ...styles.video,
+              borderWidth: 3,
+              borderColor: "white",
+              position: "absolute",
+            }}
+          />
+        ) : null}
       </View>
       <View
         key="VideoControlToolbar-UploadEditVideoScreen"
@@ -111,17 +175,31 @@ export default function UploadEditVideoScreen() {
         key="TimelineView-UploadEditVideoScreen"
         style={styles.timelineContainer}
       >
-        <Text style={{ color: "white" }}>
-          {editorVideoIsPlaying ? "PLAY" : "STOP"}
-          {"\n"}
-          {videoIsFinished ? "FIN" : "NUP"}
-        </Text>
+        {/*
+      Timeline View:
+      - Main video timeline
+      - Add sound bar underneath it
+       */}
+        <ScrollView style={styles.timelineScrollView} horizontal={true}>
+          <View style={styles.timelineScrollPaddingView} />
+          {/* Timestamps */}
+          {/* Video Thumbnails */}
+          {videoTimelineElements ? videoTimelineElements : <Text>NTHING</Text>}
+          <View style={styles.timelineScrollPaddingView} />
+        </ScrollView>
+        <View style={styles.timelineTimeBar} />
       </View>
       <View
         key="VideoToolsFooterNav-UploadEditVideoScreen"
         style={styles.videoToolsFooterNavContainer}
       >
-        <Text>Some Icons Here</Text>
+        <Text style={{ color: "white" }}>
+          {editorVideoIsPlaying ? "PLAY " : "STOP "}
+          {selectedComponentKey}
+          {"\n"}
+          {videoIsFinished ? "FIN " : "NUP "}
+          {queue.map((item) => item.key + " ")}
+        </Text>
       </View>
     </SafeAreaView>
   );
@@ -160,6 +238,25 @@ const useUploadEditVideoScreenStyles = () => {
     timelineContainer: {
       height: TIMELINE_CONTAINER_HEIGHT,
       backgroundColor: "#121212",
+    },
+    timelineScrollView: {
+      height: TIMELINE_CONTAINER_HEIGHT,
+    },
+    timelineScrollPaddingView: {
+      height: TIMELINE_CONTAINER_HEIGHT,
+      width: width / 2,
+    },
+    timelineScrollLeftPadding: {
+      marginLeft: width / 3,
+      height: TIMELINE_CONTAINER_HEIGHT,
+      backgroundColor: "blue",
+    },
+    timelineTimeBar: {
+      width: 2,
+      height: TIMELINE_CONTAINER_HEIGHT,
+      position: "absolute",
+      alignSelf: "center",
+      backgroundColor: "white",
     },
     videoToolsFooterNavContainer: {
       height: VIDEO_TOOLS_FOOTER_NAV_HEIGHT,

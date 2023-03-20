@@ -21,3 +21,6 @@ export const TEASER_VIDEO_REFRESH_RATE_MS = 33; // Around 30fps
 // Video Editing Screen heights
 export const VIDEO_CONTROL_TOOLBAR_HEIGHT = 32;
 export const VIDEO_TOOLS_FOOTER_NAV_HEIGHT = 48;
+
+export const TIMELINE_IMAGE_FPS = 1;
+export const VIDEO_IMAGE_FRAME_WIDTH = 40;

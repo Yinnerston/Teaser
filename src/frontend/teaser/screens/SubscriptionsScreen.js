@@ -66,7 +66,11 @@ export default function SubscriptionsScreen({ navigation }) {
       ></Button>
       {cameraVideoQueue ? (
         cameraVideoQueue.map((item) => {
-          return <Text key={item.video.path}>{item.video.path}</Text>;
+          return (
+            <Text key={item.video.path}>
+              {item.video.path} with key: {item.key}
+            </Text>
+          );
         })
       ) : (
         <Text>Undefined</Text>
