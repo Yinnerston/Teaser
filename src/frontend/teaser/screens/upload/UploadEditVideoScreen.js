@@ -98,13 +98,13 @@ export default function UploadEditVideoScreen() {
       queue.map((item) => {
         // Dynamically set width based on the duration in seconds
         let videoTimelineThumbnailStyle = {
-          width: Math.floor(
+          width: Math.ceil(
             (item.video.duration * VIDEO_IMAGE_FRAME_WIDTH) / 1000,
           ),
           height: VIDEO_IMAGE_FRAME_WIDTH,
-          borderRightWidth: 3,
-          borderRightColor: "white",
+          position: "relative",
         };
+
         return (
           <TouchableOpacity
             key={"VideoTimelineThumbnail" + item.key}
@@ -115,10 +115,28 @@ export default function UploadEditVideoScreen() {
               )
             }
           >
-            <Image
-              source={{ uri: "https://art.pixilart.com/36051be2145c3c3.png" }}
-              style={videoTimelineThumbnailStyle}
-            />
+            {item.frames.map((framePath, index) => {
+              let frameThumbnailStyle = {
+                ...videoTimelineThumbnailStyle,
+                width: VIDEO_IMAGE_FRAME_WIDTH,
+                position: "absolute",
+                left: VIDEO_IMAGE_FRAME_WIDTH * index,
+              };
+              if (index == item.numberOfFrames - 1) {
+                // Cut off the frame by the second
+                frameThumbnailStyle.width =
+                  (frameThumbnailStyle.width * (item.video.duration % 1000)) /
+                  1000;
+              }
+              return (
+                <Image
+                  key={"TIMELINEFRAME" + Math.random() * 6969 + item.key}
+                  source={{ uri: framePath }}
+                  style={frameThumbnailStyle}
+                />
+              );
+            })}
+
             {item.key == selectedComponentKey ? (
               <View
                 style={{

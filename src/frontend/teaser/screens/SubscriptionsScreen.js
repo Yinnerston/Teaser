@@ -1,4 +1,4 @@
-import { View, Button, Text } from "react-native";
+import { View, Button, Text, Image } from "react-native";
 import { userAuthAtom } from "../hooks/auth/useUserAuth";
 import SignUpScreen from "./auth/SignUpScreen";
 import { clearUserAuth } from "../hooks/auth/useUserAuth";
@@ -67,9 +67,10 @@ export default function SubscriptionsScreen({ navigation }) {
       {cameraVideoQueue ? (
         cameraVideoQueue.map((item) => {
           return (
-            <Text key={item.video.path}>
-              {item.video.path} with key: {item.key}
-            </Text>
+            <Image
+              source={{ uri: item.frames[0] }}
+              style={{ height: 40, width: 40 }}
+            />
           );
         })
       ) : (

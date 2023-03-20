@@ -1,4 +1,13 @@
 import { atom } from "jotai";
+import FFmpegWrapper from "./ffmpegWrapper";
+
+const getFileNameFromPath = (path) => {
+  const fragments = path.split("/");
+  let fileName = fragments[fragments.length - 1];
+  fileName = fileName.split(".")[0];
+  return fileName;
+};
+
 /**
  * Node in the queue
  */
@@ -8,12 +17,35 @@ class QVideoNode {
    * @param {*} video
    * @param {*} startTime
    * @attribute key
+   * @attribute timelineImages
    */
   constructor(video, startTime) {
     this.video = video; // {path: str, duration: float, size: float}
     this.startTime = startTime;
-    this.key = Math.floor(Math.random() >> 69696969);
+    this.key = Math.floor(Math.random() * 6942069);
+    this.numberOfFrames = Math.ceil(video.duration / 1000);
+    this.frames = [];
+    FFmpegWrapper.getFrames(
+      getFileNameFromPath(video.path),
+      video.path,
+      this.numberOfFrames,
+      (filePath) => {
+        const _frames = [];
+        for (let i = 0; i < this.numberOfFrames; i++) {
+          _frames.push(
+            `${filePath.replace("%4d", String(i + 1).padStart(4, 0))}`,
+          );
+        }
+        console.log("FRAMES", _frames);
+        this.setFrames(_frames);
+      },
+      (e) => console.error(e),
+    );
     this.next = null;
+  }
+
+  setFrames(frames) {
+    this.frames = frames;
   }
 }
 
