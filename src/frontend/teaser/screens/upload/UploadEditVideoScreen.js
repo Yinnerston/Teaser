@@ -30,7 +30,7 @@ import {
  * @returns
  */
 export default function UploadEditVideoScreen() {
-  const styles = useUploadEditVideoScreenStyles();
+  const { height, width, styles } = useUploadEditVideoScreenStyles();
   const videoRef = useRef(null);
   const [queue] = useAtom(queueAtom);
   const [curPlayingVideo, setCurPlayingVideo] = useAtom(curPlayingVideoAtom);
@@ -95,7 +95,7 @@ export default function UploadEditVideoScreen() {
 
   const videoTimelineElements = useMemo(
     () =>
-      queue.map((item) => {
+      queue.map((item, queueIndex) => {
         // Dynamically set width based on the duration in seconds
         let videoTimelineThumbnailStyle = {
           width: Math.ceil(
@@ -104,7 +104,6 @@ export default function UploadEditVideoScreen() {
           height: VIDEO_IMAGE_FRAME_WIDTH,
           position: "relative",
         };
-
         return (
           <TouchableOpacity
             key={"VideoTimelineThumbnail" + item.key}
@@ -136,7 +135,6 @@ export default function UploadEditVideoScreen() {
                 />
               );
             })}
-
             {item.key == selectedComponentKey ? (
               <View
                 style={{
@@ -151,6 +149,40 @@ export default function UploadEditVideoScreen() {
         );
       }),
     [queue, selectedComponentKey],
+  );
+
+  const videoTimelineSeparators = useMemo(() =>
+    queue.map(
+      (item, queueIndex) => {
+        // Style to draw separator between image timeline components
+
+        let PADDING_VIEW_WIDTH = width / 2;
+        let videoTimelineSeparateStyle = {
+          marginLeft:
+            Math.ceil((item.video.duration * VIDEO_IMAGE_FRAME_WIDTH) / 1000) -
+            10 +
+            PADDING_VIEW_WIDTH,
+          height: 20,
+          width: 20,
+          top: 10,
+          borderRadius: 5,
+          backgroundColor: "white",
+          position: "absolute",
+        };
+        if (queueIndex != queue.length - 1) {
+          return (
+            <View id="top" style={videoTimelineSeparateStyle}>
+              <Text
+                style={{ color: "gray", fontSize: 16, textAlign: "center" }}
+              >
+                T
+              </Text>
+            </View>
+          );
+        }
+      },
+      [queue],
+    ),
   );
 
   return (
@@ -202,7 +234,16 @@ export default function UploadEditVideoScreen() {
           <View style={styles.timelineScrollPaddingView} />
           {/* Timestamps */}
           {/* Video Thumbnails */}
-          {videoTimelineElements ? videoTimelineElements : <Text>NTHING</Text>}
+          {videoTimelineElements ? (
+            videoTimelineElements
+          ) : (
+            <Text>Alt Text</Text>
+          )}
+          {videoTimelineSeparators ? (
+            videoTimelineSeparators
+          ) : (
+            <Text>Alt Text</Text>
+          )}
           <View style={styles.timelineScrollPaddingView} />
         </ScrollView>
         <View style={styles.timelineTimeBar} />
@@ -261,13 +302,9 @@ const useUploadEditVideoScreenStyles = () => {
       height: TIMELINE_CONTAINER_HEIGHT,
     },
     timelineScrollPaddingView: {
+      // videoTimelineSeparators are dependent on this
       height: TIMELINE_CONTAINER_HEIGHT,
       width: width / 2,
-    },
-    timelineScrollLeftPadding: {
-      marginLeft: width / 3,
-      height: TIMELINE_CONTAINER_HEIGHT,
-      backgroundColor: "blue",
     },
     timelineTimeBar: {
       width: 2,
@@ -280,5 +317,5 @@ const useUploadEditVideoScreenStyles = () => {
       height: VIDEO_TOOLS_FOOTER_NAV_HEIGHT,
     },
   });
-  return styles;
+  return { height, width, styles };
 };
