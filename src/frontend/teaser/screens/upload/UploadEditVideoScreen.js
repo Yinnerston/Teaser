@@ -35,8 +35,35 @@ import {
   VIDEO_CONTROL_TOOLBAR_HEIGHT,
   VIDEO_TOOLS_FOOTER_NAV_HEIGHT,
   VIDEO_IMAGE_FRAME_WIDTH,
+  TIMELINE_VIDEO_FPS,
 } from "../../Constants";
 import { NativePressableOpacity } from "react-native-pressable-opacity";
+
+/**
+ * TODO: export this to another file?
+ * https://overreacted.io/making-setinterval-declarative-with-react-hooks/#just-show-me-the-code
+ * @param {*} callback
+ * @param {*} delay
+ */
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
 
 /**
  * Edit your videos in the app.
@@ -54,15 +81,33 @@ export default function UploadEditVideoScreen() {
   );
   const [videoIsFinished, setVideoIsFinished] = useState(false);
   const [selectedComponentKey, setSelectedComponentKey] = useState(null);
+  // Scroll based on video playing
+  const [timelinePosition, setTimelinePosition] = useState(0);
+  const scrollRef = useRef(null);
+
   const videoTimelineWrapperViewWidth = useMemo(() => {
     let queueDurationInSeconds = Math.ceil(queueDuration / 1000);
     return Math.max(queueDurationInSeconds, 16) * VIDEO_IMAGE_FRAME_WIDTH;
   }, [queueDuration]);
-
+  const intervalLength = 1000 / TIMELINE_VIDEO_FPS;
   useEffect(() => {
     // On first page render, set curPlaying Video
     setCurPlayingVideo(START_FROM_PREV_VIDEO_END);
   }, []);
+
+  // As the video plays, scroll the scrollView by scrollTo {x: timelinePosition}
+  useInterval(() => {
+    if (editorVideoIsPlaying && scrollRef.current != null) {
+      setTimelinePosition(
+        (current) => current + VIDEO_IMAGE_FRAME_WIDTH / TIMELINE_VIDEO_FPS,
+      );
+      scrollRef.current.scrollTo({
+        x: timelinePosition,
+        y: 0,
+        animated: false,
+      });
+    }
+  }, intervalLength);
 
   const handlePlaybackStatusUpdate = (status) => {
     if (status.isLoaded) {
@@ -92,6 +137,10 @@ export default function UploadEditVideoScreen() {
         } else {
           // Replace curPlayingVideo with first video in queue
           setCurPlayingVideo(START_FROM_PREV_VIDEO_END);
+        }
+        setTimelinePosition(0);
+        if (scrollRef.current != null) {
+          scrollRef.current.scrollTo({ x: 0, y: 0, animated: false });
         }
         setEditorVideoIsPlaying(true);
         setVideoIsFinished(false);
@@ -146,7 +195,7 @@ export default function UploadEditVideoScreen() {
       <Text
         style={{
           ...styles.timelineTimeMarkingsText,
-          marginLeft: VIDEO_IMAGE_FRAME_WIDTH,
+          marginLeft: VIDEO_IMAGE_FRAME_WIDTH - 35.3,
         }}
       >
         00:15
@@ -276,7 +325,7 @@ export default function UploadEditVideoScreen() {
           </GestureDetector>
         );
       }),
-    [queue, selectedComponentKey, animatedStyles], // TODO: or just animatedStyles?
+    [queue, selectedComponentKey], // TODO: or just animatedStyles?
   );
 
   const videoTimelineSeparators = useMemo(() =>
@@ -327,7 +376,7 @@ export default function UploadEditVideoScreen() {
           }
           onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
           style={styles.video}
-          shouldPlay={true}
+          shouldPlay={false}
         />
         {curPlayingVideo.key == selectedComponentKey ? (
           <View
@@ -357,7 +406,11 @@ export default function UploadEditVideoScreen() {
       - Main video timeline
       - Add sound bar underneath it
        */}
-        <ScrollView style={styles.timelineScrollView} horizontal={true}>
+        <ScrollView
+          style={styles.timelineScrollView}
+          horizontal={true}
+          ref={scrollRef}
+        >
           <View style={styles.timelineScrollPaddingView} />
           {/* TODO: Timestamps */}
           <View
@@ -392,11 +445,11 @@ export default function UploadEditVideoScreen() {
         style={styles.videoToolsFooterNavContainer}
       >
         <Text style={{ color: "white" }}>
-          {editorVideoIsPlaying ? "PLAY " : "STOP "}
-          {selectedComponentKey}
+          {editorVideoIsPlaying ? "PLAYING " : "STOP "}
+          {timelinePosition}
           {"\n"}
-          {videoIsFinished ? "FIN " : "NUP "}
-          {queue.map((item) => item.key + " ")}
+          {videoIsFinished ? "FINISHED " : "UNFINISHED "}
+          {(queueDuration / 1000) * VIDEO_IMAGE_FRAME_WIDTH}
         </Text>
       </View>
     </SafeAreaView>
@@ -463,7 +516,7 @@ const useUploadEditVideoScreenStyles = () => {
     },
     timelineTimeMarkingsText: {
       marginLeft: VIDEO_IMAGE_FRAME_WIDTH * 2 - 35.3, // TODO: Dependent on text choice / size.
-      color: "white",
+      color: "gray",
       position: "relative",
     },
     videoToolsFooterNavContainer: {
