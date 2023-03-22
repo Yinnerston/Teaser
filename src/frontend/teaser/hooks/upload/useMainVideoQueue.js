@@ -148,6 +148,14 @@ export const stackPopAtomAtom = atom(null, (get, set, update) => {
   set(rearAtom, front);
 });
 
+export const queueDurationAtom = atom((get) => {
+  let queue = get(queueAtom);
+  let queueDuration = queue.reduce(
+    (partialDuration, item) => partialDuration + item.video.duration,
+    0,
+  );
+  return queueDuration;
+});
 // TODO: ReorderItemAtom
 // touch frontAtom / rearAtom to rerender list when done
 // Write only Function
