@@ -109,6 +109,55 @@ export default function UploadEditVideoScreen() {
     }
   }, intervalLength);
 
+  // // Scroll View onScroll functions:
+  // /**
+  //  * Handles stopping the video when user starts scrolling the scroll view.
+  //  */
+  // const handleBeginDragTimelineScrollView = (_event) => {
+  //   // Pause the video
+  //   setEditorVideoIsPlaying(false);
+  //   if (videoRef.current != null) {
+  //     videoRef.current.pauseAsync();
+  //   }
+  //   // Get the video in question based on startTime
+  //   if (curPlayingVideo)  {
+  //     let curTimelinePosition = [msToWidth(curPlayingVideo["msstartTime"]), msToWidth(curPlayingVideo["msstartTime"] + curPlayingVideo["video"]["duration"])]
+  //     console.error(curTimelinePosition)
+  //     setCurPlayingVideoTimelinePosition(curTimelinePosition)  // curPlayingVideo.msstartTime
+  //   }
+  // }
+
+  // const handleTimelineOnScroll = (event) => {
+  //   // Clamp within bounds [0, queueDuration]
+  //   let contentOffset = Math.min(Math.max(event.nativeEvent.contentOffset, 0), queueDuration)
+  //   // TODO: Seek to position in relevant video
+  //   if (contentOffset < 0 || contentOffset > queueDuration) {
+  //     // Reject invalid inputs
+  //     return;
+  //   }
+  //   let endOfCurVideoTimelinePosition = curTimelinePosition[1];
+  //   if (curPlayingVideo)  {
+  //     if (contentOffset > endOfCurVideoTimelinePosition)  {
+  //       // Go to next video
+  //       setCurPlayingVideo(curPlayingVideo.next);
+  //     }
+  //     // else if (contentOffset < curPlayingVideoTimelinePosition[0]) {
+  //     //   // Go to prev video
+  //     //   setCurPlayingVideo(curPlayingVideo.prev);
+  //     // }
+  //   }
+
+  //   // If scrollOffset not within the bounds of the [startTime, endTime] of the video, switch video
+  //   // Seek that that position
+  //   if (videoRef.current != null) {
+  //     // Seek to position
+  //     let seekTo = ReversemsToWidth(endOfCurVideoTimelinePosition - contentOffset);
+  //     videoRef.current.seekTo(seekTo);
+  //     console.log(seekTo)
+  //   }
+  //   console.log(contentOffset)
+  // }
+
   const handlePlaybackStatusUpdate = (status) => {
     if (status.isLoaded) {
       // setEditorVideoIsPlaying(status.isPlaying)
@@ -160,21 +209,21 @@ export default function UploadEditVideoScreen() {
   const handleSelectedVideoKeyChange = (prev, newKey) =>
     newKey != prev ? newKey : null;
 
-  const activeKey = useSharedValue();
-  const timelineOffset = useSharedValue({});
-  const start = useSharedValue({});
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateX: timelineOffset.value[activeKey.value]
-            ? timelineOffset.value[activeKey.value].x
-            : 0,
-        },
-        { translateY: 0 },
-      ],
-    };
-  });
+  // const activeKey = useSharedValue();
+  // const timelineOffset = useSharedValue({});
+  // const start = useSharedValue({});
+  // const animatedStyles = useAnimatedStyle(() => {
+  //   return {
+  //     transform: [
+  //       {
+  //         translateX: timelineOffset.value[activeKey.value]
+  //           ? timelineOffset.value[activeKey.value].x
+  //           : 0,
+  //       },
+  //       { translateY: 0 },
+  //     ],
+  //   };
+  // });
 
   /**
    * TODO: useMemo dependent on queue, scrub position in video queue
@@ -214,65 +263,65 @@ export default function UploadEditVideoScreen() {
           height: VIDEO_IMAGE_FRAME_WIDTH,
           position: "relative",
         };
-        let aStyle = animatedStyles;
+        // let aStyle = animatedStyles;
         // Define animation for x value translation
         // Define Pan gesture and assign to detector
-        let panGesture = Gesture.Pan()
-          .onStart(() => {
-            activeKey.value = item.key;
-            let temp = { ...start };
-            temp[activeKey.value] = { x: queueIndex * 40, y: 0 };
-            start.value = { ...temp };
-            // DEBUG
-            console.log(
-              JSON.stringify(activeKey),
-              JSON.stringify(start.value[activeKey.value]),
-            );
-          })
-          .onUpdate((event) => {
-            if (start.value[activeKey.value]) {
-              let temp = { ...timelineOffset };
-              temp[activeKey.value] = {
-                x: event.translationX + start.value[activeKey.value].x,
-                y: 0,
-              };
-              timelineOffset.value = { ...temp };
-            } else {
-              let temp = { ...start };
-              temp[activeKey.value] = { x: event.translationX, y: 0 };
-              start.value = { ...temp };
-            }
-            // DEBUG
-            console.log(
-              "UPDATE PAN",
-              JSON.stringify(start.value[activeKey.value]),
-              JSON.stringify(timelineOffset.value[activeKey.value]),
-            );
-          })
-          .onEnd(() => {
-            if (timelineOffset.value[activeKey.value]) {
-              start.value[activeKey.value] = {
-                x: timelineOffset.value[activeKey.value].x,
-                y: 0,
-              };
-            } else {
-              timelineOffset.value[activeKey.value] = { x: 0, y: 0 };
-            }
-            // DEBUG
-            console.log(
-              "END PAN\n",
-              JSON.stringify(start.value[activeKey.value]),
-              JSON.stringify(timelineOffset.value[activeKey.value]),
-              JSON.stringify(animatedStyles.value),
-            );
-          });
-        // DEBUG
-        let tempStyles = {
-          ...videoTimelineThumbnailStyle,
-          ...animatedStyles.value,
-        };
-        console.log(tempStyles);
-        console.log(animatedStyles.value);
+        let panGesture = Gesture.Pan();
+        //   .onStart(() => {
+        //     activeKey.value = item.key;
+        //     let temp = { ...start };
+        //     temp[activeKey.value] = { x: queueIndex * 40, y: 0 };
+        //     start.value = { ...temp };
+        //     // DEBUG
+        //     console.log(
+        //       JSON.stringify(activeKey),
+        //       JSON.stringify(start.value[activeKey.value]),
+        //     );
+        //   })
+        //   .onUpdate((event) => {
+        //     if (start.value[activeKey.value]) {
+        //       let temp = { ...timelineOffset };
+        //       temp[activeKey.value] = {
+        //         x: event.translationX + start.value[activeKey.value].x,
+        //         y: 0,
+        //       };
+        //       timelineOffset.value = { ...temp };
+        //     } else {
+        //       let temp = { ...start };
+        //       temp[activeKey.value] = { x: event.translationX, y: 0 };
+        //       start.value = { ...temp };
+        //     }
+        //     // DEBUG
+        //     console.log(
+        //       "UPDATE PAN",
+        //       JSON.stringify(start.value[activeKey.value]),
+        //       JSON.stringify(timelineOffset.value[activeKey.value]),
+        //     );
+        //   })
+        //   .onEnd(() => {
+        //     if (timelineOffset.value[activeKey.value]) {
+        //       start.value[activeKey.value] = {
+        //         x: timelineOffset.value[activeKey.value].x,
+        //         y: 0,
+        //       };
+        //     } else {
+        //       timelineOffset.value[activeKey.value] = { x: 0, y: 0 };
+        //     }
+        //     // DEBUG
+        //     console.log(
+        //       "END PAN\n",
+        //       JSON.stringify(start.value[activeKey.value]),
+        //       JSON.stringify(timelineOffset.value[activeKey.value]),
+        //       JSON.stringify(animatedStyles.value),
+        //     );
+        //   });
+        // // DEBUG
+        // let tempStyles = {
+        //   ...videoTimelineThumbnailStyle,
+        //   ...animatedStyles.value,
+        // };
+        // console.log(tempStyles);
+        // console.log(animatedStyles.value);
         return (
           <GestureDetector
             gesture={panGesture}
@@ -281,8 +330,8 @@ export default function UploadEditVideoScreen() {
             <NativePressableOpacity
               key={"VideoTimelineThumbnail" + item.key}
               // style={{...videoTimelineThumbnailStyle, ...animatedStyles}}
-              // style={tempStyles}
-              style={[videoTimelineThumbnailStyle, tempStyles]}
+              style={videoTimelineThumbnailStyle}
+              // style={[videoTimelineThumbnailStyle, tempStyles]}
               onPress={() =>
                 setSelectedComponentKey((prev) =>
                   handleSelectedVideoKeyChange(prev, item.key),
