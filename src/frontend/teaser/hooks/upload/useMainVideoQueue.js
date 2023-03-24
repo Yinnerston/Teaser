@@ -19,9 +19,9 @@ class QVideoNode {
    * @attribute key
    * @attribute timelineImages
    */
-  constructor(video, startTime) {
+  constructor(video) {
     this.video = video; // {path: str, duration: float, size: float}
-    this.startTime = startTime;
+    this.msstartTime = 0;
     this.key = Math.floor(Math.random() * 6942069);
     this.numberOfFrames = Math.ceil(video.duration / 1000);
     this.frames = [];
@@ -87,16 +87,18 @@ export const queueAtom = atom((get) => {
  */
 export const enqueueAtomAtom = atom(null, (get, set, update) => {
   // Create a new LL node
-  const { video, startTime } = update;
-  let temp = new QVideoNode(video, startTime);
+  const { video } = update;
+  let temp = new QVideoNode(video);
   const prev = get(rearAtom);
   // If queue is empty, then new node is front and rear both
   if (prev == null) {
+    temp.msstartTime = 0;
     set(rearAtom, temp);
     set(frontAtom, temp);
     return;
   }
   // Enqueue node and change rear
+  temp.msstartTime = prev.msstartTime + prev.video.duration;
   prev.next = temp;
   set(rearAtom, temp);
 });

@@ -35,6 +35,13 @@ export const curPlayingVideoAtom = atom(
 );
 // TODO: Add for overlays
 
+export const curPlayingVideoStartEndAtom = atom((get) => {
+  let curPlayingVideo = get(_curPlayingVideoAtom);
+  let curPlayingVideoEndTime =
+    curPlayingVideo.msstartTime + curPlayingVideo.video.duration;
+  return [curPlayingVideo.msstartTime, curPlayingVideoEndTime];
+});
+
 /**
  * Whether the editor is paused or playing video.
  */
@@ -45,12 +52,12 @@ export const editorVideoPlayingStatusAtom = atom(false);
  * if the editor video hasn't exceeded videoMaxDurationAtom
  * otherwise set editorVideoIsPlayingAtom to false.
  */
-export const incrementGlobalVideoTimeAtom = atom(null, (get, set, update) => {
-  const newTime = get(globalVideoTimeAtom) + TEASER_VIDEO_REFRESH_RATE_MS;
-  if (newTime < get(videoMaxDurationAtom)) {
-    set(globalVideoTimeAtom, newTime);
-  } else {
-    // Video ended as it went past the time
-    set(editorVideoIsPlayingAtom, false);
-  }
-});
+// export const incrementGlobalVideoTimeAtom = atom(null, (get, set, update) => {
+//   const newTime = get(globalVideoTimeAtom) + TEASER_VIDEO_REFRESH_RATE_MS;
+//   if (newTime < get(videoMaxDurationAtom)) {
+//     set(globalVideoTimeAtom, newTime);
+//   } else {
+//     // Video ended as it went past the time
+//     set(editorVideoIsPlayingAtom, false);
+//   }
+// });
