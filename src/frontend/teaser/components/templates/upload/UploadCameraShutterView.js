@@ -80,7 +80,6 @@ const useCameraShutterViewStyle = () => {
       bottom: 16,
       height: height / 4,
       width: width,
-      backgroundColor: "green",
     },
     cameraShutterView: {
       position: "absolute",

@@ -61,3 +61,14 @@ export const editorVideoPlayingStatusAtom = atom(false);
 //     set(editorVideoIsPlayingAtom, false);
 //   }
 // });
+
+export const timelinePositionAtom = atom(0);
+
+export const readOnlyTimelinePositionAtom = atom(
+  (get) => get(timelinePositionAtom)
+)
+
+export const writeOnlyTimelinePositionAtom = atom(
+  null,
+  (get, set, update) => set(timelinePositionAtom, update)
+)
