@@ -8,6 +8,7 @@ import {
   stackPopAtomAtom,
   queueAtom,
 } from "../hooks/upload/useMainVideoQueue";
+import { VIDEO_IMAGE_FRAME_WIDTH } from "../Constants";
 import { useAtom, useSetAtom } from "jotai";
 /**
  * Screen for Subscriptions.
@@ -67,10 +68,23 @@ export default function SubscriptionsScreen({ navigation }) {
       {cameraVideoQueue ? (
         cameraVideoQueue.map((item) => {
           return (
-            <Image
-              source={{ uri: item.frames[0] }}
-              style={{ height: 40, width: 40 }}
-            />
+            <View
+              style={{
+                height: VIDEO_IMAGE_FRAME_WIDTH + 50,
+                width: VIDEO_IMAGE_FRAME_WIDTH + 50,
+              }}
+            >
+              <Image
+                source={{ uri: item.frames[0] }}
+                style={{
+                  height: VIDEO_IMAGE_FRAME_WIDTH,
+                  width: VIDEO_IMAGE_FRAME_WIDTH,
+                }}
+              />
+              <Text>
+                {item.startTimeMs} TO {item.endTimeMs}
+              </Text>
+            </View>
           );
         })
       ) : (

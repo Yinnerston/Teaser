@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import FFmpegWrapper from "./ffmpegWrapper";
+import { msToWidth } from "../../utils/videoTimelineWidth";
 
 const getFileNameFromPath = (path) => {
   const fragments = path.split("/");
@@ -20,9 +21,17 @@ class QVideoNode {
    * @attribute timelineImages
    */
   constructor(video) {
-    this.video = video; // {path: str, duration: float, size: float}
-    this.msstartTime = 0;
+    // ID
     this.key = Math.floor(Math.random() * 6942069);
+    this.video = video; // {path: str, duration: float, size: float}
+    this.startTimeMs = 0;
+    // Variables to reduce computation
+    this.startTimeWidth = 0;
+    this.endTimeMs = 0;
+    this.endTimeWidth = 0;
+    this.durationWidth = msToWidth(video.duration);
+    // Frames displayed in timeline
+    // TODO: Wait until these are rendered to load timeline?
     this.numberOfFrames = Math.ceil(video.duration / 1000);
     this.frames = [];
     FFmpegWrapper.getFrames(
@@ -46,6 +55,15 @@ class QVideoNode {
 
   setFrames(frames) {
     this.frames = frames;
+  }
+
+  setStartTimeMs(ms) {
+    ms = ms + 0.1; // Add 0.1ms offset from the prev video
+    this.startTimeMs = ms;
+    this.startTimeWidth = msToWidth(ms);
+    let endTimeMs = this.startTimeMs + this.video.duration;
+    this.endTimeMs = endTimeMs;
+    this.endTimeWidth = msToWidth(endTimeMs);
   }
 }
 
@@ -92,13 +110,13 @@ export const enqueueAtomAtom = atom(null, (get, set, update) => {
   const prev = get(rearAtom);
   // If queue is empty, then new node is front and rear both
   if (prev == null) {
-    temp.msstartTime = 0;
+    temp.setStartTimeMs(0);
     set(rearAtom, temp);
     set(frontAtom, temp);
     return;
   }
   // Enqueue node and change rear
-  temp.msstartTime = prev.msstartTime + prev.video.duration;
+  temp.setStartTimeMs(prev.startTimeMs + prev.video.duration);
   prev.next = temp;
   set(rearAtom, temp);
 });
@@ -118,6 +136,14 @@ export const dequeueAtomAtom = atom(
     let temp = front.next;
     set(dequeuedAtoms, [...prev, front]);
     set(frontAtom, temp);
+    // Change the startTimeMs and startTimeWidth of the elements in queue
+    let nodeToChange = temp;
+    let prevEndTimeMs = 0;
+    while (nodeToChange != null) {
+      nodeToChange.setStartTimeMs(prevStartTimeMs);
+      prevEndTimeMs = nodeToChange.startTimeMs + nodeToChange.video.duration; // start 1ms after prev video
+      nodeToChange = nodeToChange.next;
+    }
     // Set the rear to null if temp is null
     if (temp == null) {
       set(rearAtom, null);
@@ -150,7 +176,7 @@ export const stackPopAtomAtom = atom(null, (get, set, update) => {
   set(rearAtom, front);
 });
 
-export const queueDurationAtom = atom((get) => {
+export const queueDurationMsAtom = atom((get) => {
   let queue = get(queueAtom);
   let queueDuration = queue.reduce(
     (partialDuration, item) => partialDuration + item.video.duration,

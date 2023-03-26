@@ -2,7 +2,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useAtom, useSetAtom } from "jotai";
 import {
   queueAtom,
-  queueDurationAtom,
+  queueDurationMsAtom,
 } from "../../hooks/upload/useMainVideoQueue";
 import { Video } from "expo-av";
 import { useRef, useState, useEffect, useMemo } from "react";
@@ -31,11 +31,11 @@ export default function UploadEditVideoScreen() {
   const { height, width, styles } = useUploadEditVideoScreenStyles();
   const videoRef = useRef(null);
   const [queue] = useAtom(queueAtom);
-  const [queueDuration] = useAtom(queueDurationAtom);
+  const [queueDuration] = useAtom(queueDurationMsAtom);
   const [curPlayingVideo, setCurPlayingVideo] = useAtom(curPlayingVideoAtom);
   // Edit video is playing and convenience setter atom
   const [editorVideoIsPlaying, setEditorVideoIsPlaying] = useAtom(
-    editorVideoPlayingStatusAtom
+    editorVideoPlayingStatusAtom,
   );
   const [videoIsFinished, setVideoIsFinished] = useState(false);
   const [selectedComponentKey, setSelectedComponentKey] = useState(null);
@@ -52,17 +52,16 @@ export default function UploadEditVideoScreen() {
   }, []);
 
   const handlePlaybackStatusUpdate = async (status) => {
+    if (status.isLoading) {
+      console.log("LOADING");
+      return;
+    }
     if (status.isLoaded) {
       // Set timeline position
-      let statusPosition = msToWidth(
-        curPlayingVideo.msstartTime + status.positionMillis
-      );
-      // let syncDiff = Math.abs(timelinePosition - statusPosition)
-      // if (syncDiff > VIDEO_IMAGE_FRAME_WIDTH)  {
-      //   // out of sync by more than 1 second
-      //   setTimelinePosition(statusPosition);
-      //   console.log("INTERVAL OUT OF SYNC", syncDiff)
-      // }
+      // let statusPosition = msToWidth(
+      //   curPlayingVideo.startTimeMs + status.positionMillis
+      // );
+      // setTimelinePosition(statusPosition);
       if (status.didJustFinish) {
         // loaded and video finished
         // Play next video if there's another in queue otherwise pause at end
@@ -117,9 +116,7 @@ export default function UploadEditVideoScreen() {
           ref={(_videoRef) => {
             videoRef.current = _videoRef;
           }}
-          source={
-            curPlayingVideo ? { uri: curPlayingVideo["video"]["path"] } : ""
-          }
+          source={{ uri: curPlayingVideo["video"]["path"] }}
           onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
           style={styles.video}
           shouldPlay={editorVideoIsPlaying}
@@ -173,9 +170,16 @@ export default function UploadEditVideoScreen() {
       >
         <Text style={{ color: "white" }}>
           {editorVideoIsPlaying ? "PLAYING " : "STOP "}
+          {curPlayingVideo ? curPlayingVideo.key : "NONE PLAYING"}
           {"\n"}
           {videoIsFinished ? "FINISHED " : "UNFINISHED "}
-          {(queueDuration / 1000) * VIDEO_IMAGE_FRAME_WIDTH}
+          {queue
+            ? queue.map(
+                (item) => item.startTimeWidth + item.durationWidth + " / ",
+              )
+            : null}
+          /////
+          {queue ? queue.map((item) => item.video.duration + " / ") : null}
         </Text>
       </View>
     </SafeAreaView>

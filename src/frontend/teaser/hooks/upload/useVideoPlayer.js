@@ -38,8 +38,8 @@ export const curPlayingVideoAtom = atom(
 export const curPlayingVideoStartEndAtom = atom((get) => {
   let curPlayingVideo = get(_curPlayingVideoAtom);
   let curPlayingVideoEndTime =
-    curPlayingVideo.msstartTime + curPlayingVideo.video.duration;
-  return [curPlayingVideo.msstartTime, curPlayingVideoEndTime];
+    curPlayingVideo.startTimeMs + curPlayingVideo.video.duration;
+  return [curPlayingVideo.startTimeMs, curPlayingVideoEndTime];
 });
 
 /**
@@ -64,11 +64,10 @@ export const editorVideoPlayingStatusAtom = atom(false);
 
 export const timelinePositionAtom = atom(0);
 
-export const readOnlyTimelinePositionAtom = atom(
-  (get) => get(timelinePositionAtom)
-)
+export const readOnlyTimelinePositionAtom = atom((get) =>
+  get(timelinePositionAtom),
+);
 
-export const writeOnlyTimelinePositionAtom = atom(
-  null,
-  (get, set, update) => set(timelinePositionAtom, update)
-)
+export const writeOnlyTimelinePositionAtom = atom(null, (get, set, update) =>
+  set(timelinePositionAtom, update),
+);
