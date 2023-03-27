@@ -1,10 +1,6 @@
 import { useRef, useCallback, useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  FlatList,
-  useWindowDimensions,
-} from "react-native";
+import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import {
   VIDEO_LANDSCAPE,
   VIDEO_PORTRAIT,

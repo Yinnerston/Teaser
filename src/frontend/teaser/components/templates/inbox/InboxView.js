@@ -1,9 +1,5 @@
-import {
-  SafeAreaView,
-  StyleSheet,
-  useWindowDimensions,
-  FlatList,
-} from "react-native";
+import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { useRef } from "react";
 import InboxMessageCard from "../../cards/InboxMessageCard";
 
@@ -51,7 +47,7 @@ export default function InboxView({ navigation }) {
 
   const renderInboxMessageCard = () => (
     <InboxMessageCard
-    // TODO: Props
+      // TODO: Props
       navigation={navigation}
     />
   );

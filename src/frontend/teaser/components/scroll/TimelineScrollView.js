@@ -6,12 +6,12 @@ import {
 } from "../../hooks/upload/useVideoPlayer";
 import { useAtom } from "jotai";
 import { useMemo, useState } from "react";
-import { Text, View, ScrollView, Image } from "react-native";
+import { Text, View, Image } from "react-native";
 import {
-  TouchableOpacity,
+  ScrollView,
   Gesture,
   GestureDetector,
-  TapGestureHandler,
+  FlatList,
 } from "react-native-gesture-handler";
 // import {
 //   useSharedValue,
@@ -146,7 +146,82 @@ export const TimelineScrollView = forwardRef(
           // let aStyle = animatedStyles;
           // Define animation for x value translation
           // Define Pan gesture and assign to detector
-          let panGesture = Gesture.Pan();
+          let longPressGesture = Gesture.LongPress().onEnd(() => {
+            // Deselect selectedComponentKey
+          });
+          let panGesture = Gesture.Pan() // TODO: Wrap in useMemo: https://docs.swmansion.com/react-native-gesture-handler/docs/api/gestures/gesture/
+            .activateAfterLongPress(500) // TODO: Change this?
+            .onStart(() => {
+              // Shorten all images to first frame
+              // Set the selectedComponentKey if not already selected
+              // Create a vibration to signify longpress?
+              // Make nothing else in the screen responsive? --> just focus on panGesture
+            })
+            .onUpdate((event) => {
+              // queueIndex
+              // let reorderUpdateWidth = VIDEO_IMAGE_FRAME_WIDTH / 2
+            })
+            .onEnd(() => {
+              // Deselect selectedComponentKey
+              // Revert timeline back to components based on video duration
+              // Everything is responsive again
+            });
+          //   .onStart(() => {
+          //     activeKey.value = item.key;
+          //     let temp = { ...start };
+          //     temp[activeKey.value] = { x: queueIndex * 40, y: 0 };
+          //     start.value = { ...temp };
+          //     // DEBUG
+          //     console.log(
+          //       JSON.stringify(activeKey),
+          //       JSON.stringify(start.value[activeKey.value]),
+          //     );
+          //   })
+          //   .onUpdate((event) => {
+          //     if (start.value[activeKey.value]) {
+          //       let temp = { ...timelineOffset };
+          //       temp[activeKey.value] = {
+          //         x: event.translationX + start.value[activeKey.value].x,
+          //         y: 0,
+          //       };
+          //       timelineOffset.value = { ...temp };
+          //     } else {
+          //       let temp = { ...start };
+          //       temp[activeKey.value] = { x: event.translationX, y: 0 };
+          //       start.value = { ...temp };
+          //     }
+          //     // DEBUG
+          //     console.log(
+          //       "UPDATE PAN",
+          //       JSON.stringify(start.value[activeKey.value]),
+          //       JSON.stringify(timelineOffset.value[activeKey.value]),
+          //     );
+          //   })
+          //   .onEnd(() => {
+          //     if (timelineOffset.value[activeKey.value]) {
+          //       start.value[activeKey.value] = {
+          //         x: timelineOffset.value[activeKey.value].x,
+          //         y: 0,
+          //       };
+          //     } else {
+          //       timelineOffset.value[activeKey.value] = { x: 0, y: 0 };
+          //     }
+          //     // DEBUG
+          //     console.log(
+          //       "END PAN\n",
+          //       JSON.stringify(start.value[activeKey.value]),
+          //       JSON.stringify(timelineOffset.value[activeKey.value]),
+          //       JSON.stringify(animatedStyles.value),
+          //     );
+          //   });
+          // // DEBUG
+          // let tempStyles = {
+          //   ...videoTimelineThumbnailStyle,
+          //   ...animatedStyles.value,
+          // };
+          // console.log(tempStyles);
+          // console.log(animatedStyles.value);
+
           return (
             <GestureDetector
               gesture={panGesture}
