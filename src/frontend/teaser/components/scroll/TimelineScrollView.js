@@ -12,7 +12,11 @@ import {
   Gesture,
   GestureDetector,
 } from "react-native-gesture-handler";
-import { runOnJS } from "react-native-reanimated";
+import Animated, {
+  runOnJS,
+  useSharedValue,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import { VIDEO_IMAGE_FRAME_WIDTH, TIMELINE_VIDEO_FPS } from "../../Constants";
 import { NativePressableOpacity } from "react-native-pressable-opacity";
 import { msToWidth, ReversemsToWidth } from "../../utils/videoTimelineWidth";
@@ -36,6 +40,7 @@ export const TimelineScrollView = forwardRef(
       queueDuration,
       videoRef,
     } = props;
+    let queueDurationWidth = msToWidth(queueDuration);
     const [timelinePosition, setTimelinePosition] =
       useAtom(timelinePositionAtom);
     const intervalLength = 1000 / TIMELINE_VIDEO_FPS;
@@ -76,7 +81,7 @@ export const TimelineScrollView = forwardRef(
       setUserIsScrolling(false);
       let contentOffset = Math.min(
         Math.max(event.nativeEvent.contentOffset.x, 0),
-        queueDuration,
+        queueDurationWidth,
       );
       setTimelinePosition(contentOffset);
 
@@ -88,13 +93,13 @@ export const TimelineScrollView = forwardRef(
       if (!userIsScrolling) {
         return;
       }
-      // // Clamp within bounds [0, queueDuration]
+      // // Clamp within bounds [0, queueDurationWidth]
       let contentOffset = Math.min(
         Math.max(event.nativeEvent.contentOffset.x, 0),
-        queueDuration,
+        queueDurationWidth,
       );
       // TODO: Seek to position in relevant video
-      if (contentOffset < 0 || contentOffset > queueDuration) {
+      if (contentOffset < 0 || contentOffset > queueDurationWidth) {
         // Reject invalid inputs
         return;
       }
@@ -128,6 +133,15 @@ export const TimelineScrollView = forwardRef(
     const handleSelectedVideoKeyChange = (prev, newKey) =>
       newKey != prev ? newKey : null;
 
+    const sharedOnLongPressLeftOffset = useSharedValue(0);
+    // const panGestureAnimatedStyle = useAnimatedStyle(() => {
+    //   return {
+    //     left: sharedOnLongPressLeftOffset.value,
+    //     height: VIDEO_IMAGE_FRAME_WIDTH,
+    //     width: VIDEO_IMAGE_FRAME_WIDTH,
+    //   }
+    // })
+
     const videoTimelineElements = useMemo(
       () =>
         queue.map((item, queueIndex) => {
@@ -151,9 +165,15 @@ export const TimelineScrollView = forwardRef(
           let panGesture = Gesture.Pan() // TODO: Wrap in useMemo: https://docs.swmansion.com/react-native-gesture-handler/docs/api/gestures/gesture/
             .activateAfterLongPress(500) // TODO: Change this?
             .onStart((event) => {
-              // TODO: Set offset from left event.x - queueIndex * VIDEO_IMAGE_FRAME_WIDTH ?
-              // ^ as shared value
-
+              // Set left offset so the selected is centers on the x value of the longpress
+              let startingLeftOffset =
+                event.x +
+                item.startTimeWidth -
+                (queueIndex + 0.5) * VIDEO_IMAGE_FRAME_WIDTH;
+              sharedOnLongPressLeftOffset.value = Math.min(
+                Math.max(startingLeftOffset, 0),
+                queueDurationWidth,
+              );
               // Shorten all images to first frame
               runOnJS(setUserIsReorderingTimeline)(true); // TODO: Make animation of minimizing to
               // Set the selectedComponentKey if not already selected
@@ -233,10 +253,11 @@ export const TimelineScrollView = forwardRef(
                 ) : (
                   // TODO: Render images from offset
                   <View style={videoReorderingThumbnailStyle}>
-                    <Image
+                    <Animated.Image
                       key={"TIMELINEFRAME" + Math.random() * 6969 + item.key}
                       source={{ uri: item.frames[0] }}
                       style={{
+                        left: sharedOnLongPressLeftOffset.value,
                         height: VIDEO_IMAGE_FRAME_WIDTH,
                         width: VIDEO_IMAGE_FRAME_WIDTH,
                       }}
@@ -245,11 +266,12 @@ export const TimelineScrollView = forwardRef(
                       <View
                         key={"SELECTEDCOMPONENTFRAME" + item.key}
                         style={{
-                          height: VIDEO_IMAGE_FRAME_WIDTH,
-                          width: VIDEO_IMAGE_FRAME_WIDTH,
                           borderColor: "white",
                           borderWidth: 3,
                           position: "absolute",
+                          left: sharedOnLongPressLeftOffset.value,
+                          height: VIDEO_IMAGE_FRAME_WIDTH,
+                          width: VIDEO_IMAGE_FRAME_WIDTH,
                         }}
                       />
                     ) : null}
@@ -362,9 +384,7 @@ export const TimelineScrollView = forwardRef(
           </View>
           <View>
             {/* <Text style={{ color: "white" }}>{timelinePosition}</Text> */}
-            <Text style={{ color: "white" }}>
-              {userIsReorderingTimeline ? "true" : "false"}
-            </Text>
+            <Text style={{ color: "white" }}>{timelinePosition}</Text>
           </View>
         </View>
 
