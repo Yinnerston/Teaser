@@ -161,7 +161,7 @@ export const TimelineScrollView = forwardRef(
           let videoTimelineThumbnailStyle = {
             width: userIsReorderingTimeline
               ? VIDEO_IMAGE_FRAME_WIDTH
-              : Math.ceil(msToWidth(item.video.duration)),
+              : Math.ceil(item.durationWidth),
             height: VIDEO_IMAGE_FRAME_WIDTH,
             position: "relative",
           };
@@ -317,9 +317,7 @@ export const TimelineScrollView = forwardRef(
           // Style to draw separator between image timeline components
           let videoTimelineSeparateStyle = {
             marginLeft:
-              Math.ceil(
-                (item.video.duration * VIDEO_IMAGE_FRAME_WIDTH) / 1000,
-              ) -
+              Math.ceil(item.startTimeWidth + item.durationWidth) -
               VIDEO_IMAGE_FRAME_WIDTH / 4,
             height: VIDEO_IMAGE_FRAME_WIDTH / 2,
             width: VIDEO_IMAGE_FRAME_WIDTH / 2,
