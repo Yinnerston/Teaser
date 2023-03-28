@@ -6,21 +6,16 @@ import {
 } from "../../hooks/upload/useVideoPlayer";
 import { useAtom } from "jotai";
 import { useMemo, useState } from "react";
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, Vibration } from "react-native";
 import {
   ScrollView,
   Gesture,
   GestureDetector,
-  FlatList,
 } from "react-native-gesture-handler";
-// import {
-//   useSharedValue,
-//   useAnimatedStyle,
-//   Animated,
-// } from "react-native-reanimated";
+import { runOnJS } from "react-native-reanimated";
 import { VIDEO_IMAGE_FRAME_WIDTH, TIMELINE_VIDEO_FPS } from "../../Constants";
 import { NativePressableOpacity } from "react-native-pressable-opacity";
-import { ReversemsToWidth } from "../../utils/videoTimelineWidth";
+import { msToWidth, ReversemsToWidth } from "../../utils/videoTimelineWidth";
 
 /**
  *
@@ -46,7 +41,8 @@ export const TimelineScrollView = forwardRef(
     const intervalLength = 1000 / TIMELINE_VIDEO_FPS;
     const [userIsScrolling, setUserIsScrolling] = useState(false);
     const [curPlayingVideo, setCurPlayingVideo] = useAtom(curPlayingVideoAtom);
-
+    const [userIsReorderingTimeline, setUserIsReorderingTimeline] =
+      useState(false);
     // As the video plays, scroll the scrollView by scrollTo {x: timelinePosition}
     useInterval(
       () => {
@@ -137,148 +133,145 @@ export const TimelineScrollView = forwardRef(
         queue.map((item, queueIndex) => {
           // Dynamically set width based on the duration in seconds
           let videoTimelineThumbnailStyle = {
-            width: Math.ceil(
-              (item.video.duration * VIDEO_IMAGE_FRAME_WIDTH) / 1000,
-            ),
+            width: userIsReorderingTimeline
+              ? VIDEO_IMAGE_FRAME_WIDTH
+              : Math.ceil(msToWidth(item.video.duration)),
+            height: VIDEO_IMAGE_FRAME_WIDTH,
+            position: "relative",
+          };
+          let videoReorderingThumbnailStyle = {
+            width: VIDEO_IMAGE_FRAME_WIDTH,
             height: VIDEO_IMAGE_FRAME_WIDTH,
             position: "relative",
           };
           // let aStyle = animatedStyles;
           // Define animation for x value translation
           // Define Pan gesture and assign to detector
-          let longPressGesture = Gesture.LongPress().onEnd(() => {
-            // Deselect selectedComponentKey
-          });
+
           let panGesture = Gesture.Pan() // TODO: Wrap in useMemo: https://docs.swmansion.com/react-native-gesture-handler/docs/api/gestures/gesture/
             .activateAfterLongPress(500) // TODO: Change this?
-            .onStart(() => {
+            .onStart((event) => {
+              // TODO: Set offset from left event.x - queueIndex * VIDEO_IMAGE_FRAME_WIDTH ?
+              // ^ as shared value
+
               // Shorten all images to first frame
+              runOnJS(setUserIsReorderingTimeline)(true); // TODO: Make animation of minimizing to
               // Set the selectedComponentKey if not already selected
-              // Create a vibration to signify longpress?
+              runOnJS(setSelectedComponentKey)(item.key);
+              // Create a vibration to signify longpress
+              runOnJS(Vibration.vibrate)(25);
               // Make nothing else in the screen responsive? --> just focus on panGesture
             })
             .onUpdate((event) => {
-              // queueIndex
+              // event.translationX --> To threshold
               // let reorderUpdateWidth = VIDEO_IMAGE_FRAME_WIDTH / 2
             })
             .onEnd(() => {
               // Deselect selectedComponentKey
               // Revert timeline back to components based on video duration
+              runOnJS(setUserIsReorderingTimeline)(false);
+              console.log("END");
               // Everything is responsive again
             });
-          //   .onStart(() => {
-          //     activeKey.value = item.key;
-          //     let temp = { ...start };
-          //     temp[activeKey.value] = { x: queueIndex * 40, y: 0 };
-          //     start.value = { ...temp };
-          //     // DEBUG
-          //     console.log(
-          //       JSON.stringify(activeKey),
-          //       JSON.stringify(start.value[activeKey.value]),
-          //     );
-          //   })
-          //   .onUpdate((event) => {
-          //     if (start.value[activeKey.value]) {
-          //       let temp = { ...timelineOffset };
-          //       temp[activeKey.value] = {
-          //         x: event.translationX + start.value[activeKey.value].x,
-          //         y: 0,
-          //       };
-          //       timelineOffset.value = { ...temp };
-          //     } else {
-          //       let temp = { ...start };
-          //       temp[activeKey.value] = { x: event.translationX, y: 0 };
-          //       start.value = { ...temp };
-          //     }
-          //     // DEBUG
-          //     console.log(
-          //       "UPDATE PAN",
-          //       JSON.stringify(start.value[activeKey.value]),
-          //       JSON.stringify(timelineOffset.value[activeKey.value]),
-          //     );
-          //   })
-          //   .onEnd(() => {
-          //     if (timelineOffset.value[activeKey.value]) {
-          //       start.value[activeKey.value] = {
-          //         x: timelineOffset.value[activeKey.value].x,
-          //         y: 0,
-          //       };
-          //     } else {
-          //       timelineOffset.value[activeKey.value] = { x: 0, y: 0 };
-          //     }
-          //     // DEBUG
-          //     console.log(
-          //       "END PAN\n",
-          //       JSON.stringify(start.value[activeKey.value]),
-          //       JSON.stringify(timelineOffset.value[activeKey.value]),
-          //       JSON.stringify(animatedStyles.value),
-          //     );
-          //   });
-          // // DEBUG
-          // let tempStyles = {
-          //   ...videoTimelineThumbnailStyle,
-          //   ...animatedStyles.value,
-          // };
-          // console.log(tempStyles);
-          // console.log(animatedStyles.value);
 
           return (
             <GestureDetector
               gesture={panGesture}
               key={"TimelineGestureDetector" + item.key}
             >
-              <NativePressableOpacity
-                key={"VideoTimelineThumbnail" + item.key}
+              <View
                 style={videoTimelineThumbnailStyle}
-                onPress={() =>
-                  setSelectedComponentKey((prev) =>
-                    handleSelectedVideoKeyChange(prev, item.key),
-                  )
-                }
+                key={"VideoTimelineWrapperView" + item.key}
               >
-                {item.frames.map((framePath, index) => {
-                  let frameThumbnailStyle = {
-                    ...videoTimelineThumbnailStyle,
-                    width: VIDEO_IMAGE_FRAME_WIDTH,
-                    position: "absolute",
-                    left: VIDEO_IMAGE_FRAME_WIDTH * index,
-                  };
-                  if (index == item.numberOfFrames - 1) {
-                    // Cut off the frame by the second
-                    frameThumbnailStyle.width =
-                      (frameThumbnailStyle.width *
-                        (item.video.duration % 1000)) /
-                      1000;
-                  }
-                  return (
+                {!userIsReorderingTimeline ? (
+                  // Normal view of a timeline element
+                  <NativePressableOpacity
+                    key={"VideoTimelineThumbnail" + item.key}
+                    style={videoTimelineThumbnailStyle}
+                    onPress={() =>
+                      setSelectedComponentKey((prev) =>
+                        handleSelectedVideoKeyChange(prev, item.key),
+                      )
+                    }
+                  >
+                    {item.frames.map((framePath, index) => {
+                      let frameThumbnailStyle = {
+                        ...videoTimelineThumbnailStyle,
+                        width: VIDEO_IMAGE_FRAME_WIDTH,
+                        position: "absolute",
+                        left: VIDEO_IMAGE_FRAME_WIDTH * index,
+                      };
+                      if (index == item.numberOfFrames - 1) {
+                        // Cut off the frame by the second
+                        frameThumbnailStyle.width =
+                          (frameThumbnailStyle.width *
+                            (item.video.duration % 1000)) /
+                          1000;
+                      }
+                      return (
+                        <Image
+                          key={
+                            "TIMELINEFRAME" + Math.random() * 6969 + item.key
+                          }
+                          source={{ uri: framePath }}
+                          style={frameThumbnailStyle}
+                        />
+                      );
+                    })}
+                    {item.key == selectedComponentKey ? (
+                      <View
+                        key={"SELECTEDCOMPONENTFRAME" + item.key}
+                        style={{
+                          ...videoTimelineThumbnailStyle,
+                          borderColor: "white",
+                          borderWidth: 3,
+                          position: "absolute",
+                        }}
+                      />
+                    ) : null}
+                  </NativePressableOpacity>
+                ) : (
+                  // TODO: Render images from offset
+                  <View style={videoReorderingThumbnailStyle}>
                     <Image
                       key={"TIMELINEFRAME" + Math.random() * 6969 + item.key}
-                      source={{ uri: framePath }}
-                      style={frameThumbnailStyle}
+                      source={{ uri: item.frames[0] }}
+                      style={{
+                        height: VIDEO_IMAGE_FRAME_WIDTH,
+                        width: VIDEO_IMAGE_FRAME_WIDTH,
+                      }}
                     />
-                  );
-                })}
-                {item.key == selectedComponentKey ? (
-                  <View
-                    key={"SELECTEDCOMPONENTFRAME" + item.key}
-                    style={{
-                      ...videoTimelineThumbnailStyle,
-                      borderColor: "white",
-                      borderWidth: 3,
-                      position: "absolute",
-                    }}
-                  />
-                ) : null}
-              </NativePressableOpacity>
+                    {item.key == selectedComponentKey ? (
+                      <View
+                        key={"SELECTEDCOMPONENTFRAME" + item.key}
+                        style={{
+                          height: VIDEO_IMAGE_FRAME_WIDTH,
+                          width: VIDEO_IMAGE_FRAME_WIDTH,
+                          borderColor: "white",
+                          borderWidth: 3,
+                          position: "absolute",
+                        }}
+                      />
+                    ) : null}
+                  </View>
+                )}
+              </View>
             </GestureDetector>
           );
         }),
-      [queue, selectedComponentKey], // TODO: or just animatedStyles?
+      [queue, selectedComponentKey, userIsReorderingTimeline], // TODO: or just animatedStyles?
     );
 
-    const videoTimelineSeparators = useMemo(() =>
-      queue.map(
-        (item, queueIndex) => {
+    // /**
+    //  * When user is reodering timeline onPan
+    //  */
+    // const reorderTimelineElements = useMemo((item, queueIndex) => {
+
+    // }, [queue, selectedComponentKey]) // TODO: Do i need memoization on selectedComponentKey, userIsReorderingTimeline?
+
+    const videoTimelineSeparators = useMemo(() => {
+      if (!userIsReorderingTimeline)
+        return queue.map((item, queueIndex) => {
           // Style to draw separator between image timeline components
           let videoTimelineSeparateStyle = {
             marginLeft:
@@ -304,10 +297,8 @@ export const TimelineScrollView = forwardRef(
               </View>
             );
           }
-        },
-        [queue],
-      ),
-    );
+        });
+    }, [queue, userIsReorderingTimeline]);
     /**
      * TODO: useMemo dependent on queue, scrub position in video queue
      * @returns
@@ -344,6 +335,7 @@ export const TimelineScrollView = forwardRef(
         onScrollBeginDrag={handleBeginDragTimelineScrollView}
         onScrollEndDrag={handleEndDragTimelineScrollView}
         onScroll={handleTimelineOnScroll}
+        scrollEnabled={!userIsReorderingTimeline}
       >
         <View style={styles.timelineScrollPaddingView} />
         {/* TODO: Timestamps */}
@@ -354,7 +346,11 @@ export const TimelineScrollView = forwardRef(
             flexWrap: "wrap",
           }}
         >
-          <VideoTimelineTimeMarkings />
+          {!userIsReorderingTimeline ? (
+            <VideoTimelineTimeMarkings />
+          ) : (
+            <View style={styles.timelineMarkingsContainer}></View>
+          )}
           {/* Video Thumbnails */}
           <View style={styles.timelineRowView}>
             {videoTimelineElements ? (
@@ -362,14 +358,13 @@ export const TimelineScrollView = forwardRef(
             ) : (
               <Text>Alt Text</Text>
             )}
-            {videoTimelineSeparators ? (
-              videoTimelineSeparators
-            ) : (
-              <Text>Alt Text</Text>
-            )}
+            {videoTimelineSeparators ? videoTimelineSeparators : null}
           </View>
           <View>
-            <Text style={{ color: "white" }}>{timelinePosition}</Text>
+            {/* <Text style={{ color: "white" }}>{timelinePosition}</Text> */}
+            <Text style={{ color: "white" }}>
+              {userIsReorderingTimeline ? "true" : "false"}
+            </Text>
           </View>
         </View>
 

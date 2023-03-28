@@ -241,6 +241,7 @@ const useUploadEditVideoScreenStyles = () => {
     },
     timelineMarkingsContainer: {
       width: VIDEO_IMAGE_FRAME_WIDTH * 16,
+      height: 24,
       flexDirection: "row",
       marginLeft: -VIDEO_IMAGE_FRAME_WIDTH / 2,
     },
