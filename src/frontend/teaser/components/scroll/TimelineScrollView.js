@@ -29,7 +29,7 @@ import { msToWidth, ReversemsToWidth } from "../../utils/videoTimelineWidth";
 export const TimelineScrollView = forwardRef(
   function TimelineScrollView(props, scrollRef) {
     const {
-      styles,
+      styles, // TODO: Probably just move the styles to this file
       selectedComponentKey,
       setSelectedComponentKey,
       queue,
@@ -133,15 +133,27 @@ export const TimelineScrollView = forwardRef(
     const handleSelectedVideoKeyChange = (prev, newKey) =>
       newKey != prev ? newKey : null;
 
+    // Left css value derived from initial x value on long press
     const sharedOnLongPressLeftOffset = useSharedValue(0);
-    // const panGestureAnimatedStyle = useAnimatedStyle(() => {
-    //   return {
-    //     left: sharedOnLongPressLeftOffset.value,
-    //     height: VIDEO_IMAGE_FRAME_WIDTH,
-    //     width: VIDEO_IMAGE_FRAME_WIDTH,
-    //   }
-    // })
+    // Current translationX in the pan gesture
+    const curTranslationX = useSharedValue(0);
+    // Active queue index of selected component (key is selectedComponentKey)
+    const activeIndex = useSharedValue(-1);
+    // Queue index being hovered over
+    const hoveredIndex = useSharedValue(-1);
+    //
+    const panGestureAnimatedStyle = useAnimatedStyle(() => {
+      return {
+        left: sharedOnLongPressLeftOffset.value + curTranslationX.value,
+        width: VIDEO_IMAGE_FRAME_WIDTH,
+        height: VIDEO_IMAGE_FRAME_WIDTH,
+        position: "relative",
+      };
+    }, [sharedOnLongPressLeftOffset.value, curTranslationX.value]);
 
+    /**
+     * Render timeline elements in a row
+     */
     const videoTimelineElements = useMemo(
       () =>
         queue.map((item, queueIndex) => {
@@ -154,10 +166,12 @@ export const TimelineScrollView = forwardRef(
             position: "relative",
           };
           let videoReorderingThumbnailStyle = {
+            left: sharedOnLongPressLeftOffset.value,
             width: VIDEO_IMAGE_FRAME_WIDTH,
             height: VIDEO_IMAGE_FRAME_WIDTH,
             position: "relative",
           };
+
           // let aStyle = animatedStyles;
           // Define animation for x value translation
           // Define Pan gesture and assign to detector
@@ -170,6 +184,7 @@ export const TimelineScrollView = forwardRef(
                 event.x +
                 item.startTimeWidth -
                 (queueIndex + 0.5) * VIDEO_IMAGE_FRAME_WIDTH;
+              // Clamp and set
               sharedOnLongPressLeftOffset.value = Math.min(
                 Math.max(startingLeftOffset, 0),
                 queueDurationWidth,
@@ -178,13 +193,14 @@ export const TimelineScrollView = forwardRef(
               runOnJS(setUserIsReorderingTimeline)(true); // TODO: Make animation of minimizing to
               // Set the selectedComponentKey if not already selected
               runOnJS(setSelectedComponentKey)(item.key);
+              activeIndex.value = queueIndex; // TODO: set queueIndex or item.key
               // Create a vibration to signify longpress
               runOnJS(Vibration.vibrate)(25);
               // Make nothing else in the screen responsive? --> just focus on panGesture
             })
             .onUpdate((event) => {
               // event.translationX --> To threshold
-              // let reorderUpdateWidth = VIDEO_IMAGE_FRAME_WIDTH / 2
+              curTranslationX.value = event.translationX;
             })
             .onEnd(() => {
               // Deselect selectedComponentKey
@@ -192,6 +208,7 @@ export const TimelineScrollView = forwardRef(
               runOnJS(setUserIsReorderingTimeline)(false);
               console.log("END");
               // Everything is responsive again
+              // Reset sharedValues
             });
 
           return (
@@ -251,31 +268,34 @@ export const TimelineScrollView = forwardRef(
                     ) : null}
                   </NativePressableOpacity>
                 ) : (
-                  // TODO: Render images from offset
-                  <View style={videoReorderingThumbnailStyle}>
+                  <Animated.View
+                    style={
+                      selectedComponentKey == item.key
+                        ? panGestureAnimatedStyle
+                        : videoReorderingThumbnailStyle
+                    }
+                  >
                     <Animated.Image
                       key={"TIMELINEFRAME" + Math.random() * 6969 + item.key}
                       source={{ uri: item.frames[0] }}
                       style={{
-                        left: sharedOnLongPressLeftOffset.value,
                         height: VIDEO_IMAGE_FRAME_WIDTH,
                         width: VIDEO_IMAGE_FRAME_WIDTH,
                       }}
                     />
                     {item.key == selectedComponentKey ? (
-                      <View
+                      <Animated.View
                         key={"SELECTEDCOMPONENTFRAME" + item.key}
                         style={{
                           borderColor: "white",
                           borderWidth: 3,
                           position: "absolute",
-                          left: sharedOnLongPressLeftOffset.value,
                           height: VIDEO_IMAGE_FRAME_WIDTH,
                           width: VIDEO_IMAGE_FRAME_WIDTH,
                         }}
                       />
                     ) : null}
-                  </View>
+                  </Animated.View>
                 )}
               </View>
             </GestureDetector>
