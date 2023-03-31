@@ -138,9 +138,9 @@ export const dequeueAtomAtom = atom(
     set(frontAtom, temp);
     // Change the startTimeMs and startTimeWidth of the elements in queue
     let nodeToChange = temp;
-    let prevEndTimeMs = 0;
+    var prevEndTimeMs = 0;
     while (nodeToChange != null) {
-      nodeToChange.setStartTimeMs(prevStartTimeMs);
+      nodeToChange.setStartTimeMs(prevEndTimeMs);
       prevEndTimeMs = nodeToChange.startTimeMs + nodeToChange.video.duration; // start 1ms after prev video
       nodeToChange = nodeToChange.next;
     }
@@ -184,9 +184,76 @@ export const queueDurationMsAtom = atom((get) => {
   );
   return queueDuration;
 });
-// TODO: ReorderItemAtom
-// touch frontAtom / rearAtom to rerender list when done
-// Write only Function
-// Iterate through the queue until key
-// this.next = keyNode.next
-// keyNode->next = this
+
+/**
+ * Delete a node and reinsert it at a given index
+ * https://stackoverflow.com/questions/62640833/move-node-to-a-new-index-in-a-linked-list
+ */
+export const reorderAtomAtom = atom(null, (get, set, update) => {
+  const { itemKey, newIndex } = update;
+  let front = get(frontAtom),
+    toDelete = get(frontAtom),
+    prevBeforeReorder = null,
+    prevAfterReorder = null;
+  let rear = get(rearAtom);
+  var newFrontAtom = front;
+  var newRearAtom = rear;
+  if (front == null) {
+    // If no nodes in queue, do nothing
+    return;
+  }
+  // Walk through the queue and delete the node
+  var index = 0;
+  while (toDelete != null) {
+    if (toDelete.key == itemKey) {
+      if (prevBeforeReorder != null) {
+        prevBeforeReorder.next = toDelete.next;
+      } else {
+        // toDelete is at front of queue
+        front = front.next;
+      }
+      break;
+    }
+    prevBeforeReorder = toDelete;
+    toDelete = toDelete.next;
+    index++;
+  }
+  // Insert node at newIndex
+  newFrontAtom = front; // update list so ^deletion happened
+  let curr = front;
+  let newIndexIter = newIndex;
+  while (newIndexIter != 0) {
+    prevAfterReorder = curr;
+    curr = curr.next;
+    newIndexIter--;
+  }
+  if (prevAfterReorder != null) {
+    prevAfterReorder.next = toDelete;
+    toDelete.next = curr;
+  } else if (newFrontAtom != null) {
+    toDelete.next = newFrontAtom;
+    newFrontAtom = toDelete;
+  }
+  // // DEBUG:
+  // toDelete ? console.log("toDelete", toDelete.key) : console.log("toDelete")
+  // prevBeforeReorder ? console.log("prevBeforeReorder", prevBeforeReorder.key) : console.log("prevBeforeReorder")
+  // prevAfterReorder ? console.log("prevAfterReorder", prevAfterReorder.key) : console.log("prevAfterReorder")
+  // front ? console.log("front", front.key) : console.log("front")
+  // newFrontAtom ? console.log("newFrontAtom", newFrontAtom.key) : console.log("newFrontAtom")
+  // newRearAtom ? console.log("newRearAtom", newRearAtom.key) : console.log("newRearAtom")
+  // get(frontAtom) ? console.log("get(frontAtom)", get(frontAtom).key) : console.log("get(frontAtom)")
+  // get(rearAtom) ? console.log("get(rearAtom)", get(rearAtom).key) : console.log("get(rearAtom)")
+
+  // Update front / rearAtom
+  if (toDelete != null && toDelete.next == null) {
+    // toDelete is the new rearAtom
+    newRearAtom = toDelete;
+  }
+  set(frontAtom, newFrontAtom);
+  set(rearAtom, newRearAtom);
+});
+
+export const destroyQueueAtomAtom = atom(null, (get, set, _update) => {
+  set(frontAtom, null);
+  set(rearAtom, null);
+});
