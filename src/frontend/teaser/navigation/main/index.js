@@ -92,7 +92,7 @@ export default function MainNavigator() {
         <Stack.Screen
           name="UploadSoundScreen"
           component={UploadSoundScreen}
-          options={{ title: "Add sound" }}
+          options={{ title: "Add sound", headerShown: true }}
         />
         <Stack.Screen
           name="UploadPostDetails"
