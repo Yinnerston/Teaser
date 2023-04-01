@@ -21,6 +21,7 @@ export default function TimelineVideoElement(props) {
     setUserIsReorderingTimeline,
     selectedComponentKey,
     setSelectedComponentKey,
+    setCurPlayingVideo,
     queueDurationWidth,
     curTranslationX,
     panGestureAnimatedStyle,
@@ -110,7 +111,9 @@ export default function TimelineVideoElement(props) {
       // Shorten all images to first frame
       runOnJS(setUserIsReorderingTimeline)(true); // TODO: Make animation of minimizing to
       // Set the selectedComponentKey if not already selected
+      // TODO: On select, seek to start of video? ScrollTo event.x if far from previous positon?
       runOnJS(setSelectedComponentKey)(item.key);
+      // runOnJS(setCurPlayingVideo)(item);
       activeIndex.value = queueIndex; // TODO: set queueIndex or item.key
       // Create a vibration to signify longpress
       runOnJS(Vibration.vibrate)(25);

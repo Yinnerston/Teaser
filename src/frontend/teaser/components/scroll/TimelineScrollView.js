@@ -174,6 +174,7 @@ export const TimelineScrollView = forwardRef(
           setUserIsReorderingTimeline={setUserIsReorderingTimeline}
           selectedComponentKey={selectedComponentKey}
           setSelectedComponentKey={setSelectedComponentKey}
+          setCurPlayingVideo={setCurPlayingVideo}
           queueDurationWidth={queueDurationWidth}
           curTranslationX={curTranslationX}
           panGestureAnimatedStyle={panGestureAnimatedStyle}

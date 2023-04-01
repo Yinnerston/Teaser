@@ -22,13 +22,15 @@ import {
 import { TimelineScrollView } from "../../components/scroll/TimelineScrollView";
 import { writeOnlyTimelinePositionAtom } from "../../hooks/upload/useVideoPlayer";
 import { msToWidth } from "../../utils/videoTimelineWidth";
+import VideoToolsFooterNav from "../../components/navs/footer/VideoToolsFooterNav";
 
 /**
  * Edit your videos in the app.
  * @returns
  */
 export default function UploadEditVideoScreen() {
-  const { height, width, styles } = useUploadEditVideoScreenStyles();
+  const { height, width, styles, videoFooterStyles } =
+    useUploadEditVideoScreenStyles();
   const videoRef = useRef(null);
   const [queue] = useAtom(queueAtom);
   const [queueDuration] = useAtom(queueDurationMsAtom);
@@ -52,10 +54,7 @@ export default function UploadEditVideoScreen() {
   }, []);
 
   const handlePlaybackStatusUpdate = async (status) => {
-    if (status.isLoading) {
-      console.log("LOADING");
-      return;
-    }
+    // TODO: Show some image on status.isLoading?
     if (status.isLoaded) {
       // Set timeline position
       // let statusPosition = msToWidth(
@@ -103,8 +102,6 @@ export default function UploadEditVideoScreen() {
       }
     }
   };
-
-  console.log("RELOAD");
 
   return (
     <SafeAreaView style={styles.container}>
@@ -164,28 +161,15 @@ export default function UploadEditVideoScreen() {
         />
         <View style={styles.timelineTimeBar} />
       </View>
-      <View
-        key="VideoToolsFooterNav-UploadEditVideoScreen"
-        style={styles.videoToolsFooterNavContainer}
-      >
-        <Text style={{ color: "white" }}>
-          {editorVideoIsPlaying ? "PLAYING " : "STOP "}
-          {curPlayingVideo ? curPlayingVideo.key : "NONE PLAYING"}
-          {"\n"}
-          {videoIsFinished ? "FINISHED " : "UNFINISHED "}
-          {queue
-            ? queue.map(
-                (item) => item.startTimeWidth + item.durationWidth + " / ",
-              )
-            : null}
-          /////
-          {queue ? queue.map((item) => item.video.duration + " / ") : null}
-        </Text>
-      </View>
+      <VideoToolsFooterNav
+        styles={videoFooterStyles}
+        selectedComponentKey={selectedComponentKey}
+      ></VideoToolsFooterNav>
     </SafeAreaView>
   );
 }
 
+// TODO: Split styles for timelineVideoElements
 const useUploadEditVideoScreenStyles = () => {
   const { height, width } = useWindowDimensions();
   const VIDEO_CONTAINER_HEIGHT = (width * 32) / 27;
@@ -250,9 +234,12 @@ const useUploadEditVideoScreenStyles = () => {
       color: "gray",
       position: "relative",
     },
+  });
+  const videoFooterStyles = StyleSheet.create({
     videoToolsFooterNavContainer: {
       height: VIDEO_TOOLS_FOOTER_NAV_HEIGHT,
+      flexDirection: "row",
     },
   });
-  return { height, width, styles };
+  return { height, width, styles, videoFooterStyles };
 };
