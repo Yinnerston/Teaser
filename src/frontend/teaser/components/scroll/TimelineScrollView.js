@@ -280,10 +280,6 @@ export const TimelineScrollView = forwardRef(
             )}
             {videoTimelineSeparators ? videoTimelineSeparators : null}
           </View>
-          <View>
-            {/* <Text style={{ color: "white" }}>{timelinePosition}</Text> */}
-            <Text style={{ color: "white" }}>{timelinePosition}</Text>
-          </View>
         </View>
 
         <View style={styles.timelineScrollPaddingView} />

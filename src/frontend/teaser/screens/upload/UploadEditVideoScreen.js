@@ -23,12 +23,13 @@ import { TimelineScrollView } from "../../components/scroll/TimelineScrollView";
 import { writeOnlyTimelinePositionAtom } from "../../hooks/upload/useVideoPlayer";
 import { msToWidth } from "../../utils/videoTimelineWidth";
 import VideoToolsFooterNav from "../../components/navs/footer/VideoToolsFooterNav";
+import AddSoundScrollViewButton from "../../components/elements/button/upload/AddSoundScrollViewButton";
 
 /**
  * Edit your videos in the app.
  * @returns
  */
-export default function UploadEditVideoScreen() {
+export default function UploadEditVideoScreen({ navigation }) {
   const { height, width, styles, videoFooterStyles } =
     useUploadEditVideoScreenStyles();
   const videoRef = useRef(null);
@@ -160,6 +161,7 @@ export default function UploadEditVideoScreen() {
           ref={scrollRef}
         />
         <View style={styles.timelineTimeBar} />
+        <AddSoundScrollViewButton navigation={navigation} />
       </View>
       <VideoToolsFooterNav
         styles={videoFooterStyles}

@@ -14,27 +14,30 @@ export default function AuthButton({
   routeName,
   buttonText,
   onPress,
+  authButtonStyles,
 }) {
-  const styles = StyleSheet.create({
-    container: {
-      alignItems: "center",
-    },
-    registerButtonStyle: {
-      alignItems: "center",
-      justifyContent: "center",
-      paddingVertical: 12,
-      paddingHorizontal: 64,
-      borderRadius: 4,
-      elevation: 3,
-      backgroundColor: color,
-    },
-    registerButtonTextStyle: {
-      fontSize: 16,
-      fontWeight: "bold",
-      color: "white",
-      textAlign: "center",
-    },
-  });
+  const styles = authButtonStyles
+    ? authButtonStyles
+    : StyleSheet.create({
+        container: {
+          alignItems: "center",
+        },
+        registerButtonStyle: {
+          alignItems: "center",
+          justifyContent: "center",
+          paddingVertical: 12,
+          paddingHorizontal: 64,
+          borderRadius: 4,
+          elevation: 3,
+          backgroundColor: color,
+        },
+        registerButtonTextStyle: {
+          fontSize: 16,
+          fontWeight: "bold",
+          color: "white",
+          textAlign: "center",
+        },
+      });
 
   if (onPress) {
     return (
