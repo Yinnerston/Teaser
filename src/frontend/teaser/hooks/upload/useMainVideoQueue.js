@@ -196,18 +196,19 @@ export const queueDurationMsAtom = atom((get) => {
  */
 export const reorderAtomAtom = atom(null, (get, set, update) => {
   const { itemKey, newIndex } = update;
-  let front = get(frontAtom),
+  let initialFront = get(frontAtom),
+    frontAfterDelete = initialFront,
     toDelete = get(frontAtom),
     prevBeforeReorder = null,
     prevAfterReorder = null;
-  let rear = get(rearAtom);
-  var newFrontAtom = front;
-  var newRearAtom = rear;
+  let initialRear = get(rearAtom);
+  var newFrontAtom = initialFront;
+  var newRearAtom = initialRear;
   let queueLength = get(queueAtom).length;
-  if (front == null) {
+  if (initialFront == null) {
     // If no nodes in queue, do nothing
     return;
-  } else if (front.key == rear.key) {
+  } else if (initialFront.key == initialRear.key) {
     // Only one node in the queue, do nothing
     return;
   } else if (newIndex < 0 || newIndex > queueLength - 1) {
@@ -221,8 +222,8 @@ export const reorderAtomAtom = atom(null, (get, set, update) => {
       if (prevBeforeReorder != null) {
         prevBeforeReorder.next = toDelete.next;
       } else {
-        // toDelete is at front of queue
-        front = front.next;
+        // toDelete is at initialFront of queue
+        frontAfterDelete = initialFront.next;
       }
       break;
     }
@@ -231,8 +232,8 @@ export const reorderAtomAtom = atom(null, (get, set, update) => {
     index++;
   }
   // Insert node at newIndex
-  newFrontAtom = front; // update list so ^deletion happened
-  let curr = front;
+  newFrontAtom = frontAfterDelete;
+  let curr = frontAfterDelete;
   let newIndexIter = newIndex;
   while (newIndexIter != 0) {
     prevAfterReorder = curr;
@@ -250,18 +251,20 @@ export const reorderAtomAtom = atom(null, (get, set, update) => {
   // toDelete ? console.log("toDelete", toDelete.key) : console.log("toDelete")
   // prevBeforeReorder ? console.log("prevBeforeReorder", prevBeforeReorder.key) : console.log("prevBeforeReorder")
   // prevAfterReorder ? console.log("prevAfterReorder", prevAfterReorder.key) : console.log("prevAfterReorder")
-  // front ? console.log("front", front.key) : console.log("front")
+  // initialFront ? console.log("initialFront", initialFront.key) : console.log("initialFront")
+  // curr ? console.log("curr", curr.key) : console.log("curr")
   // newFrontAtom ? console.log("newFrontAtom", newFrontAtom.key) : console.log("newFrontAtom")
   // newRearAtom ? console.log("newRearAtom", newRearAtom.key) : console.log("newRearAtom")
   // get(frontAtom) ? console.log("get(frontAtom)", get(frontAtom).key) : console.log("get(frontAtom)")
   // get(rearAtom) ? console.log("get(rearAtom)", get(rearAtom).key) : console.log("get(rearAtom)")
 
-  // Update front / rearAtom
+  // Update initialFront / rearAtom
   if (toDelete != null && toDelete.next == null) {
     // toDelete is the new rearAtom
     newRearAtom = toDelete;
   }
-  if (newFrontAtom == front && newRearAtom == rear) {
+  if (newFrontAtom == initialFront && newRearAtom == initialRear) {
+    // Trigger rerender if reordering did not involve either the front or rear atom
     set(triggerQueueRerenderAtomAtom, null);
   } else {
     set(frontAtom, newFrontAtom);
