@@ -34,7 +34,6 @@ export default function UploadImageButton(props) {
           path: result.assets[0].uri,
           size: 0,
         },
-        startTime: 0,
       });
     }
   };

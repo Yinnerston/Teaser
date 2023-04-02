@@ -44,8 +44,6 @@ export default function SubscriptionsScreen({ navigation }) {
               path: Math.random().toString(),
               size: 0,
             },
-            startTime: 0,
-            duration: 0,
           });
         }}
         title="ENQUEUE"
