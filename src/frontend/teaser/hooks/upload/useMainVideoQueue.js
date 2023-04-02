@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import FFmpegWrapper from "./ffmpegWrapper";
 import { msToWidth } from "../../utils/videoTimelineWidth";
-
+import { VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE } from "../../Constants";
 const getFileNameFromPath = (path) => {
   const fragments = path.split("/");
   let fileName = fragments[fragments.length - 1];
@@ -34,22 +34,25 @@ class QVideoNode {
     // TODO: Wait until these are rendered to load timeline?
     this.numberOfFrames = Math.ceil(video.duration / 1000);
     this.frames = [];
-    FFmpegWrapper.getFrames(
-      getFileNameFromPath(video.path),
-      video.path,
-      this.numberOfFrames,
-      (filePath) => {
-        const _frames = [];
-        for (let i = 0; i < this.numberOfFrames; i++) {
-          _frames.push(
-            `${filePath.replace("%4d", String(i + 1).padStart(4, 0))}`,
-          );
-        }
-        console.log("FRAMES", _frames);
-        this.setFrames(_frames);
-      },
-      (e) => console.error(e),
-    );
+    if (!video.triggerRerender) {
+      FFmpegWrapper.getFrames(
+        getFileNameFromPath(video.path),
+        video.path,
+        this.numberOfFrames,
+        (filePath) => {
+          const _frames = [];
+          for (let i = 0; i < this.numberOfFrames; i++) {
+            _frames.push(
+              `${filePath.replace("%4d", String(i + 1).padStart(4, 0))}`,
+            );
+          }
+          console.log("FRAMES", _frames);
+          this.setFrames(_frames);
+        },
+        (e) => console.error(e),
+      );
+    }
+
     this.next = null;
   }
 
@@ -171,7 +174,9 @@ export const stackPopAtomAtom = atom(null, (get, set, update) => {
     front = front.next;
   }
   // Pop off rear item from 'stack'
-  set(dequeuedAtoms, [...prev, front.next]);
+  if (update != VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE) {
+    set(dequeuedAtoms, [...prev, front.next]);
+  }
   front.next = null;
   set(rearAtom, front);
 });
@@ -198,8 +203,15 @@ export const reorderAtomAtom = atom(null, (get, set, update) => {
   let rear = get(rearAtom);
   var newFrontAtom = front;
   var newRearAtom = rear;
+  let queueLength = get(queueAtom).length;
   if (front == null) {
     // If no nodes in queue, do nothing
+    return;
+  } else if (front.key == rear.key) {
+    // Only one node in the queue, do nothing
+    return;
+  } else if (newIndex < 0 || newIndex > queueLength - 1) {
+    // Reject invalid newIndex
     return;
   }
   // Walk through the queue and delete the node
@@ -249,11 +261,26 @@ export const reorderAtomAtom = atom(null, (get, set, update) => {
     // toDelete is the new rearAtom
     newRearAtom = toDelete;
   }
-  set(frontAtom, newFrontAtom);
-  set(rearAtom, newRearAtom);
+  if (newFrontAtom == front && newRearAtom == rear) {
+    set(triggerQueueRerenderAtomAtom, null);
+  } else {
+    set(frontAtom, newFrontAtom);
+    set(rearAtom, newRearAtom);
+  }
 });
 
 export const destroyQueueAtomAtom = atom(null, (get, set, _update) => {
   set(frontAtom, null);
   set(rearAtom, null);
+  set(dequeuedAtoms, []);
+});
+
+export const triggerQueueRerenderAtomAtom = atom(null, (get, set, _update) => {
+  set(enqueueAtomAtom, {
+    video: { triggerRerender: VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE },
+  });
+  set(stackPopAtomAtom, VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE);
+  let dequeued = get(dequeuedAtoms);
+  dequeued.pop();
+  set(dequeuedAtoms, dequeued);
 });

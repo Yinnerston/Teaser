@@ -25,3 +25,4 @@ export const VIDEO_TOOLS_FOOTER_NAV_HEIGHT = 48;
 export const TIMELINE_IMAGE_FPS = 1;
 export const TIMELINE_VIDEO_FPS = 30; // TODO: Can change this later?
 export const VIDEO_IMAGE_FRAME_WIDTH = 40;
+export const VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE = -69;
