@@ -1,6 +1,10 @@
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SongCard from "../../components/cards/SongCard";
+import SongForYouHeader from "../../components/navs/header/SongForYouHeader";
+import SongInput from "../../components/elements/input/SongInput";
+// import Carousel from 'react-native-reanimated-carousel';
+
 const SONGS_DATA = [
   {
     id: "xjaojfdojosjfsf",
@@ -49,12 +53,21 @@ export default function UploadSoundScreen({ navigation }) {
     <SongCard item={item} navigation={navigation} />
   );
 
+  const renderSongForYouHeader = () => (
+    <SongForYouHeader
+      // TODO: Other props
+      navigation={navigation}
+    ></SongForYouHeader>
+  );
+
   return (
     <SafeAreaView>
+      <SongInput></SongInput>
       <FlatList
         data={SONGS_DATA}
         renderItem={renderSongCard}
         keyExtractor={(item) => item.id}
+        ListHeaderComponent={renderSongForYouHeader}
       />
       <FlatList />
     </SafeAreaView>
