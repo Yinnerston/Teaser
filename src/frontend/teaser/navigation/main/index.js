@@ -16,6 +16,7 @@ import UploadEditVideoScreen from "../../screens/upload/UploadEditVideoScreen";
 import UploadPostDetailsScreen from "../../screens/upload/UploadPostDetailsScreen";
 import HomeNavigator from "../home";
 import UploadSoundScreen from "../../screens/upload/UploadSoundScreen";
+import UploadSeeMoreSongsScreen from "../../screens/upload/UploadSeeMoreSongsScreen";
 
 const Stack = createStackNavigator();
 
@@ -93,6 +94,11 @@ export default function MainNavigator() {
           name="UploadSoundScreen"
           component={UploadSoundScreen}
           options={{ title: "Add sound", headerShown: true }}
+        />
+        <Stack.Screen
+          name="UploadSeeMoreSongsScreen"
+          component={UploadSeeMoreSongsScreen}
+          options={{ title: "More Songs", headerShown: true }}
         />
         <Stack.Screen
           name="UploadPostDetails"
