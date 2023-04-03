@@ -38,6 +38,7 @@ export const useSongTagCardStyles = () => {
       width: width / 2 - 32,
       height: 100,
       margin: 8,
+      overflow: "hidden",
     },
     nameText: {
       color: "white",
@@ -51,9 +52,9 @@ export const useSongTagCardStyles = () => {
       borderRadius: 8,
       right: 0,
       position: "absolute",
-      height: width / 6,
-      width: width / 6,
-      transform: [{ rotate: "35deg" }, { translateX: 30 }, { translateY: 16 }],
+      height: 60,
+      width: 60,
+      transform: [{ rotate: "35deg" }, { translateX: 35 }, { translateY: 16 }],
       zIndex: 0,
     },
   });
