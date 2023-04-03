@@ -224,4 +224,77 @@ test("Front atom to middle of queue reordering", () => {
   expect(reorderedQueue.children[2]).toBe(thirdKey);
 });
 
-test("Reorder to rearrange list back to front", () => {});
+test("Reorder across queue", () => {
+  // Move a video from the rear to the front incrementally by one index
+  const enqueueButton = screen.getByText("ENQUEUE");
+  fireEvent.press(enqueueButton);
+  const initialRender = render(<TestQueue></TestQueue>);
+  let lengthElement = initialRender.getByTestId("LENGTH");
+  let length = lengthElement.children[0];
+  expect(length).toBe("4");
+  // Get all four keys in queue
+  // Make deep copy of queue element
+  let queue = [];
+  let _queue = initialRender.getByTestId("QUEUE");
+  for (let i = 0; i < _queue.children.length; i++) {
+    queue[i] = _queue.children[i];
+  }
+  let keyToReorder = queue[3];
+
+  // Go through all the indexes [0, length - 1] in reverse
+  for (let newIndex = length - 1; newIndex >= 0; newIndex--) {
+    const reorderPropRerender = render(
+      <TestQueue
+        reorderItemKey={keyToReorder}
+        reorderNewIndex={newIndex}
+      ></TestQueue>,
+    );
+    const reorderButton = reorderPropRerender.getByText("REORDER");
+    fireEvent.press(reorderButton);
+    const reorderedRender = render(<TestQueue></TestQueue>);
+    let reorderedQueue = reorderedRender.getByTestId("QUEUE").children;
+    let reorderedLength = initialRender.getByTestId("LENGTH").children[0];
+    // Check values match expected
+    expect(reorderedLength).toBe(queue.length.toString());
+    for (let i = 0; i < length; i++) {
+      if (i == newIndex) {
+        expect(reorderedQueue[i]).toBe(keyToReorder);
+      } else if (i < newIndex) {
+        // Should be the original value before any reordering
+        expect(reorderedQueue[i]).toBe(queue[i]);
+      } else {
+        // i > newIndex so reordered was shifted up by one index by reorder
+        console.log(queue, reorderedQueue);
+
+        expect(reorderedQueue[i]).toBe(queue[i - 1]);
+      }
+    }
+  }
+});
+
+test("Test triggerQueueRerenderAtomAtom on empty queue", () => {
+  // Remove all elements from queue
+  const destroyQueueButton = screen.getByText("DESTROY");
+  fireEvent.press(destroyQueueButton);
+  const initialRender = render(<TestQueue />);
+  let lengthElement = initialRender.getByTestId("LENGTH");
+  let length = lengthElement.children[0];
+  expect(length).toBe("0");
+  const rerenderButton = screen.getByText("RERENDER");
+  fireEvent.press(rerenderButton);
+  // Check that nothing has changed and the queue still has 0 elements after rerender
+  const rerenderedRender = render(<TestQueue></TestQueue>);
+  let lengthElementAfterRerender = rerenderedRender.getByTestId("LENGTH");
+  let lengthAfterRerender = lengthElementAfterRerender.children[0];
+  expect(lengthAfterRerender).toBe("0");
+});
+
+test("Test triggerQueueRerenderAtomAtom on queue with nodes", () => {
+  const rerenderButton = screen.getByText("RERENDER");
+  fireEvent.press(rerenderButton);
+  // Check that nothing has changed and the queue still has 3 elements after rerender
+  const rerenderedRender = render(<TestQueue></TestQueue>);
+  let lengthElementAfterRerender = rerenderedRender.getByTestId("LENGTH");
+  let lengthAfterRerender = lengthElementAfterRerender.children[0];
+  expect(lengthAfterRerender).toBe("3");
+});
