@@ -95,23 +95,23 @@ test("Test reordering with a single node", () => {
   fireEvent.press(dequeueButton);
   fireEvent.press(dequeueButton);
   // Only one node in queue
-  const { rerender } = render(<TestQueue></TestQueue>);
-  let lengthElement = screen.getByTestId("LENGTH");
+  const initialRender = render(<TestQueue></TestQueue>);
+  let lengthElement = initialRender.getByTestId("LENGTH");
   let length = lengthElement.children[0];
   expect(length).toBe("1");
-  let queue = screen.getByTestId("QUEUE");
+  let queue = initialRender.getByTestId("QUEUE");
   let firstKey = queue.children[0];
-  rerender(
+  const reorderPropRerender = render(
     <TestQueue reorderItemKey={firstKey} reorderNewIndex={0}></TestQueue>,
   );
   // Check queue is the same after reordering
-  const reorderButton = screen.getByText("REORDER");
+  const reorderButton = reorderPropRerender.getByText("REORDER");
   fireEvent.press(reorderButton);
-  rerender(<TestQueue></TestQueue>);
-  let reorderedLengthElement = screen.getByTestId("LENGTH");
+  const reorderedRender = render(<TestQueue></TestQueue>);
+  let reorderedLengthElement = reorderedRender.getByTestId("LENGTH");
   let reorderedLength = reorderedLengthElement.children[0];
   expect(reorderedLength).toBe("1");
-  let reorderedQueue = screen.getByTestId("QUEUE");
+  let reorderedQueue = reorderedRender.getByTestId("QUEUE");
   let reorderedFirstKey = reorderedQueue.children[0];
   expect(reorderedFirstKey).toEqual(firstKey);
 });
@@ -120,21 +120,21 @@ test("Test reorderQueueAtom reorder reverse order by moving first element", () =
   // Reduce queue to length = 2
   const dequeueButton = screen.getByText("DEQUEUE");
   fireEvent.press(dequeueButton);
-  const { rerender } = render(<TestQueue></TestQueue>);
-  let lengthElement = screen.getByTestId("LENGTH");
+  const initialRender = render(<TestQueue></TestQueue>);
+  let lengthElement = initialRender.getByTestId("LENGTH");
   let length = lengthElement.children[0];
   expect(length).toBe("2");
-  let queue = screen.getByTestId("QUEUE");
+  let queue = initialRender.getByTestId("QUEUE");
   let firstKey = queue.children[0];
   let secondKey = queue.children[1];
   // Swap the order of the first and second key and check
-  rerender(
+  const reorderPropRerender = render(
     <TestQueue reorderItemKey={firstKey} reorderNewIndex={1}></TestQueue>,
   );
-  const reorderButton = screen.getByText("REORDER");
+  const reorderButton = reorderPropRerender.getByText("REORDER");
   fireEvent.press(reorderButton);
-  rerender(<TestQueue></TestQueue>);
-  let reorderedQueue = screen.getByTestId("QUEUE");
+  const reorderedRender = render(<TestQueue></TestQueue>);
+  let reorderedQueue = reorderedRender.getByTestId("QUEUE");
   expect(reorderedQueue.children[0]).toBe(secondKey);
   expect(reorderedQueue.children[1]).toBe(firstKey);
 });
@@ -143,96 +143,140 @@ test("Test reorderQueueAtom reorder reverse order by moving rear element", () =>
   // Reduce queue to length = 2
   const dequeueButton = screen.getByText("DEQUEUE");
   fireEvent.press(dequeueButton);
-  const { rerender } = render(<TestQueue></TestQueue>);
-  let lengthElement = screen.getByTestId("LENGTH");
+  const initialRender = render(<TestQueue></TestQueue>);
+  let lengthElement = initialRender.getByTestId("LENGTH");
   let length = lengthElement.children[0];
   expect(length).toBe("2");
-  let queue = screen.getByTestId("QUEUE");
+  let queue = initialRender.getByTestId("QUEUE");
   let firstKey = queue.children[0];
   let secondKey = queue.children[1];
   // Swap the order of the first and second key and check
-  rerender(
+  const reorderPropRerender = render(
     <TestQueue reorderItemKey={secondKey} reorderNewIndex={0}></TestQueue>,
   );
-  const reorderButton = screen.getByText("REORDER");
+  const reorderButton = reorderPropRerender.getByText("REORDER");
   fireEvent.press(reorderButton);
-  rerender(<TestQueue></TestQueue>);
-  let reorderedQueue = screen.getByTestId("QUEUE");
+  const reorderedRender = render(<TestQueue></TestQueue>);
+  let reorderedQueue = reorderedRender.getByTestId("QUEUE");
   expect(reorderedQueue.children[0]).toBe(secondKey);
   expect(reorderedQueue.children[1]).toBe(firstKey);
 });
 
 test("Test reorderQueueAtom reorder same index", () => {
-  let queue = screen.getByTestId("QUEUE");
+  const initialRender = render(<TestQueue></TestQueue>);
+  let queue = initialRender.getByTestId("QUEUE");
   let firstKey = queue.children[0];
   let secondKey = queue.children[1];
   let thirdKey = queue.children[2];
-  const { rerender } = render(
+  const reorderPropRerender = render(
     <TestQueue reorderItemKey={firstKey} reorderNewIndex={0}></TestQueue>,
   );
-  const reorderButton = screen.getByText("REORDER");
+  const reorderButton = reorderPropRerender.getByText("REORDER");
   fireEvent.press(reorderButton);
-  rerender(<TestQueue></TestQueue>);
-  let reorderedQueue = screen.getByTestId("QUEUE");
+  const reorderedRender = render(<TestQueue></TestQueue>);
+  let reorderedQueue = reorderedRender.getByTestId("QUEUE");
   expect(reorderedQueue.children[0]).toBe(firstKey);
   expect(reorderedQueue.children[1]).toBe(secondKey);
   expect(reorderedQueue.children[2]).toBe(thirdKey);
 });
 
 test("Test reorderQueueAtom reorder invalid index negative", () => {
-  let queue = screen.getByTestId("QUEUE");
+  const initialRender = render(<TestQueue></TestQueue>);
+  let queue = initialRender.getByTestId("QUEUE");
   let firstKey = queue.children[0];
   let secondKey = queue.children[1];
   let thirdKey = queue.children[2];
-  const { rerender } = render(
+  const reorderPropRerender = render(
     <TestQueue reorderItemKey={firstKey} reorderNewIndex={-1}></TestQueue>,
   );
-  const reorderButton = screen.getByText("REORDER");
+  const reorderButton = reorderPropRerender.getByText("REORDER");
   fireEvent.press(reorderButton);
-  rerender(<TestQueue></TestQueue>);
-  let reorderedQueue = screen.getByTestId("QUEUE");
+  const reorderedRender = render(<TestQueue></TestQueue>);
+  let reorderedQueue = reorderedRender.getByTestId("QUEUE");
   expect(reorderedQueue.children[0]).toBe(firstKey);
   expect(reorderedQueue.children[1]).toBe(secondKey);
   expect(reorderedQueue.children[2]).toBe(thirdKey);
 });
 
 test("Test reorderQueueAtom reorder invalid index too large", () => {
-  let queue = screen.getByTestId("QUEUE");
+  const initialRender = render(<TestQueue></TestQueue>);
+  let queue = initialRender.getByTestId("QUEUE");
   let firstKey = queue.children[0];
   let secondKey = queue.children[1];
   let thirdKey = queue.children[2];
-  const { rerender } = render(
+  const reorderPropRerender = render(
     <TestQueue reorderItemKey={firstKey} reorderNewIndex={3}></TestQueue>,
   );
-  const reorderButton = screen.getByText("REORDER");
+  const reorderButton = reorderPropRerender.getByText("REORDER");
   fireEvent.press(reorderButton);
-  rerender(<TestQueue></TestQueue>);
-  let reorderedQueue = screen.getByTestId("QUEUE");
+  const reorderedRender = render(<TestQueue></TestQueue>);
+  let reorderedQueue = reorderedRender.getByTestId("QUEUE");
   expect(reorderedQueue.children[0]).toBe(firstKey);
   expect(reorderedQueue.children[1]).toBe(secondKey);
   expect(reorderedQueue.children[2]).toBe(thirdKey);
 });
 
 test("Test reorderQueueAtom reorder in middle of queue.\
- Thus queue is rerendered on reorder.", () => {
+ Thus queue is rerendered on reorder features reordering not related to front / rear atoms.", () => {
   const enqueueButton = screen.getByText("ENQUEUE");
   fireEvent.press(enqueueButton);
-  const { rerender } = render(<TestQueue></TestQueue>);
-  let lengthElement = screen.getByTestId("LENGTH");
+  const initialRender = render(<TestQueue></TestQueue>);
+  let lengthElement = initialRender.getByTestId("LENGTH");
   let length = lengthElement.children[0];
   expect(length).toBe("4");
-  let queue = screen.getByTestId("QUEUE");
+  let queue = initialRender.getByTestId("QUEUE");
   let secondKey = queue.children[1];
   let thirdKey = queue.children[2];
   // Reorder queue [0, 1, 2, 3] => [0, 2, 1, 3]
-  rerender(
+  const reorderPropRerender = render(
     <TestQueue reorderItemKey={secondKey} reorderNewIndex={2}></TestQueue>,
   );
-  const reorderButton = screen.getByText("REORDER");
+  const reorderButton = reorderPropRerender.getByText("REORDER");
   fireEvent.press(reorderButton);
   // Queue jotai atom was changed by reorder
-  rerender(<TestQueue></TestQueue>);
-  let reorderedQueue = screen.getByTestId("QUEUE");
+  const reorderedRender = render(<TestQueue></TestQueue>);
+  let reorderedQueue = reorderedRender.getByTestId("QUEUE");
   expect(reorderedQueue.children[1]).toBe(thirdKey);
   expect(reorderedQueue.children[2]).toBe(secondKey);
+});
+
+test("Rear atom to middle of queue reordering", () => {
+  const initialRender = render(<TestQueue></TestQueue>);
+  let queue = initialRender.getByTestId("QUEUE");
+  let firstKey = queue.children[0];
+  let secondKey = queue.children[1];
+  let thirdKey = queue.children[2];
+  const reorderPropRerender = render(
+    <TestQueue reorderItemKey={thirdKey} reorderNewIndex={1}></TestQueue>,
+  );
+  const reorderButton = reorderPropRerender.getByText("REORDER");
+  fireEvent.press(reorderButton);
+  const reorderedRender = render(<TestQueue></TestQueue>);
+  let reorderedQueue = reorderedRender.getByTestId("QUEUE");
+  expect(reorderedQueue.children[0]).toBe(firstKey);
+  expect(reorderedQueue.children[1]).toBe(thirdKey);
+  expect(reorderedQueue.children[2]).toBe(secondKey);
+});
+
+// TODO: rewrite all the tests to be dependent on one variable not screen
+test("Front atom to middle of queue reordering", () => {
+  const initialRender = render(
+    <TestQueue reorderItemKey={firstKey} reorderNewIndex={1}></TestQueue>,
+  );
+  let queue = initialRender.getByTestId("QUEUE");
+  let firstKey = queue.children[0];
+  let secondKey = queue.children[1];
+  let thirdKey = queue.children[2];
+  const reorderPropRerender = render(
+    <TestQueue reorderItemKey={firstKey} reorderNewIndex={1}></TestQueue>,
+  );
+  const reorderButton = reorderPropRerender.getByText("REORDER");
+  fireEvent.press(reorderButton);
+  const reorderedRender = render(<TestQueue></TestQueue>);
+
+  let reorderedQueue = reorderedRender.getByTestId("QUEUE");
+
+  expect(reorderedQueue.children[0]).toBe(secondKey);
+  expect(reorderedQueue.children[1]).toBe(firstKey);
+  expect(reorderedQueue.children[2]).toBe(thirdKey);
 });
