@@ -67,6 +67,7 @@ class QVideoNode {
     let endTimeMs = this.startTimeMs + this.video.duration;
     this.endTimeMs = endTimeMs;
     this.endTimeWidth = msToWidth(endTimeMs);
+    // TODO: Check if enqueued atom exceeds the maximum duration of a video?
   }
 }
 
@@ -170,7 +171,7 @@ export const stackPopAtomAtom = atom(null, (get, set, update) => {
     return;
   }
   // Iterate through queue to get all items in sequence
-  while (front.next != rear) {
+  while (front.next != null && front.next != rear) {
     front = front.next;
   }
   // Pop off rear item from 'stack'
@@ -231,6 +232,15 @@ export const reorderAtomAtom = atom(null, (get, set, update) => {
     toDelete = toDelete.next;
     index++;
   }
+  // Could not find key
+  if (toDelete == null) {
+    console.error(
+      "Invalid Key",
+      get(queueAtom).map((item) => item.key),
+      itemKey,
+    ); // TODO: ?
+    return;
+  }
   // Insert node at newIndex
   newFrontAtom = frontAfterDelete;
   let curr = frontAfterDelete;
@@ -243,21 +253,14 @@ export const reorderAtomAtom = atom(null, (get, set, update) => {
   if (prevAfterReorder != null) {
     prevAfterReorder.next = toDelete;
     toDelete.next = curr;
+    if (toDelete.key == initialRear.key) {
+      // If deleted was previously the rear, set new rear
+      newRearAtom = curr;
+    }
   } else if (newFrontAtom != null) {
     toDelete.next = newFrontAtom;
     newFrontAtom = toDelete;
   }
-  // // DEBUG:
-  // toDelete ? console.log("toDelete", toDelete.key) : console.log("toDelete")
-  // prevBeforeReorder ? console.log("prevBeforeReorder", prevBeforeReorder.key) : console.log("prevBeforeReorder")
-  // prevAfterReorder ? console.log("prevAfterReorder", prevAfterReorder.key) : console.log("prevAfterReorder")
-  // initialFront ? console.log("initialFront", initialFront.key) : console.log("initialFront")
-  // curr ? console.log("curr", curr.key) : console.log("curr")
-  // newFrontAtom ? console.log("newFrontAtom", newFrontAtom.key) : console.log("newFrontAtom")
-  // newRearAtom ? console.log("newRearAtom", newRearAtom.key) : console.log("newRearAtom")
-  // get(frontAtom) ? console.log("get(frontAtom)", get(frontAtom).key) : console.log("get(frontAtom)")
-  // get(rearAtom) ? console.log("get(rearAtom)", get(rearAtom).key) : console.log("get(rearAtom)")
-
   // Update initialFront / rearAtom
   if (toDelete != null && toDelete.next == null) {
     // toDelete is the new rearAtom
@@ -270,6 +273,19 @@ export const reorderAtomAtom = atom(null, (get, set, update) => {
     set(frontAtom, newFrontAtom);
     set(rearAtom, newRearAtom);
   }
+
+  // // DEBUG:
+  // toDelete ? console.log("toDelete", toDelete.key, "next", toDelete.next ? toDelete.next.key : "null") : console.log("toDelete")
+  // newIndex > -1 ? console.log("newIndex", newIndex) : console.log("newIndex")
+  // prevBeforeReorder ? console.log("prevBeforeReorder", prevBeforeReorder.key) : console.log("prevBeforeReorder")
+  // prevAfterReorder ? console.log("prevAfterReorder", prevAfterReorder.key) : console.log("prevAfterReorder")
+  // initialFront ? console.log("initialFront", initialFront.key) : console.log("initialFront")
+  // curr ? console.log("curr", curr.key) : console.log("curr")
+  // newFrontAtom ? console.log("newFrontAtom", newFrontAtom.key) : console.log("newFrontAtom")
+  // newRearAtom ? console.log("newRearAtom", newRearAtom.key) : console.log("newRearAtom")
+  // get(frontAtom) ? console.log("get(frontAtom)", get(frontAtom).key) : console.log("get(frontAtom)")
+  // get(rearAtom) ? console.log("get(rearAtom)", get(rearAtom).key) : console.log("get(rearAtom)")
+  // console.log("QUEUE", get(queueAtom).map((item) => item.key))
 });
 
 export const destroyQueueAtomAtom = atom(null, (get, set, _update) => {
