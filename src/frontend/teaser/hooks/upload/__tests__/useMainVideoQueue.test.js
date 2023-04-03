@@ -5,6 +5,7 @@ import {
   queueAtom,
   dequeueAtomAtom,
   destroyQueueAtomAtom,
+  triggerQueueRerenderAtomAtom,
 } from "../useMainVideoQueue";
 import { START_FROM_PREV_VIDEO_END } from "../../../Constants";
 // import renderer from 'react-test-renderer';
@@ -26,6 +27,8 @@ export const TestQueue = (props) => {
   const reorder = useSetAtom(reorderAtomAtom);
   const dequeue = useSetAtom(dequeueAtomAtom);
   const destroy = useSetAtom(destroyQueueAtomAtom);
+  const rerender = useSetAtom(triggerQueueRerenderAtomAtom);
+
   return (
     <View>
       <Text testID="QUEUE">{queue ? queue.map((item) => item.key) : []}</Text>
@@ -53,6 +56,7 @@ export const TestQueue = (props) => {
       ></Button>
       <Button onPress={() => dequeue()} title="DEQUEUE"></Button>
       <Button onPress={() => destroy()} title="DESTROY"></Button>
+      <Button onPress={() => rerender()} title="RERENDER"></Button>
     </View>
   );
 };
@@ -67,3 +71,5 @@ const TestProvider = ({ initialValues, children }) => (
     <HydrateAtoms initialValues={initialValues}>{children}</HydrateAtoms>
   </Provider>
 );
+
+test("TODO:", () => {});
