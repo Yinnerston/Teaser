@@ -1,14 +1,28 @@
 import { render, screen, fireEvent } from "@testing-library/react-native";
-import { TestQueue } from "./useMainVideoQueue.test";
+import {
+  TestQueue,
+  checkTimingIsEqual,
+  checkTimingUpdated,
+} from "./useMainVideoQueue.test";
+
+const FIRST_NODE_DURATION = 1000;
+const SECOND_NODE_DURATION = 2000;
+const THIRD_NODE_DURATION = 3000;
 
 /**
  * Enqueue 3 nodes
  */
 function enqueueThreeNodes() {
-  render(<TestQueue></TestQueue>);
+  render(
+    <TestQueue
+      enqueueVideoList={[
+        { video: { path: "", duration: FIRST_NODE_DURATION } },
+        { video: { path: "", duration: SECOND_NODE_DURATION } },
+        { video: { path: "", duration: THIRD_NODE_DURATION } },
+      ]}
+    ></TestQueue>,
+  );
   const enqueueButton = screen.getByText("ENQUEUE");
-  fireEvent.press(enqueueButton);
-  fireEvent.press(enqueueButton);
   fireEvent.press(enqueueButton);
   // render(<TestQueue></TestQueue>);
   // let lengthElement = screen.getByTestId("LENGTH")
@@ -35,9 +49,9 @@ afterEach(() => {
 });
 
 test("Test reordering with a single node", () => {
-  const dequeueButton = screen.getByText("DEQUEUE");
-  fireEvent.press(dequeueButton);
-  fireEvent.press(dequeueButton);
+  const stackPopButton = screen.getByText("STACKPOP");
+  fireEvent.press(stackPopButton);
+  fireEvent.press(stackPopButton);
   // Only one node in queue
   const initialRender = render(<TestQueue></TestQueue>);
   let lengthElement = initialRender.getByTestId("LENGTH");
@@ -60,13 +74,14 @@ test("Test reordering with a single node", () => {
   );
   let reorderedFirstKey = reorderedQueue[0].key;
   expect(reorderedFirstKey).toEqual(firstNode.key);
-  // Check the startTimes are the same
+  // Check the startTimes and endTimes are the same are the same
+  checkTimingIsEqual(reorderedQueue[0], firstNode);
 });
 
 test("Test reorderQueueAtom reorder reverse order by moving first element", () => {
   // Reduce queue to length = 2
-  const dequeueButton = screen.getByText("DEQUEUE");
-  fireEvent.press(dequeueButton);
+  const stackPopButton = screen.getByText("STACKPOP");
+  fireEvent.press(stackPopButton);
   const initialRender = render(<TestQueue></TestQueue>);
   let lengthElement = initialRender.getByTestId("LENGTH");
   let length = lengthElement.children[0];
@@ -87,12 +102,15 @@ test("Test reorderQueueAtom reorder reverse order by moving first element", () =
   expect(reorderedQueue.length).toBe(2);
   expect(reorderedQueue[0].key).toBe(secondNode.key);
   expect(reorderedQueue[1].key).toBe(firstNode.key);
+  // Check the startTimes have been adjusted
+  checkTimingUpdated(reorderedQueue[0], 0);
+  checkTimingUpdated(reorderedQueue[1], SECOND_NODE_DURATION + 1);
 });
 
 test("Test reorderQueueAtom reorder reverse order by moving rear element", () => {
   // Reduce queue to length = 2
-  const dequeueButton = screen.getByText("DEQUEUE");
-  fireEvent.press(dequeueButton);
+  const stackPopButton = screen.getByText("STACKPOP");
+  fireEvent.press(stackPopButton);
   const initialRender = render(<TestQueue></TestQueue>);
   let lengthElement = initialRender.getByTestId("LENGTH");
   let length = lengthElement.children[0];
@@ -112,6 +130,9 @@ test("Test reorderQueueAtom reorder reverse order by moving rear element", () =>
   );
   expect(reorderedQueue[0].key).toBe(secondNode.key);
   expect(reorderedQueue[1].key).toBe(firstNode.key);
+  // Check the startTimes have been adjusted
+  checkTimingUpdated(reorderedQueue[0], 0);
+  checkTimingUpdated(reorderedQueue[1], SECOND_NODE_DURATION + 1);
 });
 
 test("Test reorderQueueAtom reorder same index", () => {
@@ -132,6 +153,13 @@ test("Test reorderQueueAtom reorder same index", () => {
   expect(reorderedQueue[0].key).toBe(firstNode.key);
   expect(reorderedQueue[1].key).toBe(secondNode.key);
   expect(reorderedQueue[2].key).toBe(thirdNode.key);
+  // Check the startTimes have been adjusted
+  checkTimingUpdated(reorderedQueue[0], 0);
+  checkTimingUpdated(reorderedQueue[1], FIRST_NODE_DURATION + 1);
+  checkTimingUpdated(
+    reorderedQueue[2],
+    FIRST_NODE_DURATION + SECOND_NODE_DURATION + 2,
+  );
 });
 
 test("Test reorderQueueAtom reorder invalid index negative", () => {
@@ -152,6 +180,13 @@ test("Test reorderQueueAtom reorder invalid index negative", () => {
   expect(reorderedQueue[0].key).toBe(firstNode.key);
   expect(reorderedQueue[1].key).toBe(secondNode.key);
   expect(reorderedQueue[2].key).toBe(thirdNode.key);
+  // Check the startTimes have been adjusted
+  checkTimingUpdated(reorderedQueue[0], 0);
+  checkTimingUpdated(reorderedQueue[1], FIRST_NODE_DURATION + 1);
+  checkTimingUpdated(
+    reorderedQueue[2],
+    FIRST_NODE_DURATION + SECOND_NODE_DURATION + 2,
+  );
 });
 
 test("Test reorderQueueAtom reorder invalid index too large", () => {
@@ -172,10 +207,18 @@ test("Test reorderQueueAtom reorder invalid index too large", () => {
   expect(reorderedQueue[0].key).toBe(firstNode.key);
   expect(reorderedQueue[1].key).toBe(secondNode.key);
   expect(reorderedQueue[2].key).toBe(thirdNode.key);
+  // Check the startTimes have been adjusted
+  checkTimingUpdated(reorderedQueue[0], 0);
+  checkTimingUpdated(reorderedQueue[1], FIRST_NODE_DURATION + 1);
+  checkTimingUpdated(
+    reorderedQueue[2],
+    FIRST_NODE_DURATION + SECOND_NODE_DURATION + 2,
+  );
 });
 
 test("Test reorderQueueAtom reorder in middle of queue.\
  Thus queue is rerendered on reorder features reordering not related to front / rear atoms.", () => {
+  render(<TestQueue></TestQueue>);
   const enqueueButton = screen.getByText("ENQUEUE");
   fireEvent.press(enqueueButton);
   const initialRender = render(<TestQueue></TestQueue>);
@@ -198,6 +241,17 @@ test("Test reorderQueueAtom reorder in middle of queue.\
   );
   expect(reorderedQueue[1].key).toBe(thirdNode.key);
   expect(reorderedQueue[2].key).toBe(secondNode.key);
+  // Check the startTimes have been adjusted
+  checkTimingUpdated(reorderedQueue[0], 0);
+  checkTimingUpdated(reorderedQueue[1], FIRST_NODE_DURATION + 1);
+  checkTimingUpdated(
+    reorderedQueue[2],
+    FIRST_NODE_DURATION + THIRD_NODE_DURATION + 2,
+  );
+  checkTimingUpdated(
+    reorderedQueue[3],
+    FIRST_NODE_DURATION + THIRD_NODE_DURATION + SECOND_NODE_DURATION + 3,
+  );
 });
 
 test("Rear atom to middle of queue reordering", () => {
@@ -218,6 +272,13 @@ test("Rear atom to middle of queue reordering", () => {
   expect(reorderedQueue[0].key).toBe(firstNode.key);
   expect(reorderedQueue[1].key).toBe(thirdNode.key);
   expect(reorderedQueue[2].key).toBe(secondNode.key);
+  // Check the startTimes have been adjusted
+  checkTimingUpdated(reorderedQueue[0], 0);
+  checkTimingUpdated(reorderedQueue[1], FIRST_NODE_DURATION + 1);
+  checkTimingUpdated(
+    reorderedQueue[2],
+    FIRST_NODE_DURATION + THIRD_NODE_DURATION + 2,
+  );
 });
 
 // TODO: rewrite all the tests to be dependent on one variable not screen
@@ -241,10 +302,18 @@ test("Front atom to middle of queue reordering", () => {
   expect(reorderedQueue[0].key).toBe(secondNode.key);
   expect(reorderedQueue[1].key).toBe(firstNode.key);
   expect(reorderedQueue[2].key).toBe(thirdNode.key);
+  // Check the startTimes have been adjusted
+  checkTimingUpdated(reorderedQueue[0], 0);
+  checkTimingUpdated(reorderedQueue[1], SECOND_NODE_DURATION + 1);
+  checkTimingUpdated(
+    reorderedQueue[2],
+    FIRST_NODE_DURATION + SECOND_NODE_DURATION + 2,
+  );
 });
 
 test("Reorder across queue forwards", () => {
   // Move a video from the rear to the front incrementally by one index
+  render(<TestQueue></TestQueue>);
   const enqueueButton = screen.getByText("ENQUEUE");
   fireEvent.press(enqueueButton);
   const initialRender = render(<TestQueue></TestQueue>);
@@ -277,6 +346,7 @@ test("Reorder across queue forwards", () => {
     let reorderedLength = initialRender.getByTestId("LENGTH").children[0];
     // Check values match expected
     expect(reorderedLength).toBe(queue.length.toString());
+    let startTime = 0;
     for (let i = 0; i < length; i++) {
       if (i == newIndex) {
         expect(reorderedQueue[i].key).toBe(nodeToReorder.key);
@@ -287,12 +357,15 @@ test("Reorder across queue forwards", () => {
         // Should be the original value before any reordering
         expect(reorderedQueue[i].key).toBe(queue[i].key);
       }
+      checkTimingUpdated(reorderedQueue[i], startTime);
+      startTime += reorderedQueue[i].video.duration + 1;
     }
   }
 });
 
 test("Reorder across queue backwards", () => {
   // Move a video from the rear to the front incrementally by one index
+  render(<TestQueue></TestQueue>);
   const enqueueButton = screen.getByText("ENQUEUE");
   fireEvent.press(enqueueButton);
   const initialRender = render(<TestQueue></TestQueue>);
@@ -325,6 +398,7 @@ test("Reorder across queue backwards", () => {
     let reorderedLength = initialRender.getByTestId("LENGTH").children[0];
     // Check values match expected
     expect(reorderedLength).toBe(queue.length.toString());
+    let startTime = 0;
     for (let i = 0; i < length; i++) {
       if (i == newIndex) {
         expect(reorderedQueue[i].key).toBe(nodeToReorder.key);
@@ -335,6 +409,8 @@ test("Reorder across queue backwards", () => {
         // i > newIndex so reordered was shifted up by one index by reorder
         expect(reorderedQueue[i].key).toBe(queue[i - 1].key);
       }
+      checkTimingUpdated(reorderedQueue[i], startTime);
+      startTime += reorderedQueue[i].video.duration + 1;
     }
   }
 });

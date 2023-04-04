@@ -61,7 +61,9 @@ class QVideoNode {
   }
 
   setStartTimeMs(ms) {
-    ms = ms + 0.1; // Add 0.1ms offset from the prev video
+    if (ms > 0) {
+      ms = ms + 1; // Add 0.1ms offset from the prev video
+    }
     this.startTimeMs = ms;
     this.startTimeWidth = msToWidth(ms);
     let endTimeMs = this.startTimeMs + this.video.duration;
@@ -272,6 +274,15 @@ export const reorderAtomAtom = atom(null, (get, set, update) => {
   } else {
     set(frontAtom, newFrontAtom);
     set(rearAtom, newRearAtom);
+  }
+  // Set the new startTimeMs
+  var startTime = 0;
+  curr = newFrontAtom;
+  // Update the start times after reorder
+  while (curr != null) {
+    curr.setStartTimeMs(startTime);
+    startTime = curr.endTimeMs;
+    curr = curr.next;
   }
 
   // // DEBUG:
