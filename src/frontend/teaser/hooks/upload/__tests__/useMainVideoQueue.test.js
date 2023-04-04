@@ -31,7 +31,7 @@ export const TestQueue = (props) => {
 
   return (
     <View>
-      <Text testID="QUEUE">{queue ? queue.map((item) => item.key) : []}</Text>
+      <Text testID="QUEUE">{queue ? JSON.stringify(queue) : []}</Text>
       <Text testID="LENGTH">{queue ? queueLength : 0}</Text>
       <Button
         onPress={() => {
