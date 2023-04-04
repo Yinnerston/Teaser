@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, useEffect } from "react";
 import useInterval from "../../hooks/useInterval";
 import {
   timelinePositionAtom,
@@ -191,9 +191,9 @@ export const TimelineScrollView = forwardRef(
 
     // }, [queue, selectedComponentKey]) // TODO: Do i need memoization on selectedComponentKey, userIsReorderingTimeline?
 
-    const videoTimelineSeparators = useMemo(() => {
-      if (!userIsReorderingTimeline)
-        return queue.map((item, queueIndex) => {
+    const videoTimelineSeparators = !userIsReorderingTimeline
+      ? queue.map((item, queueIndex) => {
+          console.log(item.next ? item.next.key : "NONE NEXT", queueIndex);
           // Style to draw separator between image timeline components
           let videoTimelineSeparateStyle = {
             marginLeft:
@@ -217,8 +217,8 @@ export const TimelineScrollView = forwardRef(
               </View>
             );
           }
-        });
-    }, [queue, userIsReorderingTimeline]);
+        })
+      : null;
     /**
      * TODO: useMemo dependent on queue, scrub position in video queue
      * @returns

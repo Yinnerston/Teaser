@@ -24,7 +24,7 @@ jest.mock("../ffmpegWrapper");
 export const TestQueue = (props) => {
   const { enqueueVideoList, reorderItemKey, reorderNewIndex } = props;
   const [queue] = useAtom(queueAtom);
-  const queueLength = queue ? queue.length : 0;
+  const queueLength = queue.length;
   const enqueue = useSetAtom(enqueueAtomAtom);
   const reorder = useSetAtom(reorderAtomAtom);
   const dequeue = useSetAtom(dequeueAtomAtom);
