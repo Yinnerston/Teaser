@@ -69,6 +69,12 @@ export const TimelineScrollView = forwardRef(
       if (videoRef.current != null) {
         videoRef.current.pauseAsync();
       }
+      if (editorSound != null) {
+        console.log(editorSound.soundRef);
+        if (editorSound.soundRef != null) {
+          editorSound.soundRef.pauseAsync();
+        }
+      }
     };
 
     const handleEndDragTimelineScrollView = (event) => {
@@ -78,7 +84,9 @@ export const TimelineScrollView = forwardRef(
         queueDurationWidth,
       );
       setTimelinePosition(contentOffset);
-
+      if (editorSound != null) {
+        editorSound.seekToOffsetPositionAsync(ReversemsToWidth(contentOffset));
+      }
       // User needs to press the play button to play the video
       // setEditorVideoIsPlaying(true);
     };

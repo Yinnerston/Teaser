@@ -1,5 +1,7 @@
 import { atom } from "jotai";
 import { msToWidth } from "../../utils/videoTimelineWidth";
+import { Audio } from "expo-av";
+
 class SoundClip {
   constructor(id, title, sound, author, thumbnail) {
     this.key = id; // no overlap with video q node?
@@ -14,6 +16,33 @@ class SoundClip {
     this.endTimeWidth = 0;
     console.log(sound);
     this.durationWidth = msToWidth(sound.duration);
+    this.soundRef = null;
+    this.createSoundAsync();
+  }
+
+  async handlePlaybackStatusUpdate(status) {
+    if (status.isLoaded) {
+      if (status.didJustFinish) {
+        console.log("FINISHED");
+      }
+    }
+  }
+
+  async createSoundAsync() {
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: this.sound.url },
+      { shouldPlay: false },
+      this.handlePlaybackStatusUpdate,
+      true,
+    );
+    this.soundRef = sound;
+  }
+
+  async seekToOffsetPositionAsync(ms) {
+    let msOffset = ms - this.startTimeMs;
+    if (this.soundRef != null) {
+      this.soundRef.setPositionAsync(msOffset);
+    }
   }
 
   setStartTimeMs(ms) {

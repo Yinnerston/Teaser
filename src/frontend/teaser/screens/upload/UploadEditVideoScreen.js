@@ -4,7 +4,7 @@ import {
   queueAtom,
   queueDurationMsAtom,
 } from "../../hooks/upload/useMainVideoQueue";
-import { Video } from "expo-av";
+import { Video, Audio } from "expo-av";
 import { useRef, useState, useEffect, useMemo } from "react";
 import {
   curPlayingVideoAtom,
@@ -80,6 +80,10 @@ export default function UploadEditVideoScreen({ navigation }) {
           // Stop playing video
           setVideoIsFinished(true);
           setEditorVideoIsPlaying(false);
+          if (editorSound != null) {
+            editorSound.soundRef.pauseAsync();
+            editorSound.soundRef.setPositionAsync(0);
+          }
         }
       }
     } else if (status.error) {
@@ -100,15 +104,33 @@ export default function UploadEditVideoScreen({ navigation }) {
         setTimelinePosition(0);
         setEditorVideoIsPlaying(true);
         setVideoIsFinished(false);
+        if (editorSound != null) {
+          console.log(editorSound.soundRef);
+          if (editorSound.soundRef != null) {
+            editorSound.soundRef.playFromPositionAsync(0);
+          }
+        }
         return;
       }
       // Play / Pause video if we haven't reached the end
       if (editorVideoIsPlaying) {
         setEditorVideoIsPlaying(false);
         videoRef.current.pauseAsync();
+        if (editorSound != null) {
+          console.log(editorSound.soundRef);
+          if (editorSound.soundRef != null) {
+            editorSound.soundRef.pauseAsync();
+          }
+        }
       } else {
         setEditorVideoIsPlaying(true);
         videoRef.current.playAsync();
+        if (editorSound != null) {
+          console.log(editorSound.soundRef);
+          if (editorSound.soundRef != null) {
+            editorSound.soundRef.playAsync();
+          }
+        }
       }
     }
   };
