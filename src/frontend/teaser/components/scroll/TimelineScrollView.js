@@ -294,6 +294,7 @@ export const TimelineScrollView = forwardRef(
                 selectedComponentKey={selectedComponentKey}
                 setSelectedComponentKey={setSelectedComponentKey}
                 handleSelectedVideoKeyChange={handleSelectedVideoKeyChange}
+                queueDurationWidth={queueDurationWidth}
               />
             ) : null}
           </View>

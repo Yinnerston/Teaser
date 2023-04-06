@@ -19,7 +19,9 @@ export default function TimelineSoundElement({
   selectedComponentKey,
   setSelectedComponentKey,
   handleSelectedVideoKeyChange,
+  queueDurationWidth,
 }) {
+  let songWidth = Math.min(editorSound.durationWidth, queueDurationWidth);
   const gesture = Gesture.Pan()
     .activateAfterLongPress(500)
     .onStart((event) => {
@@ -32,14 +34,14 @@ export default function TimelineSoundElement({
     <GestureDetector gesture={gesture}>
       <View
         style={[
-          { ...styles.pressableContainer, width: editorSound.durationWidth },
+          { ...styles.pressableContainer, width: songWidth },
           selectedComponentKey == editorSound.key
             ? styles.selectedContainer
             : null,
         ]}
       >
         <NativePressableOpacity
-          style={{ ...styles.container, width: editorSound.durationWidth - 2 }}
+          style={{ ...styles.container, width: songWidth }}
           onPress={() =>
             setSelectedComponentKey((prev) =>
               handleSelectedVideoKeyChange(prev, editorSound.key),
@@ -61,7 +63,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 2,
     height: 30,
-    margin: 4,
     justifyContent: "center",
   },
   selectedContainer: {
