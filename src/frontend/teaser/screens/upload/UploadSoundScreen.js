@@ -14,7 +14,7 @@ const SONGS_DATA = [
     title: "AmongUS SUS Noises",
     sound: {
       url: "https://teasernsfw-dev.s3.ap-southeast-2.amazonaws.com/sus15.opus",
-      duration: 5000,
+      duration: 15000,
     },
     author: "Among US",
     thumbnail:
@@ -25,7 +25,7 @@ const SONGS_DATA = [
     title: "Pop Song",
     sound: {
       url: "https://teasernsfw-dev.s3.ap-southeast-2.amazonaws.com/sus15.opus",
-      duration: 5000,
+      duration: 15000,
     },
     author: "Yeezy",
     thumbnail:
@@ -36,7 +36,7 @@ const SONGS_DATA = [
     title: "Boulevard of Broken Dreams",
     sound: {
       url: "https://teasernsfw-dev.s3.ap-southeast-2.amazonaws.com/sus15.opus",
-      duration: 5000,
+      duration: 15000,
     },
     author: "Green Day",
     thumbnail:
@@ -47,7 +47,7 @@ const SONGS_DATA = [
     title: "Undertale Theme #42",
     sound: {
       url: "https://teasernsfw-dev.s3.ap-southeast-2.amazonaws.com/sus15.opus",
-      duration: 5000,
+      duration: 15000,
     },
     author: "Sans Undertale",
     thumbnail:
@@ -58,7 +58,7 @@ const SONGS_DATA = [
     title: "Skatsune Miku vs The World",
     sound: {
       url: "https://teasernsfw-dev.s3.ap-southeast-2.amazonaws.com/sus15.opus",
-      duration: 5000,
+      duration: 15000,
     },
     author: "Skatsune Miku",
     thumbnail:
