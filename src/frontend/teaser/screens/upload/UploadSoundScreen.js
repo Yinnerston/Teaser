@@ -4,13 +4,18 @@ import SongCard from "../../components/cards/SongCard";
 import SongForYouHeader from "../../components/navs/header/SongForYouHeader";
 import SongInput from "../../components/elements/input/SongInput";
 import SongTagCard from "../../components/cards/SongTagCard";
+import { writeOnlyEditorSoundAtomAtom } from "../../hooks/upload/useSound";
+import { useSetAtom } from "jotai";
 // import Carousel from 'react-native-reanimated-carousel';
 
 const SONGS_DATA = [
   {
     id: "xjaojfdojosjfsf",
     title: "AmongUS SUS Noises",
-    url: "",
+    sound: {
+      url: "",
+      duration: 5000,
+    },
     author: "Among US",
     thumbnail:
       "https://p1.hiclipart.com/preview/606/394/359/mac-os-x-mavericks-icons-itunes-red-and-white-music-logo-file-type-icon.jpg",
@@ -18,7 +23,10 @@ const SONGS_DATA = [
   {
     id: "xylophoneharmonica",
     title: "Pop Song",
-    url: "",
+    sound: {
+      url: "",
+      duration: 5000,
+    },
     author: "Yeezy",
     thumbnail:
       "https://p1.hiclipart.com/preview/606/394/359/mac-os-x-mavericks-icons-itunes-red-and-white-music-logo-file-type-icon.jpg",
@@ -26,7 +34,10 @@ const SONGS_DATA = [
   {
     id: "aosfdjoasjfdo39z",
     title: "Boulevard of Broken Dreams",
-    url: "",
+    sound: {
+      url: "",
+      duration: 5000,
+    },
     author: "Green Day",
     thumbnail:
       "https://p1.hiclipart.com/preview/606/394/359/mac-os-x-mavericks-icons-itunes-red-and-white-music-logo-file-type-icon.jpg",
@@ -34,7 +45,10 @@ const SONGS_DATA = [
   {
     id: "sdfsdfbxe33232",
     title: "Undertale Theme #42",
-    url: "",
+    sound: {
+      url: "",
+      duration: 5000,
+    },
     author: "Sans Undertale",
     thumbnail:
       "https://p1.hiclipart.com/preview/606/394/359/mac-os-x-mavericks-icons-itunes-red-and-white-music-logo-file-type-icon.jpg",
@@ -42,7 +56,10 @@ const SONGS_DATA = [
   {
     id: "sfds53vhnzx2",
     title: "Skatsune Miku vs The World",
-    url: "",
+    sound: {
+      url: "",
+      duration: 5000,
+    },
     author: "Skatsune Miku",
     thumbnail:
       "https://p1.hiclipart.com/preview/606/394/359/mac-os-x-mavericks-icons-itunes-red-and-white-music-logo-file-type-icon.jpg",
@@ -95,7 +112,7 @@ const SONG_TAGS_DATA = [
     id: "xzfjvooixcxxxvoljd",
     name: "Mood",
     iconUri:
-      "https://styles.redditmedia.com/t5_2i035a/styles/communityIcon_a14mtjrrbnv81.png?width=256&s=402b7cf00a2db0aecb78016b86298597d0b99230",
+      "https://styles.redditsound.com/t5_2i035a/styles/communityIcon_a14mtjrrbnv81.png?width=256&s=402b7cf00a2db0aecb78016b86298597d0b99230",
     backgroundColour: "#7358ff",
   },
   {
@@ -121,8 +138,13 @@ const SONG_TAGS_DATA = [
 ];
 
 export default function UploadSoundScreen({ navigation }) {
+  const setEditorSound = useSetAtom(writeOnlyEditorSoundAtomAtom);
   const renderSongCard = ({ item }) => (
-    <SongCard item={item} navigation={navigation} />
+    <SongCard
+      item={item}
+      navigation={navigation}
+      setEditorSound={setEditorSound}
+    />
   );
 
   const renderSongForYouHeader = () => (

@@ -1,4 +1,4 @@
-import { forwardRef, useEffect } from "react";
+import { forwardRef } from "react";
 import useInterval from "../../hooks/useInterval";
 import {
   timelinePositionAtom,
@@ -6,21 +6,13 @@ import {
 } from "../../hooks/upload/useVideoPlayer";
 import { useAtom } from "jotai";
 import { useMemo, useState } from "react";
-import { Text, View, Image, Vibration } from "react-native";
-import {
-  ScrollView,
-  Gesture,
-  GestureDetector,
-} from "react-native-gesture-handler";
-import Animated, {
-  runOnJS,
-  useSharedValue,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import { Text, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { VIDEO_IMAGE_FRAME_WIDTH, TIMELINE_VIDEO_FPS } from "../../Constants";
-import { NativePressableOpacity } from "react-native-pressable-opacity";
 import { msToWidth, ReversemsToWidth } from "../../utils/videoTimelineWidth";
 import TimelineVideoElement from "./TimelineVideoElement";
+import TimelineSoundElement from "./TimelineSoundElement";
 /**
  *
  * @param {styles} props
@@ -37,6 +29,8 @@ export const TimelineScrollView = forwardRef(
       setEditorVideoIsPlaying,
       videoTimelineWrapperViewWidth,
       setVideoIsFinished,
+      editorSound,
+      setEditorSound,
       queueDuration,
       videoRef,
     } = props;
@@ -162,27 +156,29 @@ export const TimelineScrollView = forwardRef(
     /**
      * Render timeline elements in a row
      */
-    const videoTimelineElements = queue.map((item, queueIndex) => {
-      return (
-        <TimelineVideoElement
-          queue={queue}
-          item={item}
-          queueIndex={queueIndex}
-          sharedOnLongPressLeftOffset={sharedOnLongPressLeftOffset}
-          activeIndex={activeIndex}
-          userIsReorderingTimeline={userIsReorderingTimeline}
-          setUserIsReorderingTimeline={setUserIsReorderingTimeline}
-          selectedComponentKey={selectedComponentKey}
-          setSelectedComponentKey={setSelectedComponentKey}
-          setCurPlayingVideo={setCurPlayingVideo}
-          queueDurationWidth={queueDurationWidth}
-          curTranslationX={curTranslationX}
-          panGestureAnimatedStyle={panGestureAnimatedStyle}
-          handleSelectedVideoKeyChange={handleSelectedVideoKeyChange}
-          positions={positions}
-        />
-      );
-    });
+    const videoTimelineElements = useMemo(
+      () =>
+        queue.map((item, queueIndex) => (
+          <TimelineVideoElement
+            queue={queue}
+            item={item}
+            queueIndex={queueIndex}
+            sharedOnLongPressLeftOffset={sharedOnLongPressLeftOffset}
+            activeIndex={activeIndex}
+            userIsReorderingTimeline={userIsReorderingTimeline}
+            setUserIsReorderingTimeline={setUserIsReorderingTimeline}
+            selectedComponentKey={selectedComponentKey}
+            setSelectedComponentKey={setSelectedComponentKey}
+            setCurPlayingVideo={setCurPlayingVideo}
+            queueDurationWidth={queueDurationWidth}
+            curTranslationX={curTranslationX}
+            panGestureAnimatedStyle={panGestureAnimatedStyle}
+            handleSelectedVideoKeyChange={handleSelectedVideoKeyChange}
+            positions={positions}
+          />
+        )),
+      [queue, selectedComponentKey],
+    );
 
     // /**
     //  * When user is reodering timeline onPan
@@ -191,9 +187,9 @@ export const TimelineScrollView = forwardRef(
 
     // }, [queue, selectedComponentKey]) // TODO: Do i need memoization on selectedComponentKey, userIsReorderingTimeline?
 
-    const videoTimelineSeparators = !userIsReorderingTimeline
-      ? queue.map((item, queueIndex) => {
-          console.log(item.next ? item.next.key : "NONE NEXT", queueIndex);
+    const videoTimelineSeparators = useMemo(() => {
+      if (!userIsReorderingTimeline) {
+        return queue.map((item, queueIndex) => {
           // Style to draw separator between image timeline components
           let videoTimelineSeparateStyle = {
             marginLeft:
@@ -217,8 +213,11 @@ export const TimelineScrollView = forwardRef(
               </View>
             );
           }
-        })
-      : null;
+        });
+      } else {
+        return null;
+      }
+    }, [userIsReorderingTimeline, queue]);
     /**
      * TODO: useMemo dependent on queue, scrub position in video queue
      * @returns
@@ -272,13 +271,23 @@ export const TimelineScrollView = forwardRef(
             <View style={styles.timelineMarkingsContainer}></View>
           )}
           {/* Video Thumbnails */}
-          <View style={styles.timelineRowView}>
+          <View style={styles.timelineRowView} key="TIMELINEROWVIEW">
             {videoTimelineElements ? (
               videoTimelineElements
             ) : (
               <Text>Alt Text</Text>
             )}
             {videoTimelineSeparators ? videoTimelineSeparators : null}
+          </View>
+          <View styles={styles.soundContainer}>
+            {editorSound ? (
+              <TimelineSoundElement
+                editorSound={editorSound}
+                selectedComponentKey={selectedComponentKey}
+                setSelectedComponentKey={setSelectedComponentKey}
+                handleSelectedVideoKeyChange={handleSelectedVideoKeyChange}
+              />
+            ) : null}
           </View>
         </View>
 

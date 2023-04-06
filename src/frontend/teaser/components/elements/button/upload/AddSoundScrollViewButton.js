@@ -1,12 +1,9 @@
 import { View, StyleSheet } from "react-native";
 import AuthButton from "../AuthButton";
 import { VIDEO_IMAGE_FRAME_WIDTH } from "../../../../Constants";
-import { useAtom } from "jotai";
-import { editorHasAddedSoundAtomAtom } from "../../../../hooks/upload/useSound";
 
-export default function AddSoundScrollViewButton({ navigation }) {
-  const [editorHasAddedSound] = useAtom(editorHasAddedSoundAtomAtom);
-  if (!editorHasAddedSound) {
+export default function AddSoundScrollViewButton({ navigation, editorSound }) {
+  if (editorSound == null) {
     return (
       <View style={styles.container}>
         <AuthButton

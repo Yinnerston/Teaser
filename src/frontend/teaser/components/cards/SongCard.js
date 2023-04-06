@@ -14,10 +14,16 @@ import {
  * @returns
  */
 export default function SongCard(props) {
-  const { navigation, item } = props;
+  const { navigation, item, setEditorSound } = props;
   const styles = useInboxMessageCardStyle();
   return (
-    <TouchableOpacity style={styles.container} onPress={() => {}}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => {
+        setEditorSound(item);
+        navigation.navigate("UploadEditVideo");
+      }}
+    >
       <View style={styles.profilePhotoContainer}>
         <Image
           style={styles.profilePhoto}

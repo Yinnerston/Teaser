@@ -29,6 +29,7 @@ import { writeOnlyTimelinePositionAtom } from "../../hooks/upload/useVideoPlayer
 import { msToWidth } from "../../utils/videoTimelineWidth";
 import VideoToolsFooterNav from "../../components/navs/footer/VideoToolsFooterNav";
 import AddSoundScrollViewButton from "../../components/elements/button/upload/AddSoundScrollViewButton";
+import { readWriteEditorSoundAtomAtom } from "../../hooks/upload/useSound";
 
 /**
  * Edit your videos in the app.
@@ -47,9 +48,12 @@ export default function UploadEditVideoScreen({ navigation }) {
   );
   const [videoIsFinished, setVideoIsFinished] = useState(false);
   const [selectedComponentKey, setSelectedComponentKey] = useState(null);
+  // Sound component for video
+  const [editorSound, setEditorSound] = useAtom(readWriteEditorSoundAtomAtom);
   // Scroll based on video playing
   const scrollRef = useRef(null);
   const setTimelinePosition = useSetAtom(writeOnlyTimelinePositionAtom);
+
   const videoTimelineWrapperViewWidth = useMemo(() => {
     let queueDurationInSeconds = Math.ceil(queueDuration / 1000);
     return Math.max(queueDurationInSeconds, 16) * VIDEO_IMAGE_FRAME_WIDTH;
@@ -199,12 +203,17 @@ export default function UploadEditVideoScreen({ navigation }) {
           setEditorVideoIsPlaying={setEditorVideoIsPlaying}
           videoTimelineWrapperViewWidth={videoTimelineWrapperViewWidth}
           setVideoIsFinished={setVideoIsFinished}
+          editorSound={editorSound}
+          setEditorSound={setEditorSound}
           queueDuration={queueDuration}
           videoRef={videoRef}
           ref={scrollRef}
         />
         <View style={styles.timelineTimeBar} />
-        <AddSoundScrollViewButton navigation={navigation} />
+        <AddSoundScrollViewButton
+          navigation={navigation}
+          editorSound={editorSound}
+        />
       </View>
       <VideoToolsFooterNav
         styles={videoFooterStyles}
@@ -271,6 +280,12 @@ const useUploadEditVideoScreenStyles = () => {
       marginLeft: VIDEO_IMAGE_FRAME_WIDTH * 2 - 35.3, // TODO: Dependent on text choice / size.
       color: "gray",
       position: "relative",
+    },
+    soundContainer: {
+      position: "absolute",
+      top: VIDEO_IMAGE_FRAME_WIDTH * 2,
+      right: 69,
+      backgroundColor: "green",
     },
   });
   const videoFooterStyles = StyleSheet.create({
