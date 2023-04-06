@@ -1,5 +1,5 @@
-import { Pressable, Text, StyleSheet, View } from "react-native";
-
+import { Text, StyleSheet, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 /**
  * Button used in Auth Forms.
  * @param navigation Navigation object
@@ -42,20 +42,20 @@ export default function AuthButton({
   if (onPress) {
     return (
       <View style={styles.container}>
-        <Pressable onPress={onPress} style={styles.registerButtonStyle}>
+        <TouchableOpacity onPress={onPress} style={styles.registerButtonStyle}>
           <Text style={styles.registerButtonTextStyle}>{buttonText}</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     );
   } else {
     return (
       <View style={styles.container}>
-        <Pressable
+        <TouchableOpacity
           onPress={() => navigation.navigate(routeName)}
           style={styles.registerButtonStyle}
         >
           <Text style={styles.registerButtonTextStyle}>{buttonText}</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     );
   }

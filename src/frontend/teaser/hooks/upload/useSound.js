@@ -14,7 +14,6 @@ class SoundClip {
     this.startTimeWidth = 0;
     this.endTimeMs = 0;
     this.endTimeWidth = 0;
-    console.log(sound);
     this.durationWidth = msToWidth(sound.duration); // TODO: Max width vs video after crop (this)
     this.soundRef = null;
     this.createSoundAsync();

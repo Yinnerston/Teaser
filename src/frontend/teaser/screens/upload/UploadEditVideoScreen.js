@@ -168,7 +168,9 @@ export default function UploadEditVideoScreen({ navigation }) {
         <View style={{ flex: 1, justifyContent: "flex-start" }}>
           <TouchableOpacity
             style={playBarStyles.finishEditButton}
-            onPress={() => {}}
+            onPress={() => {
+              if (queue.length > 0) navigation.navigate("UploadPostDetails");
+            }}
           >
             <FontAwesome
               name="check-circle"

@@ -103,7 +103,7 @@ export default function MainNavigator() {
         <Stack.Screen
           name="UploadPostDetails"
           component={UploadPostDetailsScreen}
-          options={{ title: "Edit the post details" }}
+          options={{ title: "Edit the post details", headerShown: true }}
         />
       </Stack.Group>
     </Stack.Navigator>
