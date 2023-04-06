@@ -10,7 +10,11 @@ import {
   curPlayingVideoAtom,
   editorVideoPlayingStatusAtom,
 } from "../../hooks/upload/useVideoPlayer";
-import { AntDesign } from "@expo/vector-icons";
+import {
+  AntDesign,
+  MaterialCommunityIcons,
+  FontAwesome,
+} from "@expo/vector-icons";
 import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -18,6 +22,7 @@ import {
   VIDEO_CONTROL_TOOLBAR_HEIGHT,
   VIDEO_TOOLS_FOOTER_NAV_HEIGHT,
   VIDEO_IMAGE_FRAME_WIDTH,
+  VIDEO_CONTROL_TOOLBAR_ICON_SIZE,
 } from "../../Constants";
 import { TimelineScrollView } from "../../components/scroll/TimelineScrollView";
 import { writeOnlyTimelinePositionAtom } from "../../hooks/upload/useVideoPlayer";
@@ -30,7 +35,7 @@ import AddSoundScrollViewButton from "../../components/elements/button/upload/Ad
  * @returns
  */
 export default function UploadEditVideoScreen({ navigation }) {
-  const { height, width, styles, videoFooterStyles } =
+  const { height, width, styles, videoFooterStyles, playBarStyles } =
     useUploadEditVideoScreenStyles();
   const videoRef = useRef(null);
   const [queue] = useAtom(queueAtom);
@@ -132,11 +137,49 @@ export default function UploadEditVideoScreen({ navigation }) {
       </View>
       <View
         key="VideoControlToolbar-UploadEditVideoScreen"
-        style={styles.videoControlToolbarContainer}
+        style={playBarStyles.videoControlToolbarContainer}
       >
-        <TouchableOpacity onPress={() => handlePressTogglePlayPause()}>
-          <AntDesign name="caretright" size={24} color="white" />
-        </TouchableOpacity>
+        <View style={{ flex: 1, justifyContent: "flex-start" }}>
+          <TouchableOpacity
+            style={playBarStyles.finishEditButton}
+            onPress={() => {}}
+          >
+            <FontAwesome
+              name="check-circle"
+              size={VIDEO_CONTROL_TOOLBAR_ICON_SIZE}
+              color="#db133e"
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <TouchableOpacity onPress={() => handlePressTogglePlayPause()}>
+            <AntDesign
+              name="caretright"
+              size={VIDEO_CONTROL_TOOLBAR_ICON_SIZE}
+              color="white"
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{ flex: 1, justifyContent: "flex-end", flexDirection: "row" }}
+        >
+          <TouchableOpacity style={playBarStyles.redoButton} onPress={() => {}}>
+            <MaterialCommunityIcons
+              name="redo-variant"
+              size={VIDEO_CONTROL_TOOLBAR_ICON_SIZE}
+              color="white"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={playBarStyles.undoButton} onPress={() => {}}>
+            <MaterialCommunityIcons
+              name="undo-variant"
+              size={VIDEO_CONTROL_TOOLBAR_ICON_SIZE}
+              color="white"
+            />
+          </TouchableOpacity>
+        </View>
       </View>
       <View
         key="TimelineView-UploadEditVideoScreen"
@@ -195,13 +238,6 @@ const useUploadEditVideoScreenStyles = () => {
       width: (width * 2) / 3,
       alignContent: "center",
     },
-    videoControlToolbarContainer: {
-      height: VIDEO_CONTROL_TOOLBAR_HEIGHT,
-      width: width,
-      backgroundColor: "black",
-      justifyContent: "center",
-      alignItems: "center",
-    },
     timelineContainer: {
       height: TIMELINE_CONTAINER_HEIGHT,
       backgroundColor: "#121212",
@@ -243,5 +279,29 @@ const useUploadEditVideoScreenStyles = () => {
       flexDirection: "row",
     },
   });
-  return { height, width, styles, videoFooterStyles };
+  const playBarStyles = StyleSheet.create({
+    videoControlToolbarContainer: {
+      height: VIDEO_CONTROL_TOOLBAR_HEIGHT,
+      width: width,
+      backgroundColor: "black",
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      position: "relative",
+    },
+    undoButton: {
+      height: VIDEO_CONTROL_TOOLBAR_ICON_SIZE,
+      width: VIDEO_CONTROL_TOOLBAR_ICON_SIZE,
+    },
+    redoButton: {
+      height: VIDEO_CONTROL_TOOLBAR_ICON_SIZE,
+      width: VIDEO_CONTROL_TOOLBAR_ICON_SIZE,
+    },
+    finishEditButton: {
+      height: VIDEO_CONTROL_TOOLBAR_ICON_SIZE,
+      width: VIDEO_CONTROL_TOOLBAR_ICON_SIZE,
+      position: "relative",
+    },
+  });
+  return { height, width, styles, videoFooterStyles, playBarStyles };
 };
