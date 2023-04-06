@@ -48,7 +48,7 @@ export default function UploadCameraShutterView(props) {
         >
           <View style={styles.cameraShutter}></View>
         </TouchableOpacity>
-        {cameraVideoQueue ? (
+        {cameraVideoQueue.length > 0 ? (
           <View>
             <CameraScreenCheckButton
               navigation={navigation}

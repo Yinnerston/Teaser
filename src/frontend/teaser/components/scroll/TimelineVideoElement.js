@@ -9,6 +9,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { VIDEO_IMAGE_FRAME_WIDTH } from "../../Constants";
 import { NativePressableOpacity } from "react-native-pressable-opacity";
+import { reorderAtomAtom } from "../../hooks/upload/useMainVideoQueue";
+import { useSetAtom } from "jotai";
 
 export default function TimelineVideoElement(props) {
   const {
@@ -30,6 +32,7 @@ export default function TimelineVideoElement(props) {
   } = props;
   const initialQueuePosition = queueIndex;
   const shiftOnHover = useSharedValue(0);
+  const reorder = useSetAtom(reorderAtomAtom);
   useAnimatedReaction(
     () => activeIndex.value,
     (currentValue, previousValue) => {
@@ -88,7 +91,7 @@ export default function TimelineVideoElement(props) {
       : Math.ceil(item.durationWidth),
     height: VIDEO_IMAGE_FRAME_WIDTH,
     position: "relative",
-    zIndex: queueIndex / 100,
+    zIndex: 0,
   };
   // let aStyle = animatedStyles;
   // Define animation for x value translation
@@ -140,8 +143,10 @@ export default function TimelineVideoElement(props) {
     .onEnd(() => {
       // Deselect selectedComponentKey
       // Reorder queue
-      // runOnJS()(item.key, activeIndex.value)
-      console.log("END");
+      if (activeIndex.value != initialQueuePosition) {
+        // TODO: What if there are previous reorderings? Is this functionality dependent on ordering?
+        runOnJS(reorder)({ itemKey: item.key, newIndex: activeIndex.value });
+      }
       // Everything is responsive again
       // Reset sharedValues
       activeIndex.value = -1;
