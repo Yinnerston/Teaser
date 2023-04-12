@@ -35,6 +35,15 @@ class QVideoNode {
     this.numberOfFrames = Math.ceil(video.duration / 1000);
     this.frames = [];
     if (!video.triggerRerender) {
+      // // Normalize encoding
+      // FFmpegWrapper.normalizeEncoding(
+      //   video.path,
+      //   (filePath) => {
+      //     // Set new video path
+      //   },
+      //   (e) => console.error(e)
+      // )
+      // Create video frames used in editor
       FFmpegWrapper.getFrames(
         getFileNameFromPath(video.path),
         video.path,
@@ -70,6 +79,9 @@ class QVideoNode {
     this.endTimeWidth = msToWidth(endTimeMs);
     // TODO: Check if enqueued atom exceeds the maximum duration of a video?
   }
+
+  // TODO: Trim video functionality
+  // https://stackoverflow.com/a/42827058
 }
 
 /**
