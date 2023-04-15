@@ -11,3 +11,35 @@ export const BASE_URL = "https://wocchit.com/api/v1/";
 
 import Constants from "expo-constants";
 export const STATUS_BAR_HEIGHT = Constants.statusBarHeight;
+
+// Video Editor
+export const START_FROM_PREV_VIDEO_END = -1;
+export const VIDEO_EDITOR_SIDEBAR_BUTTON_SIZE = 32;
+export const CAMERA_SHUTTER_VIEW_ICON_SIZE = 24;
+export const TEASER_VIDEO_MAX_LENGTH_MS = 15000; // 15 seconds.
+export const TEASER_VIDEO_REFRESH_RATE_MS = 33; // Around 30fps
+export const VIDEO_CONTROL_TOOLBAR_ICON_SIZE = 24;
+// Video Editing Screen heights
+export const VIDEO_CONTROL_TOOLBAR_HEIGHT = 32;
+export const VIDEO_TOOLS_FOOTER_NAV_HEIGHT = 48;
+
+export const TIMELINE_IMAGE_FPS = 1;
+export const TIMELINE_VIDEO_FPS = 30; // TODO: Can change this later?
+export const VIDEO_IMAGE_FRAME_WIDTH = 40;
+export const VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE = -69;
+
+// Default codecs checked by ffmpegWrapper
+export const VIDEO_DEFAULT_CODEC = {
+  codec_name: "h264",
+  time_base: "1/90000",
+  width: 1920,
+  height: 1080,
+  r_frame_rate: "30/1",
+  // TODO:
+};
+export const AUDIO_DEFAULT_CODEC = {
+  codec_name: "aac",
+  time_base: "1/48000",
+  channels: "2",
+  // TODO:
+};

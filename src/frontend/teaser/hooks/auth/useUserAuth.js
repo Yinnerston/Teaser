@@ -1,4 +1,4 @@
-import { atom, useAtom } from "jotai";
+import { atom, useAtom, useSetAtom } from "jotai";
 import * as SecureStore from "expo-secure-store";
 
 export const userAuthAtom = atom("");
@@ -25,7 +25,7 @@ export async function setUserAuthStore(data) {
  * Set user auth from secure store if it exists
  */
 export async function setUserAuthFromStore() {
-  const [_writeUserAuth, setWriteUserAuth] = useAtom(writeOnlyUserAuthAtom);
+  const setWriteUserAuth = useSetAtom(writeOnlyUserAuthAtom);
   let result = await SecureStore.getItemAsync("auth");
   if (result) {
     let parsed_result = JSON.parse(result);

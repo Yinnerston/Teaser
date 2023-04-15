@@ -55,7 +55,26 @@
           "enableMicrophonePermission": true,
           "microphonePermissionText": "Teaser needs access to your Microphone."
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 24,
+            "kotlinVersion": "1.7.0"
+          },
+          "ios": {
+            "deploymentTarget": "13.0"
+          }
+        }
       ]
+
     ],
     "owner": "teaseradmin"
   }

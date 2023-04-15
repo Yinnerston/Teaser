@@ -16,28 +16,29 @@
   - Plug your android device into the computer running the docker container
   - Install adb
 
+# ffmpeg
 
-<!-- - https://www.vinnie.work/blog/2022-12-02-building-expo-locally
-- `cd src/frontend/teaser`
-- `./build.sh`
-- `yarn expo prebuild` or `npx expo prebuild` with `expo@47.0.12`
-- `./eas.sh ./gradlew app:assembleDebug`
-- Ran into error:
-```
-A problem occurred evaluating project ':react-native-navigation'. > Plugin with id 'kotlin-android' not found.
-```
-and applied fix: https://github.com/react-native-webview/react-native-webview/issues/1407#issuecomment-634436481
-```
-// Add to android/build.gradle file
-buildscript {
-    ext {
-        ...
-        kotlinVersion = "1.3.72"
-    }
-    dependencies {
-        ...
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-    }
-}
-```
-- Installed android studio and added -->
+- https://medium.com/@hizmitamir/react-native-expo-react-native-ffmpeg-501348efc447
+- Ran into issue:
+- `uses-sdk:minSdkVersion 21 cannot be smaller than version 24 declared in library [:react-native-ffmpeg].`
+  - Fixed with adding ```json
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 31,
+            "targetSdkVersion": 31,
+            "buildToolsVersion": "31.0.0",
+            "minSdkVersion": 24
+          },
+          "ios": {
+            "deploymentTarget": "13.0"
+          }
+        }
+      ]
+
+``` to app.json
+- Ran into issue https://github.com/expo/expo/issues/17450
+    - Fix: Add `"kotlinVersion": "1.7.0"` to the `android` section in ` "expo-build-properties",` in file: `app.json`
+- https://github.com/facebook/react-native/issues/25537#issuecomment-1327436296
+    - Upgraded to react native 0.71

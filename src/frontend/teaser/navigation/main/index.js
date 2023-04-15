@@ -1,5 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import SplashScreen from "../../screens/SplashScreen";
+// Auth
 import AuthScreen from "../../screens/auth/AuthScreen";
 import RegisterScreen from "../../screens/auth/RegisterScreen";
 import RegisterScreenDOB from "../../screens/auth/RegisterScreenDOB";
@@ -9,7 +10,13 @@ import RegisterScreen2fa from "../../screens/auth/Register2fa";
 import RegisterTermsAndConditionsScreen from "../../screens/auth/RegisterTermsAndConditionsScreen";
 import LoginScreen from "../../screens/auth/LoginScreen";
 import ForgotPasswordScreen from "../../screens/auth/ForgotPasswordScreen";
+// Upload
+import UploadCameraScreen from "../../screens/upload/UploadCameraScreen";
+import UploadEditVideoScreen from "../../screens/upload/UploadEditVideoScreen";
+import UploadPostDetailsScreen from "../../screens/upload/UploadPostDetailsScreen";
 import HomeNavigator from "../home";
+import UploadSoundScreen from "../../screens/upload/UploadSoundScreen";
+import UploadSeeMoreSongsScreen from "../../screens/upload/UploadSeeMoreSongsScreen";
 
 const Stack = createStackNavigator();
 
@@ -75,6 +82,28 @@ export default function MainNavigator() {
           name="ForgotPassword"
           component={ForgotPasswordScreen}
           options={{ title: "Forgot Password" }}
+        />
+      </Stack.Group>
+      <Stack.Group screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name="UploadEditVideo"
+          component={UploadEditVideoScreen}
+          options={{ title: "Edit the video" }}
+        />
+        <Stack.Screen
+          name="UploadSoundScreen"
+          component={UploadSoundScreen}
+          options={{ title: "Add sound", headerShown: true }}
+        />
+        <Stack.Screen
+          name="UploadSeeMoreSongsScreen"
+          component={UploadSeeMoreSongsScreen}
+          options={{ title: "More Songs", headerShown: true }}
+        />
+        <Stack.Screen
+          name="UploadPostDetails"
+          component={UploadPostDetailsScreen}
+          options={{ title: "Edit the post details", headerShown: true }}
         />
       </Stack.Group>
     </Stack.Navigator>

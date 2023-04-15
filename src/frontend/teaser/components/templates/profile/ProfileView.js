@@ -1,9 +1,5 @@
-import {
-  SafeAreaView,
-  StyleSheet,
-  useWindowDimensions,
-  FlatList,
-} from "react-native";
+import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { useRef } from "react";
 import { VIDEO_PORTRAIT } from "../../../Constants";
 import { ProfileTeaserGridCard } from "../../cards/ProfileTeaserGridCard";

@@ -1,5 +1,5 @@
-import { Pressable, Text, StyleSheet, View } from "react-native";
-
+import { Text, StyleSheet, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 /**
  * Button used in Auth Forms.
  * @param navigation Navigation object
@@ -14,45 +14,48 @@ export default function AuthButton({
   routeName,
   buttonText,
   onPress,
+  authButtonStyles,
 }) {
-  const styles = StyleSheet.create({
-    container: {
-      alignItems: "center",
-    },
-    registerButtonStyle: {
-      alignItems: "center",
-      justifyContent: "center",
-      paddingVertical: 12,
-      paddingHorizontal: 64,
-      borderRadius: 4,
-      elevation: 3,
-      backgroundColor: color,
-    },
-    registerButtonTextStyle: {
-      fontSize: 16,
-      fontWeight: "bold",
-      color: "white",
-      textAlign: "center",
-    },
-  });
+  const styles = authButtonStyles
+    ? authButtonStyles
+    : StyleSheet.create({
+        container: {
+          alignItems: "center",
+        },
+        registerButtonStyle: {
+          alignItems: "center",
+          justifyContent: "center",
+          paddingVertical: 12,
+          paddingHorizontal: 64,
+          borderRadius: 4,
+          elevation: 3,
+          backgroundColor: color,
+        },
+        registerButtonTextStyle: {
+          fontSize: 16,
+          fontWeight: "bold",
+          color: "white",
+          textAlign: "center",
+        },
+      });
 
   if (onPress) {
     return (
       <View style={styles.container}>
-        <Pressable onPress={onPress} style={styles.registerButtonStyle}>
+        <TouchableOpacity onPress={onPress} style={styles.registerButtonStyle}>
           <Text style={styles.registerButtonTextStyle}>{buttonText}</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     );
   } else {
     return (
       <View style={styles.container}>
-        <Pressable
+        <TouchableOpacity
           onPress={() => navigation.navigate(routeName)}
           style={styles.registerButtonStyle}
         >
           <Text style={styles.registerButtonTextStyle}>{buttonText}</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     );
   }
