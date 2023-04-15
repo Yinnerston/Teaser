@@ -2,13 +2,7 @@ import { atom } from "jotai";
 import FFmpegWrapper from "./ffmpegWrapper";
 import { msToWidth } from "../../utils/videoTimelineWidth";
 import { VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE } from "../../Constants";
-const getFileNameFromPath = (path) => {
-  const fragments = path.split("/");
-  let fileName = fragments[fragments.length - 1];
-  fileName = fileName.split(".")[0];
-  return fileName;
-};
-
+import { getFileNameFromPath } from "../../utils/videoQueueUtils";
 /**
  * Node in the queue
  */

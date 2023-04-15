@@ -63,7 +63,7 @@ export default function SubscriptionsScreen({ navigation }) {
         title="STACK POP"
         color="red"
       ></Button>
-      {cameraVideoQueue ? (
+      {cameraVideoQueue.length > 0 ? (
         cameraVideoQueue.map((item) => {
           return (
             <View

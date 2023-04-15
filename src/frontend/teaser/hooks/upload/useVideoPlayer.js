@@ -4,7 +4,7 @@ import {
   TEASER_VIDEO_REFRESH_RATE_MS,
   START_FROM_PREV_VIDEO_END,
 } from "../../Constants";
-import { frontAtom } from "./useMainVideoQueue";
+import { _queueAtom, frontAtom } from "./useMainVideoQueue";
 /**
  * Global time position of the editor video.
  * Used to overlays
@@ -15,6 +15,7 @@ export const globalVideoTimeAtom = atom(0);
  */
 export const videoMaxDurationAtom = atom(TEASER_VIDEO_MAX_LENGTH_MS);
 
+// TODO: What am I doing with frontAtom then?
 const _curPlayingVideoAtom = atom(null);
 export const curPlayingVideoAtom = atom(
   (get) => {
@@ -22,12 +23,12 @@ export const curPlayingVideoAtom = atom(
     if (curPlaying != null) {
       return curPlaying;
     }
-    return get(frontAtom);
+    return get(_queueAtom)[0];
   },
   (get, set, update) => {
     // If given START_FROM_PREV_VIDEO_END video, reset to frontAtom
     if (update == START_FROM_PREV_VIDEO_END) {
-      set(_curPlayingVideoAtom, get(frontAtom));
+      set(_curPlayingVideoAtom, get(_queueAtom)[0]);
     } else {
       set(_curPlayingVideoAtom, update);
     }

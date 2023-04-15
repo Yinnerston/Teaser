@@ -25,8 +25,6 @@ export default function UploadImageButton(props) {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setEnqueueAtomAtom({
         video: {

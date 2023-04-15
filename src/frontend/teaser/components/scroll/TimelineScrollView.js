@@ -70,7 +70,6 @@ export const TimelineScrollView = forwardRef(
         videoRef.current.pauseAsync();
       }
       if (editorSound != null) {
-        console.log(editorSound.soundRef);
         if (editorSound.soundRef != null) {
           editorSound.soundRef.pauseAsync();
         }

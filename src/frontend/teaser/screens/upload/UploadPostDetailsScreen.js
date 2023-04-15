@@ -24,6 +24,7 @@ import CircledPlayIcon from "../../components/elements/icon/upload/CircledPlayIc
 import { Switch } from "react-native-paper";
 import { useState } from "react";
 import HDIcon from "../../components/elements/icon/upload/HDIcon";
+import { uploadVideo } from "../../api/upload/uploadApi";
 
 export default function UploadPostDetailsScreen({ navigation }) {
   const [queue] = useAtom(queueAtom);
@@ -119,7 +120,10 @@ export default function UploadPostDetailsScreen({ navigation }) {
       <View>
         <AuthButton
           authButtonStyles={authButtonStyles}
-          onPress={() => {}}
+          onPress={() => {
+            uploadVideo(queue);
+            // navigation.navigate("Home")
+          }}
           buttonText="Post"
         />
       </View>

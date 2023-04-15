@@ -105,7 +105,6 @@ export default function UploadEditVideoScreen({ navigation }) {
         setEditorVideoIsPlaying(true);
         setVideoIsFinished(false);
         if (editorSound != null) {
-          console.log(editorSound.soundRef);
           if (editorSound.soundRef != null) {
             editorSound.soundRef.playFromPositionAsync(0);
           }
@@ -117,7 +116,6 @@ export default function UploadEditVideoScreen({ navigation }) {
         setEditorVideoIsPlaying(false);
         videoRef.current.pauseAsync();
         if (editorSound != null) {
-          console.log(editorSound.soundRef);
           if (editorSound.soundRef != null) {
             editorSound.soundRef.pauseAsync();
           }
@@ -126,7 +124,6 @@ export default function UploadEditVideoScreen({ navigation }) {
         setEditorVideoIsPlaying(true);
         videoRef.current.playAsync();
         if (editorSound != null) {
-          console.log(editorSound.soundRef);
           if (editorSound.soundRef != null) {
             editorSound.soundRef.playAsync();
           }
@@ -219,6 +216,7 @@ export default function UploadEditVideoScreen({ navigation }) {
       - Add sound bar underneath it
        */}
         <TimelineScrollView
+          key={"TIMELINESCROLLVIEW" + Math.random() * 6942069}
           styles={styles}
           selectedComponentKey={selectedComponentKey}
           setSelectedComponentKey={setSelectedComponentKey}
