@@ -29,10 +29,12 @@ from core.services.openai_service import (
     text_completion_service,
     image_generation_service,
 )
+from core.services.post_service import create_post_service, create_song_service
 
 # Import schemas
 from core.schemas.user_auth_schemas import *
 from core.schemas.openai_schemas import *
+from core.schemas.post_schemas import *
 
 # Basic Sanitizers
 from core.utils import sanitization_utils
@@ -270,6 +272,52 @@ def generate_image(request, payload: OpenaiImageGenerationSchema):
     s_prompt = sanitization_utils.sanitize_str(us_prompt)
     outputs = image_generation_service(s_prompt=s_prompt)
     return {"output": outputs}
+
+
+@api.post("posts/create", tags=["posts"], auth=AuthBearer())
+def create_post(request, payload: CreatePostSchema):
+    post_dict = payload.dict()
+    # Get unsafe fields from payload
+    us_description = post_dict["description"]
+    us_post_type = post_dict["post_type"]
+    us_post_data = post_dict["post_data"]
+    # Sanitize username input
+    s_description = sanitization_utils.sanitize_str(us_description)
+    if not request.user.is_authenticated:
+        raise InvalidLoginCredentialsValidationError
+    s_user_id = request.user
+    us_song_id = post_dict["song_id"]
+    s_song_id = sanitization_utils.sanitize_foreign_key(us_song_id)
+    s_post_type = sanitization_utils.sanitize_foreign_key(us_post_type)
+    # s_post_data = { # TODO:
+    #     "data": us_post_data["data"],
+    #     "question": s_post_data["question"]
+    # }
+    s_is_private = post_dict["is_private"]
+    return create_post_service(
+        s_description=s_description,
+        s_user_id=s_user_id,
+        s_song_id=s_song_id,
+        s_post_type=s_post_type,
+        s_post_data=us_post_data,  # TODO:
+        s_is_private=s_is_private,
+    )
+
+
+@api.post("songs/create", tags=["songs"], auth=AuthBearer())
+def create_song(request, payload: CreateSongSchema):
+    song_dict = payload.dict()
+    # Get unsafe fields from payload
+    us_title = song_dict["title"]
+    us_author = song_dict["author"]
+    us_song_url = song_dict["song_url"]
+    # Sanitize username input
+    s_title = sanitization_utils.sanitize_str(us_title)
+    s_author = sanitization_utils.sanitize_str(us_author)
+    s_song_url = sanitization_utils.sanitize_str(us_song_url)
+    return create_song_service(
+        s_title=s_title, s_author=s_author, s_song_url=s_song_url
+    )
 
 
 urlpatterns = [

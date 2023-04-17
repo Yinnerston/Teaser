@@ -3,6 +3,7 @@ Models for Post Object, and (Tags + Post Tags, Songs) that relate to a post.
 """
 from core.models.user_auth_models import TeaserUserModel
 from django.db import models
+import uuid
 
 
 class SongsModel(models.Model):
@@ -27,6 +28,11 @@ class PostsModel(models.Model):
     Video and image URLs are contained in post_data
     """
 
+    video_id = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        help_text="UUID used by bunny.net for categorizing videos",
+    )
     description = models.CharField(max_length=200)
     is_private = models.BooleanField(default=False)
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE)
