@@ -9,6 +9,7 @@ import {
   Image,
   useWindowDimensions,
 } from "react-native";
+import { readOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import PersonIcon from "../../components/elements/icon/PersonIcon";
 import {
@@ -27,14 +28,17 @@ import HDIcon from "../../components/elements/icon/upload/HDIcon";
 import { uploadVideo } from "../../api/upload/uploadApi";
 
 export default function UploadPostDetailsScreen({ navigation }) {
+  const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
   const [queue] = useAtom(queueAtom);
   const [editorSound] = useAtom(readOnlyEditorSoundAtomAtom);
+  const [description, setDescription] = useState("");
   const { styles, authButtonStyles } = useUploadPostDetailsScreenStyles();
   const [postTags, setPostTags] = useState([]);
-  const [postVisibility, setPostVisibility] = useState("All");
+  const [postIsPrivate, setPostIsPrivate] = useState(false); // TODO: Add dropdown
   const [hasComments, setHasComments] = useState(true);
   const [hasHDUpload, setHasHDUpload] = useState(true);
   const [postLinks, setPostLinks] = useState([]);
+  const [submissionHasError, setSubmissionHasError] = useState(false);
   return (
     <SafeAreaView>
       <View style={styles.descriptionContainer}>
@@ -44,6 +48,8 @@ export default function UploadPostDetailsScreen({ navigation }) {
           placeholder={
             "Describe your post, add tags \nor mention creators you've \ncollaborated with!"
           }
+          value={description}
+          onChangeText={setDescription}
         ></TextInput>
         <TouchableOpacity
           style={styles.descriptionImageContainer}
@@ -80,9 +86,19 @@ export default function UploadPostDetailsScreen({ navigation }) {
           <IoniconsTemplateIcon name="pricetags-outline" color="#5A5A5A" />
           <Text style={styles.rowText}>Add tags</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.row} onPress={() => {}}>
-          <IoniconsTemplateIcon name="lock-open-outline" color="#5A5A5A" />
-          <Text style={styles.rowText}>Change post visibility</Text>
+        <TouchableOpacity
+          style={styles.row}
+          onPress={() => {
+            setPostIsPrivate((prev) => !prev);
+          }}
+        >
+          <View style={styles.rowFirstFlex}>
+            <IoniconsTemplateIcon name="lock-open-outline" color="#5A5A5A" />
+            <Text style={styles.rowText}>Post is private</Text>
+          </View>
+          <View style={styles.rowSecondFlex}>
+            <Switch value={postIsPrivate} color="#0bde9b" />
+          </View>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.row}
@@ -117,11 +133,30 @@ export default function UploadPostDetailsScreen({ navigation }) {
           <Text style={styles.rowText}>Link service</Text>
         </TouchableOpacity>
       </View>
+      <Text style={styles.submissionErrorText}>
+        {submissionHasError ? "*A description is required" : ""}
+      </Text>
       <View>
         <AuthButton
           authButtonStyles={authButtonStyles}
           onPress={() => {
-            uploadVideo(queue);
+            if (description.length == 0) {
+              setSubmissionHasError(true);
+              return;
+            } else {
+              setSubmissionHasError(false);
+            }
+            uploadVideo(
+              userAuthAtomValue["token_hash"],
+              queue,
+              editorSound,
+              description,
+              postTags,
+              postIsPrivate,
+              hasComments,
+              hasHDUpload,
+              postLinks,
+            );
             // navigation.navigate("Home")
           }}
           buttonText="Post"
@@ -197,6 +232,10 @@ const useUploadPostDetailsScreenStyles = () => {
     },
     rowText: {
       marginLeft: 16,
+    },
+    submissionErrorText: {
+      textAlign: "center",
+      color: "red",
     },
     // rowSwitch:  {
     // alignSelf: "flex-end",

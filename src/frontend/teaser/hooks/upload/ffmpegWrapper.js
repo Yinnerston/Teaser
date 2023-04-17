@@ -164,9 +164,23 @@ export default class FFmpegWrapper {
     successCallback,
     errorCallback,
   ) {
+    if (videoPaths.length == 1) {
+      // remove extension from first video
+      var soleVideoPath = videoPaths[0];
+      if (soleVideoPath.startsWith("file://")) {
+        soleVideoPath = soleVideoPath.slice(7);
+      }
+      // Only one video in queue, just use the first video
+      successCallback(soleVideoPath);
+      return;
+    }
+    //  NOTE: file:// prefix does is an invalid url for uploading videos to BUNNY.NET
+    // const extension = Platform.OS === "android" ? "file://" : "";
+    // let outputVideoPath = `${extension}${RNFS.CachesDirectoryPath}/${concatFileName}_concat.mp4`;
+
     // Create output video file name
-    const extension = Platform.OS === "android" ? "file://" : "";
-    let outputVideoPath = `${extension}${RNFS.CachesDirectoryPath}/${concatFileName}_concat.mp4`;
+    let outputVideoPath = `${RNFS.CachesDirectoryPath}/${concatFileName}_concat.mp4`;
+
     // Create file from list of video paths
     let pathsListFile = `${extension}${RNFS.CachesDirectoryPath}/${concatFileName}_list.txt`;
     let videoPathsFilePrefix = videoPaths.map((name) => "file '" + name + "'");

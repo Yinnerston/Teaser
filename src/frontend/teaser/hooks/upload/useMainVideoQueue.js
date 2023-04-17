@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import FFmpegWrapper from "./ffmpegWrapper";
 import { msToWidth } from "../../utils/videoTimelineWidth";
 import { VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE } from "../../Constants";
-import { getFileNameFromPath } from "../../utils/videoQueueUtils";
+import { getSplitFileNameFromPath } from "../../utils/videoQueueUtils";
 /**
  * Node in the queue
  */
@@ -38,8 +38,9 @@ class QVideoNode {
       //   (e) => console.error(e)
       // )
       // Create video frames used in editor
+      let { fileName } = getSplitFileNameFromPath(video.path);
       FFmpegWrapper.getFrames(
-        getFileNameFromPath(video.path),
+        fileName,
         video.path,
         this.numberOfFrames,
         (filePath) => {
