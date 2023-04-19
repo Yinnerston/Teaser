@@ -29,7 +29,8 @@ class PostsModel(models.Model):
     """
 
     video_id = models.UUIDField(
-        default=uuid.uuid4,
+        blank=True,
+        null=True,
         editable=False,
         help_text="UUID used by bunny.net for categorizing videos",
     )

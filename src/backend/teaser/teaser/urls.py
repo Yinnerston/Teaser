@@ -45,7 +45,8 @@ from core.services.user_auth_services import AuthBearer
 # Views
 from core.views.views import OpenAIGeneratedImageView
 
-from ninja import NinjaAPI
+from ninja import NinjaAPI, File
+from ninja.files import UploadedFile
 
 api = NinjaAPI(
     description="""
@@ -275,7 +276,7 @@ def generate_image(request, payload: OpenaiImageGenerationSchema):
 
 
 @api.post("posts/create", tags=["posts"], auth=AuthBearer())
-def create_post(request, payload: CreatePostSchema):
+def create_post(request, payload: CreatePostSchema, us_file: UploadedFile = File(...)):
     post_dict = payload.dict()
     # Get unsafe fields from payload
     us_description = post_dict["description"]
@@ -287,7 +288,9 @@ def create_post(request, payload: CreatePostSchema):
         raise InvalidLoginCredentialsValidationError
     s_user_id = request.user
     us_song_id = post_dict["song_id"]
-    s_song_id = sanitization_utils.sanitize_foreign_key(us_song_id)
+    s_song_id = sanitization_utils.sanitize_foreign_key_allow_values(
+        us_song_id, [NO_SONG_CHOSEN_FOREIGN_KEY]
+    )
     s_post_type = sanitization_utils.sanitize_foreign_key(us_post_type)
     # s_post_data = { # TODO:
     #     "data": us_post_data["data"],
@@ -299,8 +302,9 @@ def create_post(request, payload: CreatePostSchema):
         s_user_id=s_user_id,
         s_song_id=s_song_id,
         s_post_type=s_post_type,
-        s_post_data=us_post_data,  # TODO:
+        s_post_data=us_post_data,  # TODO: Validations on fields
         s_is_private=s_is_private,
+        us_file=us_file,  # TODO: Validation on data?
     )
 
 
