@@ -29,7 +29,11 @@ from core.services.openai_service import (
     text_completion_service,
     image_generation_service,
 )
-from core.services.post_service import create_post_service, create_song_service
+from core.services.post_service import (
+    create_post_service,
+    create_song_service,
+    update_post_status_service,
+)
 
 # Import schemas
 from core.schemas.user_auth_schemas import *
@@ -306,6 +310,16 @@ def create_post(request, payload: CreatePostSchema, us_file: UploadedFile = File
         s_is_private=s_is_private,
         us_file=us_file,  # TODO: Validation on data?
     )
+
+
+@api.post("posts/update_status", tags=["posts"])
+def update_posts_status(request, payload: UpdatePostStatusSchema):
+    post_status_dict = payload.dict()
+    us_library_id = post_status_dict["VideoLibraryId"]
+    us_video_id = post_status_dict["VideoGuid"]
+    us_status = post_status_dict["Status"]
+    # TODO: Sanitize
+    return update_post_status_service(us_library_id, us_video_id, us_status)
 
 
 @api.post("songs/create", tags=["songs"], auth=AuthBearer())

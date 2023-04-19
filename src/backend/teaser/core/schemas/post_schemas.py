@@ -1,5 +1,6 @@
 from ninja import Schema, Field
 from core.utils.post_validator import NO_SONG_CHOSEN_FOREIGN_KEY
+from uuid import uuid4
 
 
 class CreatePostSchema(Schema):
@@ -12,6 +13,15 @@ class CreatePostSchema(Schema):
     song_id: int = Field(example=1, default=NO_SONG_CHOSEN_FOREIGN_KEY)
     post_type: int = Field(example=0, description="ENUM {TEASER: 0, QUESTION: 1}")
     post_data: dict = Field(default={"data": {}, "question": {}})
+
+
+class UpdatePostStatusSchema(Schema):
+    VideoLibraryId: int = Field(example=123)
+    VideoGuid: str = Field(example=str(uuid4()))
+    Status: int = Field(
+        example=3,
+        description="ENUM {QUEUED: 0, PROCESSING: 1, ENCODING: 2, FINISHED: 3, ...}. See https://docs.bunny.net/docs/stream-webhook",
+    )
 
 
 class CreateSongSchema(Schema):

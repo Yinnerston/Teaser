@@ -106,7 +106,25 @@ def create_post_service(
     }
 
 
+def update_post_status_service(us_library_id: int, us_video_id: str, us_status: int):
+    """
+    only update post status if finished.
+    """
+    if us_library_id != int(env("CDN_VIDEO_LIBRARY_ID")):
+        raise Exception()  # TODO:
+    if us_status != PostsModel.PostStatuses.FINISHED:
+        return
+    # TODO: Other validiation?
+    post = PostsModel.objects.get(video_id=us_video_id)
+    post.status = us_status
+    post.save()
+    return {}
+
+
 def create_song_service(s_title: str, s_author: str, s_song_url: str):
+    """
+    Validate song details then Create a song.
+    """
     validate_create_song_service(s_title, s_author, s_song_url)
     # Do not insert duplicates
     SongsModel.objects.get_or_create(

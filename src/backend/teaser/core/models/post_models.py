@@ -21,6 +21,9 @@ class SongsModel(models.Model):
         help_text="Original url the song was downloaded from", blank=True
     )
 
+    class Meta:
+        indexes = [models.Index(fields=["title", "author"])]
+
 
 class PostsModel(models.Model):
     """
@@ -28,10 +31,25 @@ class PostsModel(models.Model):
     Video and image URLs are contained in post_data
     """
 
+    class PostStatuses(models.IntegerChoices):
+        """
+        Statuses from https://docs.bunny.net/docs/stream-webhook
+        """
+
+        NOT_STARTED = -1
+        QUEUED = 0
+        PROCESSING = 1
+        ENCODING = 2
+        FINISHED = 3
+        RESOLUTION_FINISHED = 4
+        FAILED = 5
+        PRESIGNED_UPLOAD_STARTED = 6
+        PRESIGNED_UPLOAD_FINISHED = 7
+        PRESIGNED_UPLOAD_FAILED = 8
+
     video_id = models.UUIDField(
         blank=True,
         null=True,
-        editable=False,
         help_text="UUID used by bunny.net for categorizing videos",
     )
     description = models.CharField(max_length=200)
@@ -46,7 +64,10 @@ class PostsModel(models.Model):
         help_text="data: {urls, thumbnails, ...}, question: {question_text, voiceover_url}"
     )
     upload_url = models.URLField(default="")
-    is_uploaded = models.BooleanField(default=False)
+    status = models.IntegerField(choices=PostStatuses.choices, default=-1)
+
+    class Meta:
+        indexes = [models.Index(fields=["video_id"])]
 
 
 class TagsModel(models.Model):
