@@ -30,7 +30,7 @@ export const VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE = -69;
 
 // Default codecs checked by ffmpegWrapper
 export const VIDEO_DEFAULT_CODEC = {
-  codec_name: "h264",
+  codec_name: "h264", // TODO: h265
   time_base: "1/90000",
   width: 1920,
   height: 1080,

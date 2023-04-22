@@ -28,17 +28,21 @@ class QVideoNode {
     // TODO: Wait until these are rendered to load timeline?
     this.numberOfFrames = Math.ceil(video.duration / 1000);
     this.frames = [];
+    const { fileName, extension } = getSplitFileNameFromPath(video.path);
+
     if (!video.triggerRerender) {
       // // Normalize encoding
       // FFmpegWrapper.normalizeEncoding(
+      //   fileName,
+      //   extension,
       //   video.path,
       //   (filePath) => {
       //     // Set new video path
+      //     this.video = {...this.video, path: filePath}
       //   },
       //   (e) => console.error(e)
       // )
       // Create video frames used in editor
-      let { fileName } = getSplitFileNameFromPath(video.path);
       FFmpegWrapper.getFrames(
         fileName,
         video.path,
