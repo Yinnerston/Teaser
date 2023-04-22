@@ -164,26 +164,13 @@ export default class FFmpegWrapper {
     successCallback,
     errorCallback,
   ) {
-    /**
-     * TODO: file:// prefix
-     * Network error? 422?
-     */
     if (videoPaths.length == 1) {
-      // remove extension from first video
-      var soleVideoPath = videoPaths[0];
-      // if (soleVideoPath.startsWith("file://")) {
-      //   soleVideoPath = soleVideoPath.slice(7);
-      // }
-      // Only one video in queue, just use the first video
-      successCallback(soleVideoPath);
+      successCallback(videoPaths[0]);
       return;
     }
-    //  NOTE: file:// prefix does is an invalid url for uploading videos to BUNNY.NET
+    //  Create output path
     const extension = Platform.OS === "android" ? "file://" : "";
     let outputVideoPath = `${extension}${RNFS.CachesDirectoryPath}/${concatFileName}_concat.mp4`;
-
-    // Create output video file name
-    // let outputVideoPath = `${RNFS.CachesDirectoryPath}/${concatFileName}_concat.mp4`;
 
     // Create file from list of video paths
     let pathsListFile = `${extension}${RNFS.CachesDirectoryPath}/${concatFileName}_list.txt`;
@@ -201,12 +188,14 @@ export default class FFmpegWrapper {
             const failStackTrace = await session.getFailStackTrace();
             const duration = await session.getDuration();
             if (ReturnCode.isSuccess(returnCode)) {
+              // success
               console.log(
                 `Concat completed successfully in ${duration} milliseconds;.`,
               );
               console.log(`Check at ${outputVideoPath}`);
               successCallback(outputVideoPath);
             } else {
+              // failure
               console.log("Concat failed. Please check log for the details.");
               console.log(
                 `Concat failed with state ${state} and rc ${returnCode}.${

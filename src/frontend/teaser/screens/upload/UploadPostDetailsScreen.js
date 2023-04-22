@@ -27,6 +27,11 @@ import { useState } from "react";
 import HDIcon from "../../components/elements/icon/upload/HDIcon";
 import { uploadVideo } from "../../api/upload/uploadApi";
 
+/**
+ * Upload post details screen for setting description and post parameters.
+ * @param { navigation } param0
+ * @returns
+ */
 export default function UploadPostDetailsScreen({ navigation }) {
   const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
   const [queue] = useAtom(queueAtom);
