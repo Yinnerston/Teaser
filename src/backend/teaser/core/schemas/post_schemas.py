@@ -16,6 +16,11 @@ class CreatePostSchema(Schema):
 
 
 class UpdatePostStatusSchema(Schema):
+    """
+    Schema for bunny.net webhook to update the status of an uploaded video.
+    https://docs.bunny.net/docs/stream-webhook
+    """
+
     VideoLibraryId: int = Field(example=123)
     VideoGuid: str = Field(example=str(uuid4()))
     Status: int = Field(
@@ -25,6 +30,10 @@ class UpdatePostStatusSchema(Schema):
 
 
 class CreateSongSchema(Schema):
+    """
+    Schema to create a song.
+    """
+
     title: str = Field(example="AmongUS SUS Noises")
     author: str = Field(example="AmongUs Composer", default="Anonymous")
     song_url: str = Field(
