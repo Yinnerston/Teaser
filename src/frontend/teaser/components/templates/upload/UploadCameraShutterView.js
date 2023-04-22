@@ -11,6 +11,10 @@ import { useAtom, useSetAtom } from "jotai";
 import CameraBackButton from "../../elements/button/upload/CameraBackButton";
 import UploadImageButton from "../../elements/button/upload/UploadImageButton";
 import CameraScreenCheckButton from "../../elements/button/upload/CameraScreenCheckButton";
+import {
+  MIN_QUEUE_DURATION_MS,
+  MAX_QUEUE_DURATION_MS,
+} from "../../../Constants";
 
 /**
  * Template View for how the shutter is displayed in relation
@@ -26,6 +30,14 @@ export default function UploadCameraShutterView(props) {
   const [isRecording, setIsRecording] = useAtom(isRecordingAtom);
   // Camera video queue
   const [cameraVideoQueue] = useAtom(queueAtom);
+  var queueDurationMs = cameraVideoQueue.reduce(
+    (partialSum, next) => partialSum + next.video.duration,
+    0,
+  );
+  let queueDurationInBounds =
+    queueDurationMs >= MIN_QUEUE_DURATION_MS &&
+    queueDurationMs <= MAX_QUEUE_DURATION_MS;
+
   // const setStackPopAtomAtom = useSetAtom(stackPopAtomAtom);
   const styles = useCameraShutterViewStyle();
   if (isRecording) {
@@ -52,7 +64,11 @@ export default function UploadCameraShutterView(props) {
           <View>
             <CameraScreenCheckButton
               navigation={navigation}
-              cameraScreenCheckButtonStyle={styles.cameraScreenCheckButton}
+              queueDurationInBounds={queueDurationInBounds}
+              cameraScreenCheckButtonStyle={{
+                ...styles.cameraScreenCheckButton,
+                backgroundColor: queueDurationInBounds ? "#fe2c55" : "gray",
+              }}
             />
             <CameraBackButton
               onPress={handlePopLatestRecordedVideo}

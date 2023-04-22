@@ -11,7 +11,9 @@ export const BASE_URL = "https://wocchit.com/api/v1/";
 
 import Constants from "expo-constants";
 export const STATUS_BAR_HEIGHT = Constants.statusBarHeight;
-
+// Camera screen
+export const MIN_QUEUE_DURATION_MS = 3000;
+export const MAX_QUEUE_DURATION_MS = 60000;
 // Video Editor
 export const START_FROM_PREV_VIDEO_END = -1;
 export const VIDEO_EDITOR_SIDEBAR_BUTTON_SIZE = 32;
@@ -30,7 +32,7 @@ export const VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE = -69;
 
 // Default codecs checked by ffmpegWrapper
 export const VIDEO_DEFAULT_CODEC = {
-  codec_name: "h264",
+  codec_name: "h264", // TODO: h265
   time_base: "1/90000",
   width: 1920,
   height: 1080,
@@ -43,3 +45,7 @@ export const AUDIO_DEFAULT_CODEC = {
   channels: "2",
   // TODO:
 };
+
+export const TEASER_POST_TYPE = 0;
+export const QUESTION_POST_TYPE = 1;
+export const NO_SONG_CHOSEN_FOREIGN_KEY = -1;

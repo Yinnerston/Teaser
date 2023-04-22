@@ -3,14 +3,7 @@ Models for Post Object, and (Tags + Post Tags, Songs) that relate to a post.
 """
 from core.models.user_auth_models import TeaserUserModel
 from django.db import models
-
-
-class PostTypesModel(models.Model):
-    """
-    Lookup table for types of post.
-    """
-
-    title = models.CharField(max_length=100)
+import uuid
 
 
 class SongsModel(models.Model):
@@ -21,6 +14,15 @@ class SongsModel(models.Model):
 
     title = models.CharField(max_length=100)
     song_url = models.URLField()
+    duration = models.IntegerField(default=0)
+    author = models.CharField(default="Anonymous", max_length=64)
+    thumbnail = models.URLField(blank=True)
+    original_url = models.URLField(
+        help_text="Original url the song was downloaded from", blank=True
+    )
+
+    class Meta:
+        indexes = [models.Index(fields=["title", "author"])]
 
 
 class PostsModel(models.Model):
@@ -29,15 +31,43 @@ class PostsModel(models.Model):
     Video and image URLs are contained in post_data
     """
 
-    title = models.CharField(max_length=100)
+    class PostStatuses(models.IntegerChoices):
+        """
+        Statuses from https://docs.bunny.net/docs/stream-webhook
+        """
+
+        NOT_STARTED = -1
+        QUEUED = 0
+        PROCESSING = 1
+        ENCODING = 2
+        FINISHED = 3
+        RESOLUTION_FINISHED = 4
+        FAILED = 5
+        PRESIGNED_UPLOAD_STARTED = 6
+        PRESIGNED_UPLOAD_FINISHED = 7
+        PRESIGNED_UPLOAD_FAILED = 8
+
+    video_id = models.UUIDField(
+        blank=True,
+        null=True,
+        help_text="UUID used by bunny.net for categorizing videos",
+    )
     description = models.CharField(max_length=200)
     is_private = models.BooleanField(default=False)
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE)
-    song_id = models.ForeignKey(SongsModel, on_delete=models.DO_NOTHING)
-    post_type = models.ForeignKey(PostTypesModel, on_delete=models.DO_NOTHING)
+    song_id = models.ForeignKey(
+        SongsModel, on_delete=models.DO_NOTHING, blank=True, null=True
+    )
+    # ENUM {TEASER: 0, QUESTION: 1}
+    post_type = models.IntegerField(default=0)
     post_data = models.JSONField(
         help_text="data: {urls, thumbnails, ...}, question: {question_text, voiceover_url}"
     )
+    upload_url = models.URLField(default="")
+    status = models.IntegerField(choices=PostStatuses.choices, default=-1)
+
+    class Meta:
+        indexes = [models.Index(fields=["video_id"])]
 
 
 class TagsModel(models.Model):

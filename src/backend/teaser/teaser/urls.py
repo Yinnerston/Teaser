@@ -29,10 +29,16 @@ from core.services.openai_service import (
     text_completion_service,
     image_generation_service,
 )
+from core.services.post_service import (
+    create_post_service,
+    create_song_service,
+    update_post_status_service,
+)
 
 # Import schemas
 from core.schemas.user_auth_schemas import *
 from core.schemas.openai_schemas import *
+from core.schemas.post_schemas import *
 
 # Basic Sanitizers
 from core.utils import sanitization_utils
@@ -43,7 +49,8 @@ from core.services.user_auth_services import AuthBearer
 # Views
 from core.views.views import OpenAIGeneratedImageView
 
-from ninja import NinjaAPI
+from ninja import NinjaAPI, File
+from ninja.files import UploadedFile
 
 api = NinjaAPI(
     description="""
@@ -270,6 +277,66 @@ def generate_image(request, payload: OpenaiImageGenerationSchema):
     s_prompt = sanitization_utils.sanitize_str(us_prompt)
     outputs = image_generation_service(s_prompt=s_prompt)
     return {"output": outputs}
+
+
+@api.post("posts/create", tags=["posts"], auth=AuthBearer())
+def create_post(request, payload: CreatePostSchema, file: UploadedFile = File(...)):
+    post_dict = payload.dict()
+    # Get unsafe fields from payload
+    us_description = post_dict["description"]
+    us_post_type = post_dict["post_type"]
+    us_post_data = post_dict["post_data"]
+    us_file = file
+    # Sanitize username input
+    s_description = sanitization_utils.sanitize_str(us_description)
+    if not request.user.is_authenticated:
+        raise InvalidLoginCredentialsValidationError
+    s_user_id = request.user
+    us_song_id = post_dict["song_id"]
+    s_song_id = sanitization_utils.sanitize_foreign_key_allow_values(
+        us_song_id, [NO_SONG_CHOSEN_FOREIGN_KEY]
+    )
+    s_post_type = sanitization_utils.sanitize_foreign_key(us_post_type)
+    # s_post_data = { # TODO:
+    #     "data": us_post_data["data"],
+    #     "question": s_post_data["question"]
+    # }
+    s_is_private = post_dict["is_private"]
+    return create_post_service(
+        s_description=s_description,
+        s_user_id=s_user_id,
+        s_song_id=s_song_id,
+        s_post_type=s_post_type,
+        s_post_data=us_post_data,  # TODO: Validations on fields
+        s_is_private=s_is_private,
+        us_file=us_file,  # TODO: Validation on data?
+    )
+
+
+@api.post("posts/update_status", tags=["posts"])
+def update_posts_status(request, payload: UpdatePostStatusSchema):
+    post_status_dict = payload.dict()
+    us_library_id = post_status_dict["VideoLibraryId"]
+    us_video_id = post_status_dict["VideoGuid"]
+    us_status = post_status_dict["Status"]
+    # TODO: Sanitize
+    return update_post_status_service(us_library_id, us_video_id, us_status)
+
+
+@api.post("songs/create", tags=["songs"], auth=AuthBearer())
+def create_song(request, payload: CreateSongSchema):
+    song_dict = payload.dict()
+    # Get unsafe fields from payload
+    us_title = song_dict["title"]
+    us_author = song_dict["author"]
+    us_song_url = song_dict["song_url"]
+    # Sanitize username input
+    s_title = sanitization_utils.sanitize_str(us_title)
+    s_author = sanitization_utils.sanitize_str(us_author)
+    s_song_url = sanitization_utils.sanitize_str(us_song_url)
+    return create_song_service(
+        s_title=s_title, s_author=s_author, s_song_url=s_song_url
+    )
 
 
 urlpatterns = [

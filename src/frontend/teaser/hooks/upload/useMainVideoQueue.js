@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import FFmpegWrapper from "./ffmpegWrapper";
 import { msToWidth } from "../../utils/videoTimelineWidth";
 import { VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE } from "../../Constants";
-import { getFileNameFromPath } from "../../utils/videoQueueUtils";
+import { getSplitFileNameFromPath } from "../../utils/videoQueueUtils";
 /**
  * Node in the queue
  */
@@ -28,18 +28,23 @@ class QVideoNode {
     // TODO: Wait until these are rendered to load timeline?
     this.numberOfFrames = Math.ceil(video.duration / 1000);
     this.frames = [];
+    const { fileName, extension } = getSplitFileNameFromPath(video.path);
+
     if (!video.triggerRerender) {
       // // Normalize encoding
       // FFmpegWrapper.normalizeEncoding(
+      //   fileName,
+      //   extension,
       //   video.path,
       //   (filePath) => {
       //     // Set new video path
+      //     this.video = {...this.video, path: filePath}
       //   },
       //   (e) => console.error(e)
       // )
       // Create video frames used in editor
       FFmpegWrapper.getFrames(
-        getFileNameFromPath(video.path),
+        fileName,
         video.path,
         this.numberOfFrames,
         (filePath) => {

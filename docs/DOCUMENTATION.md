@@ -10,6 +10,11 @@ REACT_NATIVE_PACKAGER_HOSTNAME='???'
 ```bash
 DJANGO_SECRET_KEY=???
 POSTGRES_PASSWORD=???
+PRIVATE_IP=???
+DEBUG=1
+OPENAI_API_KEY=???
+CDN_VIDEO_LIBRARY_ID=???
+CDN_API_KEY=???
 ```
 - `.env`:
 ```bash
@@ -20,6 +25,10 @@ POSTGRES_PASSWORD=???
   - nfc_username --> Use for general text display
 -
 
+# Postgres
+
+- Run psql shell with `docker exec -it ${container_id} psql teaser -U teaseruser`
+-
 # Known Bugs:
 - `... Invariant Violation:` --> Check first error
 - https://github.com/henninghall/react-native-date-picker#why-does-the-android-app-crash-in-production
