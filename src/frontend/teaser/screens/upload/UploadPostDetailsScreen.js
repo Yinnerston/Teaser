@@ -157,7 +157,7 @@ export default function UploadPostDetailsScreen({ navigation }) {
               hasHDUpload,
               postLinks,
             );
-            // navigation.navigate("Home")
+            navigation.navigate("Home");
           }}
           buttonText="Post"
         />

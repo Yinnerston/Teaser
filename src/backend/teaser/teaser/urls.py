@@ -280,12 +280,13 @@ def generate_image(request, payload: OpenaiImageGenerationSchema):
 
 
 @api.post("posts/create", tags=["posts"], auth=AuthBearer())
-def create_post(request, payload: CreatePostSchema, us_file: UploadedFile = File(...)):
+def create_post(request, payload: CreatePostSchema, file: UploadedFile = File(...)):
     post_dict = payload.dict()
     # Get unsafe fields from payload
     us_description = post_dict["description"]
     us_post_type = post_dict["post_type"]
     us_post_data = post_dict["post_data"]
+    us_file = file
     # Sanitize username input
     s_description = sanitization_utils.sanitize_str(us_description)
     if not request.user.is_authenticated:

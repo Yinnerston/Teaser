@@ -1,9 +1,13 @@
 import FFmpegWrapper from "../../hooks/upload/ffmpegWrapper";
 import { getSplitFileNameFromPath } from "../../utils/videoQueueUtils";
-import RNFS from "react-native-fs";
 import axiosAPIClient from "../axiosAPIClient";
-import { TEASER_POST_TYPE, NO_SONG_CHOSEN_FOREIGN_KEY } from "../../Constants";
-
+import axios from "axios";
+import {
+  TEASER_POST_TYPE,
+  NO_SONG_CHOSEN_FOREIGN_KEY,
+  BASE_URL,
+} from "../../Constants";
+import mime from "mime";
 /**
  * TODO: Use all the variables
  * @param {*} authToken
@@ -35,9 +39,16 @@ export function uploadVideo(
       fileName,
       videoPaths,
       async (outputVideoPath) => {
-        const response = await axiosAPIClient.post(
-          "posts/create",
-          {
+        const formData = new FormData();
+        formData.append("file", {
+          uri: outputVideoPath,
+          name: fileName + "." + extension,
+          // type: 'video/' + extension
+          type: mime.getType(outputVideoPath),
+        });
+        formData.append(
+          "payload",
+          JSON.stringify({
             description: description,
             is_private: postVisibility,
             song_id: editorSound ? editorSound.id : NO_SONG_CHOSEN_FOREIGN_KEY,
@@ -47,44 +58,24 @@ export function uploadVideo(
               data: {},
               question: {},
             },
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          },
+          }),
         );
-        // TODO: No secure way to store API keys.. need to put to server
-        // Rewrite create_post_service to a put request using FTP
-        // merge this and "posts/create" endpoint
-        RNFS.uploadFiles({
-          toUrl: response.data["upload_url"],
-          files: [
-            {
-              filename: fileName + "." + extension,
-              filepath: outputVideoPath,
-            },
-          ],
-          method: "PUT",
+        axios({
+          baseURL: BASE_URL,
+          url: "posts/create",
+          method: "POST",
+          data: formData,
           headers: {
             Accept: "application/json",
-            AccessKey: "THIS-IS-A-SECRET-DONT-REVEAL-ME",
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`,
           },
-          begin: (a) => console.log("BEGIN", a),
-          progress: (a) => console.log("PROGRESS", a),
         })
-          .promise.then((response) => {
-            if (response.statusCode == 200) {
-              console.log("FILES UPLOADED!"); // response.statusCode, response.headers, response.body
-            } else {
-              console.log("SERVER ERROR");
-            }
+          .then(function (response) {
+            console.log("response :", response);
           })
-          .catch((err) => {
-            if (err.description === "cancelled") {
-              // cancelled by user
-            }
-            console.log(err);
+          .catch(function (error) {
+            console.log("error from image :", error.toJSON());
           });
       },
       (e) => console.error(e),
