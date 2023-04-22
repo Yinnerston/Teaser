@@ -11,7 +11,9 @@ export const BASE_URL = "https://wocchit.com/api/v1/";
 
 import Constants from "expo-constants";
 export const STATUS_BAR_HEIGHT = Constants.statusBarHeight;
-
+// Camera screen
+export const MIN_QUEUE_DURATION_MS = 3000;
+export const MAX_QUEUE_DURATION_MS = 60000;
 // Video Editor
 export const START_FROM_PREV_VIDEO_END = -1;
 export const VIDEO_EDITOR_SIDEBAR_BUTTON_SIZE = 32;

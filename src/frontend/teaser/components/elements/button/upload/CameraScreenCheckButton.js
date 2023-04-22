@@ -5,18 +5,23 @@ import { CAMERA_SHUTTER_VIEW_ICON_SIZE } from "../../../../Constants";
 
 /**
  * Back button used to import images
- * @param {onPress, uploadImageButtonStyle} props
+ * if not queueDurationInBounds, grey out and do nothing
+ * @param {onPress, queueDurationInBounds, uploadImageButtonStyle} props
  * @returns
  */
 export default function CameraScreenCheckButton(props) {
-  const { navigation, cameraScreenCheckButtonStyle } = props;
+  const { navigation, queueDurationInBounds, cameraScreenCheckButtonStyle } =
+    props;
   // TODO: This breaks the app if the video timeline is still loading.
   // Probably wait until the video timeline is loaded and render a loading wheel until then
   const handleCameraScreenCheckButtonPress = () =>
     navigation.navigate("UploadEditVideo");
+
   return (
     <TouchableOpacity
-      onPress={handleCameraScreenCheckButtonPress}
+      onPress={
+        queueDurationInBounds ? handleCameraScreenCheckButtonPress : () => {}
+      }
       style={
         cameraScreenCheckButtonStyle
           ? cameraScreenCheckButtonStyle
