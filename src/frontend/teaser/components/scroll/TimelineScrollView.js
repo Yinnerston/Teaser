@@ -182,6 +182,7 @@ export const TimelineScrollView = forwardRef(
             panGestureAnimatedStyle={panGestureAnimatedStyle}
             handleSelectedVideoKeyChange={handleSelectedVideoKeyChange}
             positions={positions}
+            key={"TIMELINEVIDEOELEMENT" + item.key}
           />
         )),
       [queue, selectedComponentKey],

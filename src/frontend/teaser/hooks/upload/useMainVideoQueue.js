@@ -144,6 +144,11 @@ export const enqueueAtomAtom = atom(null, (get, set, update) => {
     // Enqueue node and change rear
     temp.setStartTimeMs(queue.slice(-1)[0].endTimeMs);
   }
+  // Add .next attribute to former rear node
+  if (queue.length > 0) {
+    queue.slice(-1)[0].next = temp;
+  }
+  // Insert new rear node
   queue.push(temp);
   set(_queueAtom, [...queue]);
 });
@@ -241,14 +246,4 @@ export const reorderAtomAtom = atom(null, (get, set, update) => {
 export const destroyQueueAtomAtom = atom(null, (get, set, _update) => {
   set(_queueAtom, []);
   set(dequeuedAtoms, []);
-});
-
-export const triggerQueueRerenderAtomAtom = atom(null, (get, set, _update) => {
-  set(enqueueAtomAtom, {
-    video: { triggerRerender: VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE },
-  });
-  set(stackPopAtomAtom, VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE);
-  let dequeued = get(dequeuedAtoms);
-  dequeued.pop();
-  set(dequeuedAtoms, dequeued);
 });

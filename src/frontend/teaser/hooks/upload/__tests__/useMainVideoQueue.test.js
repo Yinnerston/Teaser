@@ -5,7 +5,6 @@ import {
   queueAtom,
   dequeueAtomAtom,
   destroyQueueAtomAtom,
-  triggerQueueRerenderAtomAtom,
   stackPopAtomAtom,
 } from "../useMainVideoQueue";
 import { START_FROM_PREV_VIDEO_END } from "../../../Constants";
@@ -30,7 +29,6 @@ export const TestQueue = (props) => {
   const dequeue = useSetAtom(dequeueAtomAtom);
   const destroy = useSetAtom(destroyQueueAtomAtom);
   const stackPop = useSetAtom(stackPopAtomAtom);
-  const rerender = useSetAtom(triggerQueueRerenderAtomAtom);
 
   return (
     <View>

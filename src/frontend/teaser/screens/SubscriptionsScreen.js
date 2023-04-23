@@ -80,7 +80,8 @@ export default function SubscriptionsScreen({ navigation }) {
                 }}
               />
               <Text>
-                {item.startTimeMs} TO {item.endTimeMs}
+                {item.startTimeMs} TO {item.endTimeMs} {"\n"}
+                {item.next ? "NEXT has key " + item.next.key : "NEXT is null"}
               </Text>
             </View>
           );
