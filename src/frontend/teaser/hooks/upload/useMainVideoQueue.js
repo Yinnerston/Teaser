@@ -69,18 +69,28 @@ class QVideoNode {
 
   setStartTimeMs(ms) {
     if (ms > 0) {
-      ms = ms + 1; // Add 0.1ms offset from the prev video
+      ms = ms + 1; // Add 1ms offset from the prev video
     }
     this.startTimeMs = ms;
     this.startTimeWidth = msToWidth(ms);
-    let endTimeMs = this.startTimeMs + this.video.duration;
-    this.endTimeMs = endTimeMs;
-    this.endTimeWidth = msToWidth(endTimeMs);
-    // TODO: Check if enqueued atom exceeds the maximum duration of a video?
+    this.endTimeMs = this.startTimeMs + this.video.duration;
+    this.endTimeWidth = msToWidth(this.endTimeMs);
   }
 
   // TODO: Trim video functionality
   // https://stackoverflow.com/a/42827058
+}
+
+function getQVideoNodeTimeFields(node, ms) {
+  if (ms > 0) {
+    ms = ms + 1; // Add 1ms offset from the prev video
+  }
+  return {
+    startTimeMs: ms,
+    startTimeWidth: msToWidth(ms),
+    endTimeMs: ms + node.video.duration,
+    endTimeWidth: msToWidth(ms + node.video.duration),
+  };
 }
 
 /**
@@ -144,6 +154,11 @@ export const enqueueAtomAtom = atom(null, (get, set, update) => {
     // Enqueue node and change rear
     temp.setStartTimeMs(queue.slice(-1)[0].endTimeMs);
   }
+  // Add .next attribute to former rear node
+  if (queue.length > 0) {
+    queue.slice(-1)[0].next = temp;
+  }
+  // Insert new rear node
   queue.push(temp);
   set(_queueAtom, [...queue]);
 });
@@ -223,32 +238,26 @@ export const reorderAtomAtom = atom(null, (get, set, update) => {
   }
   // Remove from queue
   const deletedNode = queue.splice(prevIndex, 1)[0];
+
   // Add back to queue
   queue.splice(newIndex, 0, deletedNode);
-  // Reset the timings
+
   var prevEndTimeMs = 0;
   for (let i = 0; i < queue.length; i++) {
-    queue[i].setStartTimeMs(prevEndTimeMs);
-    prevEndTimeMs = queue[i].endTimeMs;
+    // queue[i].setStartTimeMs(prevEndTimeMs);
+    let queueNodeToChange = getQVideoNodeTimeFields(queue[i], prevEndTimeMs);
+    prevEndTimeMs = queueNodeToChange.endTimeMs;
+    queue[i] = { ...queue[i], ...queueNodeToChange };
     if (i + 1 < queue.length) {
       queue[i].next = queue[i + 1];
+    } else {
+      queue[i].next = null;
     }
   }
-  queue.slice(-1)[0].next = null;
   set(_queueAtom, [...queue]);
 });
 
 export const destroyQueueAtomAtom = atom(null, (get, set, _update) => {
   set(_queueAtom, []);
   set(dequeuedAtoms, []);
-});
-
-export const triggerQueueRerenderAtomAtom = atom(null, (get, set, _update) => {
-  set(enqueueAtomAtom, {
-    video: { triggerRerender: VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE },
-  });
-  set(stackPopAtomAtom, VIDEO_QUEUE_STACK_POP_TRIGGER_RERENDER_UPDATE);
-  let dequeued = get(dequeuedAtoms);
-  dequeued.pop();
-  set(dequeuedAtoms, dequeued);
 });

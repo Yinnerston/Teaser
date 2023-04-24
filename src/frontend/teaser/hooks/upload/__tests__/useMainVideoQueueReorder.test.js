@@ -414,30 +414,3 @@ test("Reorder across queue backwards", () => {
     }
   }
 });
-
-test("Test triggerQueueRerenderAtomAtom on empty queue", () => {
-  // Remove all elements from queue
-  const destroyQueueButton = screen.getByText("DESTROY");
-  fireEvent.press(destroyQueueButton);
-  const initialRender = render(<TestQueue />);
-  let lengthElement = initialRender.getByTestId("LENGTH");
-  let length = lengthElement.children[0];
-  expect(length).toBe("0");
-  const rerenderButton = screen.getByText("RERENDER");
-  fireEvent.press(rerenderButton);
-  // Check that nothing has changed and the queue still has 0 elements after rerender
-  const rerenderedRender = render(<TestQueue></TestQueue>);
-  let lengthElementAfterRerender = rerenderedRender.getByTestId("LENGTH");
-  let lengthAfterRerender = lengthElementAfterRerender.children[0];
-  expect(lengthAfterRerender).toBe("0");
-});
-
-test("Test triggerQueueRerenderAtomAtom on queue with nodes", () => {
-  const rerenderButton = screen.getByText("RERENDER");
-  fireEvent.press(rerenderButton);
-  // Check that nothing has changed and the queue still has 3 elements after rerender
-  const rerenderedRender = render(<TestQueue></TestQueue>);
-  let lengthElementAfterRerender = rerenderedRender.getByTestId("LENGTH");
-  let lengthAfterRerender = lengthElementAfterRerender.children[0];
-  expect(lengthAfterRerender).toBe("3");
-});
