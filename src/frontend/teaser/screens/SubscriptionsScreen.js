@@ -69,7 +69,7 @@ export default function SubscriptionsScreen({ navigation }) {
             <View
               style={{
                 height: VIDEO_IMAGE_FRAME_WIDTH + 50,
-                width: VIDEO_IMAGE_FRAME_WIDTH + 50,
+                width: VIDEO_IMAGE_FRAME_WIDTH + 200,
               }}
             >
               <Image
@@ -80,8 +80,12 @@ export default function SubscriptionsScreen({ navigation }) {
                 }}
               />
               <Text>
-                {item.startTimeMs} TO {item.endTimeMs} {"\n"}
-                {item.next ? "NEXT has key " + item.next.key : "NEXT is null"}
+                {item.key} {"\n"}
+                {item.next
+                  ? "NEXT has key " + item.next.key
+                  : "NEXT is null"}{" "}
+                {"\n"}
+                FROM {item.startTimeMs} TO {item.endTimeMs}
               </Text>
             </View>
           );
