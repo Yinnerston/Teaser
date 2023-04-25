@@ -35,11 +35,16 @@ from core.services.post_service import (
     create_song_service,
     update_post_status_service,
 )
+from core.services.user_profile_service import (
+    create_user_categories_service,
+    get_user_profile_service,
+)
 
 # Import schemas
 from core.schemas.user_auth_schemas import *
 from core.schemas.openai_schemas import *
 from core.schemas.post_schemas import *
+from core.schemas.user_profile_schemas import *
 
 # Basic Sanitizers
 from core.utils import sanitization_utils
@@ -189,6 +194,32 @@ def logout_user_endpoint(request):
     """
     s_auth_token = sanitization_utils.sanitize_str(request.auth)
     logout_user_service(request, s_auth_token)
+
+
+@api.post(
+    "users/categories",
+    tags=["users"],
+    auth=AuthBearer(),
+)
+def add_user_category_endpoint(request, payload: CreateUserCategorySchema):
+    category_dict = payload.dict()
+    # Get unsafe fields from payload
+    us_categories = category_dict["categories"]
+    # Sanitize us_categories input
+    s_user = request.user
+    s_categories = [
+        sanitization_utils.sanitize_str(category) for category in us_categories
+    ]
+    return create_user_categories_service(s_user, s_categories)
+
+
+@api.get(
+    "users/profile",
+    tags=["users"],
+    auth=AuthBearer(),
+)
+def get_user_profile(request):
+    return get_user_profile_service(request.user)
 
 
 # TODO: Change password endpoint

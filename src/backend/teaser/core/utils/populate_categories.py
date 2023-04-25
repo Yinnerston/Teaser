@@ -1,4 +1,4 @@
-from core.utils.post_validator import CATEGORIES_LIST
+from core.utils.user_profile_validator import CATEGORIES_LIST
 from core.models.user_profile_models import CategoriesModel
 
 

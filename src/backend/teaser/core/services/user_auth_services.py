@@ -5,6 +5,7 @@ Services layer for user_auth_services models.
 from django.http import HttpRequest
 from core.models.user_auth_models import TeaserUserModel, AuthTokenModel
 from core.models.event_metric_models import EventMetricsModel, EventMetricsTypeModel
+from core.models.user_profile_models import UserProfileModel
 from core.utils.user_auth_validator import (
     validate_register,
     validate_login_params,
@@ -149,6 +150,7 @@ def register_user_service(
             event_data=json.loads("{}"),
             user_id=teaser_user_model,
         )
+        UserProfileModel.objects.create(user_id=teaser_user_model)
 
     # TODO: Send SMS code? Use TOTP?
 

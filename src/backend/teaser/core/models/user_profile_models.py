@@ -14,7 +14,7 @@ class UserProfileModel(models.Model):
     user_id = models.OneToOneField(
         TeaserUserModel, primary_key=True, on_delete=models.CASCADE
     )
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, default="Add a bio")
 
 
 class CategoriesModel(models.Model):
