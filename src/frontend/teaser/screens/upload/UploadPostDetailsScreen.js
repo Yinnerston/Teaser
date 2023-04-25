@@ -26,6 +26,7 @@ import { Switch } from "react-native-paper";
 import { useState } from "react";
 import HDIcon from "../../components/elements/icon/upload/HDIcon";
 import { uploadVideo } from "../../api/upload/uploadApi";
+import CategoriesIcon from "../../components/elements/icon/upload/CategoriesIcon";
 
 /**
  * Upload post details screen for setting description and post parameters.
@@ -39,6 +40,9 @@ export default function UploadPostDetailsScreen({ navigation }) {
   const [description, setDescription] = useState("");
   const { styles, authButtonStyles } = useUploadPostDetailsScreenStyles();
   const [postTags, setPostTags] = useState([]);
+  // JSON.stringify'd selected object used by SetInterestsScreen
+  const [postCategories, setPostCategories] = useState("");
+  const [numCategories, setNumCategories] = useState(0);
   const [postIsPrivate, setPostIsPrivate] = useState(false); // TODO: Add dropdown
   const [hasComments, setHasComments] = useState(true);
   const [hasHDUpload, setHasHDUpload] = useState(true);
@@ -90,6 +94,24 @@ export default function UploadPostDetailsScreen({ navigation }) {
         <TouchableOpacity style={styles.row} onPress={() => {}}>
           <IoniconsTemplateIcon name="pricetags-outline" color="#5A5A5A" />
           <Text style={styles.rowText}>Add tags</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.row}
+          onPress={() =>
+            navigation.navigate("SetInterests", {
+              onPress: (interests) => {
+                setPostCategories(interests);
+                setNumCategories(interests.length);
+              },
+              isPostDetails: true,
+            })
+          }
+        >
+          <CategoriesIcon color="#5A5A5A" />
+          <Text style={styles.rowText}>Add Categories</Text>
+          <Text style={styles.textOnRight}>
+            {numCategories > 0 ? "(" + numCategories + ")" : null}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.row}
@@ -157,6 +179,7 @@ export default function UploadPostDetailsScreen({ navigation }) {
               editorSound,
               description,
               postTags,
+              postCategories,
               postIsPrivate,
               hasComments,
               hasHDUpload,
@@ -223,6 +246,10 @@ const useUploadPostDetailsScreenStyles = () => {
       width: width,
       height: 40,
       marginHorizontal: 16,
+    },
+    textOnRight: {
+      marginLeft: "auto",
+      marginRight: VIDEO_IMAGE_FRAME_WIDTH,
     },
     rowFirstFlex: {
       flex: 3,
