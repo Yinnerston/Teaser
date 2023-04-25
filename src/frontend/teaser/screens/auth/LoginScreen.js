@@ -15,10 +15,11 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import AuthButton from "../../components/elements/button/AuthButton";
 import { REGISTER_BUTTON_COLOR } from "../../Constants";
 // import { loginUserFunction } from "../../api/auth/authApi";
-import { useSetAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import {
   writeOnlyUserAuthAtom,
   setUserAuthStore,
+  isLoginAfterRegisterAtom,
 } from "../../hooks/auth/useUserAuth";
 import { loginUserFunction } from "../../api/auth/authApi";
 /**
@@ -32,6 +33,9 @@ export default function LoginScreen({ navigation }) {
   const styles = useLoginScreenStyle();
   // TODO: set error if login fails
   const [isError, setIsError] = useState(false);
+  const [isLoginAfterRegister, setIsLoginAfterRegister] = useAtom(
+    isLoginAfterRegisterAtom,
+  );
   const {
     control,
     handleSubmit,
@@ -50,7 +54,11 @@ export default function LoginScreen({ navigation }) {
     if (loginResponse.status == 200) {
       setWriteUserAuth(loginResponse.data);
       setUserAuthStore(JSON.stringify(loginResponse.data));
-      navigation.navigate("Home");
+      if (isLoginAfterRegister) {
+        navigation.navigate("SetInterests");
+      } else {
+        navigation.navigate("Home");
+      }
     } else {
       setIsError(loginResponse.data.toString());
     }

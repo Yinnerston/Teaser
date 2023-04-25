@@ -5,8 +5,11 @@ import AuthButton from "../../components/elements/button/AuthButton";
 import { REGISTER_BUTTON_COLOR } from "../../Constants";
 import { registerUserFunction } from "../../api/auth/authApi";
 import { Link } from "@react-navigation/native";
-import { useAtom } from "jotai";
-import { userTCAcceptedAtom } from "../../hooks/auth/useUserAuth";
+import { useAtom, useSetAtom } from "jotai";
+import {
+  userTCAcceptedAtom,
+  isLoginAfterRegisterAtom,
+} from "../../hooks/auth/useUserAuth";
 
 /**
  * Register Screen for a user's username.
@@ -23,6 +26,7 @@ export default function RegisterScreenUsername({ navigation, route }) {
       username: "",
     },
   });
+  const setIsLoginAfterRegister = useSetAtom(isLoginAfterRegisterAtom);
   const [isChecked, setIsChecked] = useAtom(userTCAcceptedAtom);
   const onRegisterButtonPress = async (data) => {
     const registerOutput = await registerUserFunction({
@@ -31,10 +35,12 @@ export default function RegisterScreenUsername({ navigation, route }) {
       terms_of_service_accepted: isChecked,
     }); // TODO: Add TOS form
     if (registerOutput.status == 200) {
+      setIsLoginAfterRegister(true);
       navigation.navigate("Login");
     } else {
-      // Go back to Auth Page with Error
-      setRegisterResponse(registerOutput);
+      // TODO: Go back to Auth Page with Error
+      console.error(registerOutput.status);
+      // setRegisterResponse(registerOutput);
     }
   };
 
@@ -70,13 +76,18 @@ export default function RegisterScreenUsername({ navigation, route }) {
         {" "}
         {errors.username && "*Username does not fit criteria."}
       </Text>
-      <Link
-        to={{ screen: "RegisterTermsAndConditions" }}
-        style={authFormStyles.loginLinkStyle}
-      >
-        You must accept the Terms and Conditions to register.
+      <Text style={{ ...authFormStyles.loginLinkStyle, color: "black" }}>
+        You must accept the
+        <Link
+          to={{ screen: "RegisterTermsAndConditions" }}
+          style={authFormStyles.loginLinkStyle}
+        >
+          {" "}
+          Terms and Conditions{" "}
+        </Link>
+        to register.
         {"\n"}
-      </Link>
+      </Text>
       <AuthButton
         onPress={isChecked ? handleSubmit(onRegisterButtonPress) : () => {}}
         color={isChecked ? REGISTER_BUTTON_COLOR : "gray"}

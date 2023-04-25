@@ -35,6 +35,13 @@ export default function SubscriptionsScreen({ navigation }) {
         title="logout"
         color="red"
       ></Button>
+      <Button
+        onPress={() => {
+          navigation.navigate("SetInterests");
+        }}
+        title="Goto Interests screen"
+        color="red"
+      ></Button>
       <Text>Example Queue behaviour:</Text>
       <Button
         onPress={() => {
