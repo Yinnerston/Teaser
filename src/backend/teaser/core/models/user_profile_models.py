@@ -35,6 +35,9 @@ class UserCategoriesModel(models.Model):
     colour_code = models.CharField(
         max_length=7, help_text="#?????? colour code identifier specified by user"
     )
+    class Meta:
+        indexes = [models.Index(fields=["user_id"])]
+
 
 
 class ProfileLinkTypesModel(models.Model):
