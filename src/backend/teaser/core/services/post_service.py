@@ -9,7 +9,8 @@ from django.core.files.uploadhandler import (
     MemoryFileUploadHandler,
 )
 from core.models.user_auth_models import TeaserUserModel
-from core.models.post_models import PostsModel, SongsModel
+from core.models.post_models import PostsModel, SongsModel, PostCategoriesModel
+from core.models.user_profile_models import CategoriesModel
 from teaser.settings import env
 from uuid import uuid4
 import requests
@@ -36,6 +37,7 @@ def create_post_service(
     validate_create_post_service(
         s_description, s_user_id, s_song_id, s_post_type, s_post_data, s_is_private
     )
+    s_categories = s_post_data["data"]["categories"]
     # TODO: Rate limit to reduce spam?
     # TODO: Check that user is still valid? Possibility of account deletion
     with transaction.atomic():
@@ -52,6 +54,13 @@ def create_post_service(
             post_type=s_post_type,
             post_data=s_post_data,
         )
+        # Link post categories to post
+        for category in s_categories:
+            categories_model = CategoriesModel.objects.get(title=category)
+            PostCategoriesModel.objects.create(
+                post_id=post_model, category_id=categories_model
+            )
+
     # Send the video file to the storage / video server
     library_id = str(env("CDN_VIDEO_LIBRARY_ID"))
     api_key = str(env("CDN_API_KEY"))

@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+import json
 
 # Import services
 from core.services.user_auth_services import (
@@ -297,10 +298,8 @@ def create_post(request, payload: CreatePostSchema, file: UploadedFile = File(..
         us_song_id, [NO_SONG_CHOSEN_FOREIGN_KEY]
     )
     s_post_type = sanitization_utils.sanitize_foreign_key(us_post_type)
-    # s_post_data = { # TODO:
-    #     "data": us_post_data["data"],
-    #     "question": s_post_data["question"]
-    # }
+    # s_post_data = sanitization_utils.CleanJson(us_post_data).get()
+
     s_is_private = post_dict["is_private"]
     return create_post_service(
         s_description=s_description,

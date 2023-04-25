@@ -89,8 +89,6 @@ class PostTagsModel(models.Model):
     tag_id = models.ForeignKey(TagsModel, on_delete=models.CASCADE)
 
 
-
-
 class PostCategoriesModel(models.Model):
     """
     Model for categories in a post.
