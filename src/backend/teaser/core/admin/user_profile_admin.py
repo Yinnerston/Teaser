@@ -11,10 +11,15 @@ from django.contrib import admin
 
 
 @admin.register(UserProfileModel)
-class PostsModelAdmin(admin.ModelAdmin):
-    pass
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ["user_id", "description"]
+
+
+@admin.register(UserCategoriesModel)
+class UserCategoriesAdmin(admin.ModelAdmin):
+    list_display = ["user_id", "categories_id"]
 
 
 @admin.register(CategoriesModel)
-class SongsModelAdmin(admin.ModelAdmin):
+class CategoriesAdmin(admin.ModelAdmin):
     pass
