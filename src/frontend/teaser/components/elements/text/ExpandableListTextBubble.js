@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { REGISTER_BUTTON_COLOR } from "../../../Constants";
+import {
+  REGISTER_BUTTON_COLOR,
+  TEXT_BUBBLE_CATEGORY_COLOR,
+  TEXT_BUBBLE_RELATED_ELEMENT_COLOR,
+} from "../../../Constants";
 
 export default function ExpandableListTextBubble({
   category,
@@ -49,14 +53,14 @@ const styles = StyleSheet.create({
   container: { flexDirection: "row", flexWrap: "wrap" },
   categoryElement: {
     margin: 5,
-    backgroundColor: "#fcdae2",
+    backgroundColor: TEXT_BUBBLE_CATEGORY_COLOR,
     borderRadius: 15,
     borderColor: REGISTER_BUTTON_COLOR,
     paddingHorizontal: 5,
   },
   relatedListElement: {
     margin: 5,
-    backgroundColor: "#F8ABBD",
+    backgroundColor: TEXT_BUBBLE_RELATED_ELEMENT_COLOR,
     borderRadius: 15,
     borderColor: REGISTER_BUTTON_COLOR,
     paddingHorizontal: 5,
