@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+import json
 
 # Import services
 from core.services.user_auth_services import (
@@ -34,11 +35,16 @@ from core.services.post_service import (
     create_song_service,
     update_post_status_service,
 )
+from core.services.user_profile_service import (
+    create_user_categories_service,
+    get_user_profile_service,
+)
 
 # Import schemas
 from core.schemas.user_auth_schemas import *
 from core.schemas.openai_schemas import *
 from core.schemas.post_schemas import *
+from core.schemas.user_profile_schemas import *
 
 # Basic Sanitizers
 from core.utils import sanitization_utils
@@ -186,8 +192,34 @@ def logout_user_endpoint(request):
     Logout a user.
     TODO: Logout on all devices?
     """
-    s_auth_token = sanitization_utils.sanitize_str(request.auth)
+    s_auth_token = sanitization_utils.sanitize_str(request.auth.token_hash)
     logout_user_service(request, s_auth_token)
+
+
+@api.post(
+    "users/categories",
+    tags=["users"],
+    auth=AuthBearer(),
+)
+def add_user_category_endpoint(request, payload: CreateUserCategorySchema):
+    category_dict = payload.dict()
+    # Get unsafe fields from payload
+    us_categories = category_dict["categories"]
+    # Sanitize us_categories input
+    s_teaser_user = request.auth.teaser_user_id
+    s_categories = [
+        sanitization_utils.sanitize_str(category) for category in us_categories
+    ]
+    return create_user_categories_service(s_teaser_user, s_categories)
+
+
+@api.get(
+    "users/profile",
+    tags=["users"],
+    auth=AuthBearer(),
+)
+def get_user_profile(request):
+    return get_user_profile_service(request.auth.teaser_user_id)
 
 
 # TODO: Change password endpoint
@@ -196,10 +228,10 @@ def logout_user_endpoint(request):
 
 @api.get("get_data", auth=AuthBearer())
 def get_data_endpoint(request, payload):
-    if not request.user.is_authenticated:
-        raise InvalidLoginCredentialsValidationError(464, request.user)
+    if not request.auth:
+        raise InvalidLoginCredentialsValidationError(464, request.auth.teaser_user_id)
     else:
-        return f"Authenticated user {request.auth} {request.user}"
+        return f"Authenticated user {request.auth.token_hash} {request.auth.teaser_user_id}"
 
 
 # Token routes
@@ -246,7 +278,7 @@ def refresh_token_endpoint(request):
     @returns {token_hash: str, token_expiry_date: datetime}
     """
     # Get unsafe fields from payload
-    us_token = request.auth
+    us_token = request.auth.token_hash
     s_token = sanitization_utils.sanitize_str(us_token)
     token_hash, token_expiry_datetime = refresh_auth_token_service(s_token)
     return {"token_hash": token_hash, "token_expiry_date": token_expiry_datetime}
@@ -289,22 +321,20 @@ def create_post(request, payload: CreatePostSchema, file: UploadedFile = File(..
     us_file = file
     # Sanitize username input
     s_description = sanitization_utils.sanitize_str(us_description)
-    if not request.user.is_authenticated:
+    if not request.auth:
         raise InvalidLoginCredentialsValidationError
-    s_user_id = request.user
+    s_teaser_user = request.auth.teaser_user_id
     us_song_id = post_dict["song_id"]
     s_song_id = sanitization_utils.sanitize_foreign_key_allow_values(
         us_song_id, [NO_SONG_CHOSEN_FOREIGN_KEY]
     )
     s_post_type = sanitization_utils.sanitize_foreign_key(us_post_type)
-    # s_post_data = { # TODO:
-    #     "data": us_post_data["data"],
-    #     "question": s_post_data["question"]
-    # }
+    # s_post_data = sanitization_utils.CleanJson(us_post_data).get()
+
     s_is_private = post_dict["is_private"]
     return create_post_service(
         s_description=s_description,
-        s_user_id=s_user_id,
+        s_teaser_user=s_teaser_user,
         s_song_id=s_song_id,
         s_post_type=s_post_type,
         s_post_data=us_post_data,  # TODO: Validations on fields

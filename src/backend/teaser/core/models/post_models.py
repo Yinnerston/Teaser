@@ -2,8 +2,10 @@
 Models for Post Object, and (Tags + Post Tags, Songs) that relate to a post.
 """
 from core.models.user_auth_models import TeaserUserModel
+from core.models.user_profile_models import CategoriesModel
 from django.db import models
 import uuid
+from django.utils.timezone import now
 
 
 class SongsModel(models.Model):
@@ -54,6 +56,7 @@ class PostsModel(models.Model):
     )
     description = models.CharField(max_length=200)
     is_private = models.BooleanField(default=False)
+    has_comments = models.BooleanField(default=True)
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE)
     song_id = models.ForeignKey(
         SongsModel, on_delete=models.DO_NOTHING, blank=True, null=True
@@ -61,10 +64,11 @@ class PostsModel(models.Model):
     # ENUM {TEASER: 0, QUESTION: 1}
     post_type = models.IntegerField(default=0)
     post_data = models.JSONField(
-        help_text="data: {urls, thumbnails, ...}, question: {question_text, voiceover_url}"
+        help_text="data: {urls, categories, thumbnails, ...}, question: {question_text, voiceover_url}"
     )
     upload_url = models.URLField(default="")
     status = models.IntegerField(choices=PostStatuses.choices, default=-1)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
     class Meta:
         indexes = [models.Index(fields=["video_id"])]
@@ -85,3 +89,12 @@ class PostTagsModel(models.Model):
 
     post_id = models.ForeignKey(PostsModel, on_delete=models.CASCADE)
     tag_id = models.ForeignKey(TagsModel, on_delete=models.CASCADE)
+
+
+class PostCategoriesModel(models.Model):
+    """
+    Model for categories in a post.
+    """
+
+    post_id = models.ForeignKey(PostsModel, on_delete=models.CASCADE)
+    category_id = models.ForeignKey(CategoriesModel, on_delete=models.CASCADE)

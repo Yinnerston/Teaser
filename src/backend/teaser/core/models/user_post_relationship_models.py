@@ -13,6 +13,7 @@ class LikedPostsModel(models.Model):
 
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE)
     post_id = models.ForeignKey(PostsModel, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
 
 class BookmarkedPostsModel(models.Model):
@@ -22,3 +23,4 @@ class BookmarkedPostsModel(models.Model):
 
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE)
     post_id = models.ForeignKey(PostsModel, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)

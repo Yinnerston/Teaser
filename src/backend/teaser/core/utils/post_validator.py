@@ -1,5 +1,6 @@
 from core.models.post_models import PostsModel, SongsModel
 from django.db import models
+from core.utils.user_profile_validator import ALL_CATEGORIES_TEMP, validate_categories
 
 NO_SONG_CHOSEN_FOREIGN_KEY = -1
 SONGS_MODEL = 1
@@ -31,13 +32,14 @@ def validate_post_type(post_type):
 
 
 def validate_post_data(post_data):
-    # TODO:
+    # TODO: Urls, Thumbnails
+    validate_categories(post_data["data"]["categories"])
     return post_data
 
 
 def validate_create_post_service(
     s_description: str,
-    s_user_id: int,
+    s_teaser_user: int,
     s_song_id: int,
     s_post_type: int,
     s_post_data: dict,

@@ -42,3 +42,8 @@ export async function clearUserAuth() {
 }
 
 export const userTCAcceptedAtom = atom(false);
+
+/**
+ * Client State atom that is set to true if user just completed registration.
+ */
+export const isLoginAfterRegisterAtom = atom(false);

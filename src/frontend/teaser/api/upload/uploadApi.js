@@ -15,6 +15,7 @@ import mime from "mime";
  * @param {*} editorSound
  * @param {*} description
  * @param {*} postTags
+ * @param {*} postCategories
  * @param {*} postVisibility
  * @param {*} hasComments
  * @param {*} hasHDUpload
@@ -26,6 +27,7 @@ export function uploadVideo(
   editorSound,
   description,
   postTags,
+  postCategories,
   postVisibility,
   hasComments,
   hasHDUpload,
@@ -51,15 +53,21 @@ export function uploadVideo(
           JSON.stringify({
             description: description,
             is_private: postVisibility,
+            hasComments: hasComments,
             song_id: editorSound ? editorSound.id : NO_SONG_CHOSEN_FOREIGN_KEY,
             post_type: TEASER_POST_TYPE,
             post_data: {
               // TODO:
-              data: {},
+              data: {
+                // tags: postTags,
+                categories: postCategories,
+                // links: postLinks
+              },
               question: {},
             },
           }),
         );
+        console.log(formData);
         axios({
           baseURL: BASE_URL,
           url: "posts/create",

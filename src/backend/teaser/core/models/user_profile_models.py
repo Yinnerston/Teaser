@@ -14,7 +14,7 @@ class UserProfileModel(models.Model):
     user_id = models.OneToOneField(
         TeaserUserModel, primary_key=True, on_delete=models.CASCADE
     )
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, default="Add a bio")
 
 
 class CategoriesModel(models.Model):
@@ -35,6 +35,9 @@ class UserCategoriesModel(models.Model):
     colour_code = models.CharField(
         max_length=7, help_text="#?????? colour code identifier specified by user"
     )
+
+    class Meta:
+        indexes = [models.Index(fields=["user_id"])]
 
 
 class ProfileLinkTypesModel(models.Model):

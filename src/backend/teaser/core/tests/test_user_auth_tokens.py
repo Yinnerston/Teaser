@@ -1,7 +1,7 @@
 from django.test import TestCase
 from core.services.user_auth_services import register_user_service, login_user_service
 from core.models.user_auth_models import AuthTokenModel, TeaserUserModel
-from core.utils.user_auth_token_utils import check_auth_token_is_valid
+from core.utils.user_auth_token_utils import check_and_get_valid_auth_token
 from datetime import datetime, timedelta
 from pytz import UTC
 

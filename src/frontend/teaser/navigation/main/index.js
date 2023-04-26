@@ -17,6 +17,7 @@ import UploadPostDetailsScreen from "../../screens/upload/UploadPostDetailsScree
 import HomeNavigator from "../home";
 import UploadSoundScreen from "../../screens/upload/UploadSoundScreen";
 import UploadSeeMoreSongsScreen from "../../screens/upload/UploadSeeMoreSongsScreen";
+import SetInterestsScreen from "../../screens/auth/SetInterestsScreen";
 
 const Stack = createStackNavigator();
 
@@ -82,6 +83,15 @@ export default function MainNavigator() {
           name="ForgotPassword"
           component={ForgotPasswordScreen}
           options={{ title: "Forgot Password" }}
+        />
+        <Stack.Screen
+          name="SetInterests"
+          component={SetInterestsScreen}
+          initialParams={{
+            onPress: () => {},
+            isPostDetails: false,
+          }}
+          options={{ title: "What are you interested in?" }}
         />
       </Stack.Group>
       <Stack.Group screenOptions={{ headerShown: false }}>
