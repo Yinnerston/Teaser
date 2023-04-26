@@ -1,6 +1,6 @@
 from core.models.post_models import PostsModel, SongsModel
 from django.db import models
-from core.utils.user_profile_validator import ALL_CATEGORIES_TEMP, validate_categories
+from core.utils.user_profile_validator import validate_categories
 
 NO_SONG_CHOSEN_FOREIGN_KEY = -1
 SONGS_MODEL = 1
