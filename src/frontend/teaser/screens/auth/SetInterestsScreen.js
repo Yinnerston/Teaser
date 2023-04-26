@@ -6,13 +6,18 @@ import { REGISTER_BUTTON_COLOR } from "../../Constants";
 import ExpandableListTextBubble from "../../components/elements/text/ExpandableListTextBubble";
 import { ScrollView } from "react-native-gesture-handler";
 import { useState } from "react";
-
+import { setUserInterests } from "../../api/upload/uploadInterests";
+import { useAtom } from "jotai";
+import { readOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
 /**
  * SetInterestsScreen sets the interests of an individual
- * @returns
+ * @value {onPress, isPostDetails} route.params
+ * @attribute onPress
+ *  @attribute isPostDetails
  */
 export default function SetInterestsScreen({ route, navigation }) {
   const styles = useSetInterestsScreenStyles();
+  const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
   const { onPress, isPostDetails } = route.params;
   // Attributes are {key: bool} --> True if selected, false or null if not
   const [selected, setSelected] = useState({});
@@ -39,6 +44,7 @@ export default function SetInterestsScreen({ route, navigation }) {
               related={interestsJSON[item].related}
               selected={selected}
               addToSelected={addToSelected}
+              key={"RELATEDEXAMPANDABLELISTTEXTBUBBLE" + item}
             />
           ) : null,
         )}
@@ -55,11 +61,14 @@ export default function SetInterestsScreen({ route, navigation }) {
             },
           );
           // TODO: Add interests to backend
-          onPress(filtered_selected);
-
           if (isPostDetails) {
+            onPress(filtered_selected);
             navigation.goBack(); // Go back to post details screen
           } else {
+            setUserInterests(
+              userAuthAtomValue["token_hash"],
+              filtered_selected,
+            );
             navigation.navigate("Home");
           }
         }}

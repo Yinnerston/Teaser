@@ -5,6 +5,7 @@ from core.models.user_auth_models import TeaserUserModel
 from core.models.user_profile_models import CategoriesModel
 from django.db import models
 import uuid
+from django.utils.timezone import now
 
 
 class SongsModel(models.Model):
@@ -67,6 +68,7 @@ class PostsModel(models.Model):
     )
     upload_url = models.URLField(default="")
     status = models.IntegerField(choices=PostStatuses.choices, default=-1)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
     class Meta:
         indexes = [models.Index(fields=["video_id"])]

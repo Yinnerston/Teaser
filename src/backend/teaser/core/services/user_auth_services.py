@@ -30,7 +30,7 @@ from . import BEARER_TOKEN_VALID_DAYS_DURATION
 
 class AuthBearer(HttpBearer):
     def authenticate(self, request: HttpRequest, token: str):
-        return check_auth_token_is_valid(token)
+        return check_and_get_valid_auth_token(token)
 
 
 def invalidate_auth_token_service(s_token: str):

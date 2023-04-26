@@ -34,6 +34,7 @@ class TeaserUserModel(models.Model):
         LocationsModel, on_delete=models.DO_NOTHING, null=True, blank=True
     )
     terms_of_service_accepted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
 
 class AuthTokenModel(models.Model):

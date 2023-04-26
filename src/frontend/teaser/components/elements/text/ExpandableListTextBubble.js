@@ -41,6 +41,7 @@ export default function ExpandableListTextBubble({
                 borderWidth: selected[item] ? 1 : 0,
               }}
               onPress={() => addToSelected(item)}
+              key={"EXPANDABLELISTTEXTBUBBLECHILD" + item}
             >
               <Text>{item}</Text>
             </TouchableOpacity>

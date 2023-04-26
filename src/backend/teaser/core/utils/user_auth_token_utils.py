@@ -30,7 +30,7 @@ def invalidate_auth_token(token_hash):
     return (token_hash, auth_token.teaser_user_id)
 
 
-def check_auth_token_is_valid(token_hash) -> str:
+def check_and_get_valid_auth_token(token_hash) -> AuthTokenModel:
     """
     Check token is valid and not expired.
     @raises 401 InvalidTokenError
@@ -43,4 +43,4 @@ def check_auth_token_is_valid(token_hash) -> str:
         raise InvalidTokenError(401, "Invalid Token")
     elif not auth_token.is_valid or utc_now_datetime > token_expiry_datetime:
         raise InvalidTokenError(401, "Invalid Token")
-    return auth_token.token_hash
+    return auth_token

@@ -18,7 +18,6 @@ import HomeNavigator from "../home";
 import UploadSoundScreen from "../../screens/upload/UploadSoundScreen";
 import UploadSeeMoreSongsScreen from "../../screens/upload/UploadSeeMoreSongsScreen";
 import SetInterestsScreen from "../../screens/auth/SetInterestsScreen";
-import { setUserInterests } from "../../api/upload/uploadInterests";
 
 const Stack = createStackNavigator();
 
@@ -89,7 +88,7 @@ export default function MainNavigator() {
           name="SetInterests"
           component={SetInterestsScreen}
           initialParams={{
-            onPress: (interests) => setUserInterests(interests),
+            onPress: () => {},
             isPostDetails: false,
           }}
           options={{ title: "What are you interested in?" }}

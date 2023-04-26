@@ -22,7 +22,7 @@ from tusclient import client
 
 def create_post_service(
     s_description: str,
-    s_user_id: int,
+    s_teaser_user: int,
     s_song_id: int,
     s_post_type: int,
     s_post_data: dict,
@@ -35,14 +35,14 @@ def create_post_service(
     """
     # Validate inputs
     validate_create_post_service(
-        s_description, s_user_id, s_song_id, s_post_type, s_post_data, s_is_private
+        s_description, s_teaser_user, s_song_id, s_post_type, s_post_data, s_is_private
     )
     s_categories = s_post_data["data"]["categories"]
     # TODO: Rate limit to reduce spam?
     # TODO: Check that user is still valid? Possibility of account deletion
     with transaction.atomic():
         # Create post
-        teaser_user_model = TeaserUserModel.objects.get(user_id=s_user_id)
+        teaser_user_model = s_teaser_user
         # TODO: create video
         post_model = PostsModel.objects.create(
             description=s_description,

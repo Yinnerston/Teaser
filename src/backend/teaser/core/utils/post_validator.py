@@ -39,7 +39,7 @@ def validate_post_data(post_data):
 
 def validate_create_post_service(
     s_description: str,
-    s_user_id: int,
+    s_teaser_user: int,
     s_song_id: int,
     s_post_type: int,
     s_post_data: dict,
