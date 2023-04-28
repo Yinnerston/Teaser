@@ -25,7 +25,8 @@ POSTGRES_PASSWORD=???
   - nfc_username --> Use for general text display
 - Setup PostCategoriesModel by running `python manage.py shell < core/utils/populate_categories.py
 ` in backend_django container
-
+- Create user with username `uploader` --> This is used for uploading etl
+-
 # Postgres
 
 - Run psql shell with `docker exec -it ${container_id} psql teaser -U teaseruser`

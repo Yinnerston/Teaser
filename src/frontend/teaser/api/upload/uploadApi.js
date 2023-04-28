@@ -53,7 +53,7 @@ export function uploadVideo(
           JSON.stringify({
             description: description,
             is_private: postVisibility,
-            hasComments: hasComments,
+            has_comments: hasComments,
             song_id: editorSound ? editorSound.id : NO_SONG_CHOSEN_FOREIGN_KEY,
             post_type: TEASER_POST_TYPE,
             post_data: {

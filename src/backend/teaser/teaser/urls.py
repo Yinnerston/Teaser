@@ -332,6 +332,7 @@ def create_post(request, payload: CreatePostSchema, file: UploadedFile = File(..
     # s_post_data = sanitization_utils.CleanJson(us_post_data).get()
 
     s_is_private = post_dict["is_private"]
+    s_has_comments = post_dict["has_comments"]
     return create_post_service(
         s_description=s_description,
         s_teaser_user=s_teaser_user,
@@ -339,6 +340,7 @@ def create_post(request, payload: CreatePostSchema, file: UploadedFile = File(..
         s_post_type=s_post_type,
         s_post_data=us_post_data,  # TODO: Validations on fields
         s_is_private=s_is_private,
+        s_has_comments=s_has_comments,
         us_file=us_file,  # TODO: Validation on data?
     )
 
