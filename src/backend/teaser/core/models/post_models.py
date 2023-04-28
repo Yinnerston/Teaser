@@ -69,9 +69,14 @@ class PostsModel(models.Model):
     upload_url = models.URLField(default="")
     status = models.IntegerField(choices=PostStatuses.choices, default=-1)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
+    reddit_id = models.CharField(max_length=8, blank=True, null=True)
+    reddit_score = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        indexes = [models.Index(fields=["video_id"])]
+        indexes = [
+            models.Index(fields=["video_id"]),
+            models.Index(fields=["description"]),
+        ]
 
 
 class TagsModel(models.Model):
