@@ -1,35 +1,27 @@
 """
 Extract daily top reddit submissions for each subreddit in ALL_CATEGORIES_TEMP.
-Call this script in the manage.py shell from src/memefeed (/app in docker container)
+Call this script in the manage.py shell from src/teaser (/app in docker container)
 """
 import praw
 
 # import pmaw
-from csv import reader
-from re import match
 import sentry_sdk
 
-import tempfile
-import urllib.request
-from urllib.error import HTTPError
 import logging
 
 from scripts.etl_utils import *
 from core.services.post_service import etl_post_service
-from core.utils.post_validator import NO_SONG_CHOSEN_FOREIGN_KEY, TEASER_POST_TYPE
-from core.models.user_auth_models import TeaserUserModel
-from core.models.post_models import PostsModel
 from core.utils.user_profile_validator import ALL_CATEGORIES_TEMP
 import core.utils.sanitization_utils as sanitization_utils
 from django.db import DatabaseError
-from django.core.exceptions import ObjectDoesNotExist
 from yt_dlp import YoutubeDL
 import os
 
 
 class RedditETL:
     """
-    Class that ingests data from reddit and puts it into the submissiongres db.
+    Class that ingests data from reddit and puts it into the PostsModel db table.
+    Designated ETL video data stored in /app/data
     """
 
     # CACHE_DIR = "./cache"
@@ -46,12 +38,6 @@ class RedditETL:
         "thumbnail",
     ]
 
-    # Mappings
-    # Key: attribute name in Django model
-    # Value: Tuple(
-    #   function to apply to praw.models.Submission or None
-    #   argument for above function or value that is attribute that is set in django model if function is None
-    # )
     SUBMISSION_MAP = {
         "title": (getattr, "title"),
         "score": (getattr, "score"),
@@ -75,8 +61,6 @@ class RedditETL:
         self.reddit = praw.Reddit("TeaserScript")
         self.reddit.read_only = True
 
-        # Temp directory to store videos
-        self.temp_dir = tempfile.TemporaryDirectory()
         sentry_sdk.init(
             dsn="https://ef5d88ef4fe1411f8a626d67f8ee3317@o4504333010731009.ingest.sentry.io/4504365878673408",
             # Set traces_sample_rate to 1.0 to capture 100%
@@ -108,6 +92,7 @@ class RedditETL:
             # s_domain = sanitization_utils.sanitize_str(us_submission["domain"])
             s_reddit_id = sanitization_utils.sanitize_str(us_submission.id)
             # s_thumbnail = sanitization_utils.sanitize_str(us_submission["thumbnail"])
+
             # use yt-dlp to stream the video to UploadedFile / temporary file?
             ydl_opts = {"outtmpl": {"default": "/app/data/%(title)s.%(ext)s"}}
             with YoutubeDL(ydl_opts) as ydl:
@@ -123,7 +108,7 @@ class RedditETL:
                         s_post_data={"data": {"categories": [category]}},
                         us_file=us_file,
                     )
-
+        # TODO: these depend on etl_post_service
         except DatabaseError as e:
             # Expected behaviour for a invalid post is to report , ignore it and add subsequent posts
             sentry_sdk.capture_exception(e)
@@ -139,6 +124,7 @@ class RedditETL:
 
     def _transform_top_submissions(self, category, top_submissions):
         """
+        Only allow redgifs videos
         Apply transformation to each submission in top_submissions.
         Then load them into django postgres db.
         """
@@ -151,7 +137,7 @@ class RedditETL:
 
     def run_pipeline(self):
         """
-        Extracts the top N_submissionS_PER_SUBREDDIT from each subreddit in SUBREDDITS_CSV
+        Extracts the top 50 submissions from each subreddit in ALL_CATEGORIES_TEMP.values()
         """
 
         # Iterate over subreddits
@@ -165,9 +151,7 @@ class RedditETL:
                     time_filter="day", limit=50
                 )
 
-                # {k:v for k, v in submission if k in RedditETL.ACCEPTED_FIELDS}
                 self._transform_top_submissions(category, top_submissions)
-                # transformed_submissions = [submission for submission in top_submissions]
             except praw.exceptions.PRAWException as err:
                 # On error, report to Sentry
                 sentry_sdk.capture_exception(err)
