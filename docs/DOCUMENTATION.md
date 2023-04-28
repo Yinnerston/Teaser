@@ -26,7 +26,45 @@ POSTGRES_PASSWORD=???
 - Setup PostCategoriesModel by running `python manage.py shell < core/utils/populate_categories.py
 ` in backend_django container
 - Create user with username `uploader` --> This is used for uploading etl
--
+
+# Setup
+
+- (Git): For development, Install requirements in a venv and run `pre-commit install` to add black code auto-formatting on your commits
+- Install postgres 13.9 with PGAdmin. This project assumes postgres runs on port 5432. (Default  for first time postgres installation).
+- For postgres setup, I follow this tutorial: https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-django-application-on-ubuntu-20-04
+- In postgres shell:
+```sql
+CREATE DATABASE teaser;
+CREATE USER teaseruser WITH PASSWORD 'PUT_YOU_PASSWORD_HERE';
+ALTER ROLE teaseruser SET client_encoding TO 'utf8';
+ALTER ROLE teaseruser SET default_transaction_isolation TO 'read committed';
+ALTER ROLE teaseruser SET timezone TO 'Australia/Sydney';
+GRANT ALL PRIVILEGES ON DATABASE teaser TO teaseruser;
+```
+- Do the same for Database teaser_prod with user teaseruser_prod
+Add the password to the .env file in root directory, `POSTGRES_PASSWORD=PUT_YOU_PASSWORD_HERE`. I would recommend generating a password with
+```
+openssl rand -hex 32
+```
+in another terminal.
+- `docker-compose up -d --build`
+- Run initial migration `docker-compose exec backend_django python manage.py migrate --noinput`
+- Check default Django tables were created `docker-compose exec db psql --username=teaseruser --dbname=teaser`
+- Create a reddit personal use script in https://www.reddit.com/prefs/apps/
+- Add praw.ini file to `src\teaser`
+```ini
+[TeaserScript]
+client_id=SCRIPT_CLIENT_ID
+client_secret=SCRIPT_CLIENT_SECRET
+password=YOUR_PASSWORD
+username=YOUR_USERNAME
+user_agent=Python-Slim:teaser-script:v1.0.0 (by u/YOUR_USERNAME)
+```
+- Change the list of subreddits if you want in `from core.utils.user_profile_validator import ALL_CATEGORIES_TEMP`
+- Download data from reddit using the django `manage.py shell` --> `RedditETL().run_pipeline()`
+- Use black python code formatter
+
+
 # Postgres
 
 - Run psql shell with `docker exec -it ${container_id} psql teaser -U teaseruser`

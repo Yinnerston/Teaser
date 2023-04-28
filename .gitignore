@@ -7,6 +7,9 @@ data/
 # Certbot
 certbot
 
+# Praw ini files
+*.ini
+
 # Android build files
 *.apk
 *.aab
