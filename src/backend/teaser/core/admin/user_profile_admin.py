@@ -22,4 +22,5 @@ class UserCategoriesAdmin(admin.ModelAdmin):
 
 @admin.register(CategoriesModel)
 class CategoriesAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["title", "alias"]
+    ordering = ("alias",)
