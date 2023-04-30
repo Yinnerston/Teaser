@@ -1,14 +1,25 @@
 import { useRef, useCallback, useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  useWindowDimensions,
+  Text,
+} from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import {
   VIDEO_LANDSCAPE,
   VIDEO_PORTRAIT,
   VIEWABILITY_CONFIG_THRESHOLD,
   STATUS_BAR_HEIGHT,
+  PAGINATION_LIMIT,
 } from "../../Constants";
 import { TeaserView } from "./TeaserView";
 import { useScrollToTop } from "@react-navigation/native";
+import { useQueryClient, useInfiniteQuery } from "react-query";
+import { getFeedQueryKey } from "../../hooks/feed/useFeed";
+import { getPostsFeed } from "../../api/feed/postsFeedApi";
+import { readOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
+import { useAtom } from "jotai";
 
 const PLAYLIST = [
   {
@@ -176,48 +187,55 @@ function basicHash(inputString) {
  */
 export default function TeaserViewList({ navigation }) {
   const windowDimensions = useWindowDimensions();
+  const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
   // Array of Refs to all the videos in the list
   const videoRefs = useRef([]);
   const scrollRef = useRef(null);
   useScrollToTop(scrollRef);
   // List of teaser video metadata rendered into a FlatList
+  const feedQuery = useInfiniteQuery({
+    queryKey: getFeedQueryKey(userAuthAtomValue, PAGINATION_LIMIT, 0),
+    queryFn: getPostsFeed,
+    getNextPageParam: (lastPage, allPages) => lastPage, // TODO: implement cursor page number in backend
+    staleTime: 50000,
+  });
   const [feed, setFeed] = useState(PLAYLIST);
   var homeButtonTaps = [];
   // Scroll to top of list on Home tab press
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("tabPress", (e) => {
-      // Prevent default behavior
-      e.preventDefault();
-      // TODO: Prevent too many consecutive tab presses. E.G. Only do
-      // const now = new Date();
-      // if ((now.getTime() - homeButtonTaps.slice(-1).getTime()) / 1000 < 1)
-      // TODO: Get new posts --> Implement in backend
-      // TODO: Handle async data get in useEffect
-      // This implementation shuffles a copy of PLAYLIST
-      var newFeed = PLAYLIST.slice(0);
-      for (var i = newFeed.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = newFeed[i];
-        newFeed[i] = newFeed[j];
-        newFeed[j] = temp;
-        // Get "new" teasers with different ids
-        newFeed[i].data.id = basicHash(newFeed[i].data.id);
-        newFeed[j].data.id = basicHash(newFeed[j].data.id);
-      }
-      setFeed(newFeed);
-      // Scroll to top
-      if (scrollRef.current) {
-        scrollRef.current.scrollToOffset({ offset: 0 });
-      }
-      // Navigate to homepage
-      navigation.navigate("Home");
-    });
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener("tabPress", (e) => {
+  //     // Prevent default behavior
+  //     e.preventDefault();
+  //     // TODO: Prevent too many consecutive tab presses. E.G. Only do
+  //     // const now = new Date();
+  //     // if ((now.getTime() - homeButtonTaps.slice(-1).getTime()) / 1000 < 1)
+  //     // TODO: Get new posts --> Implement in backend
+  //     // TODO: Handle async data get in useEffect
+  //     // This implementation shuffles a copy of PLAYLIST
+  //     var newFeed = PLAYLIST.slice(0);
+  //     for (var i = newFeed.length - 1; i > 0; i--) {
+  //       var j = Math.floor(Math.random() * (i + 1));
+  //       var temp = newFeed[i];
+  //       newFeed[i] = newFeed[j];
+  //       newFeed[j] = temp;
+  //       // Get "new" teasers with different ids
+  //       newFeed[i].data.id = basicHash(newFeed[i].data.id);
+  //       newFeed[j].data.id = basicHash(newFeed[j].data.id);
+  //     }
+  //     setFeed(newFeed);
+  //     // Scroll to top
+  //     if (scrollRef.current) {
+  //       scrollRef.current.scrollToOffset({ offset: 0 });
+  //     }
+  //     // Navigate to homepage
+  //     navigation.navigate("Home");
+  //   });
 
-    // TODO: Pause video when no longer focused
-    // https://reactnavigation.org/docs/function-after-focusing-screen/
+  //   // TODO: Pause video when no longer focused
+  //   // https://reactnavigation.org/docs/function-after-focusing-screen/
 
-    return unsubscribe;
-  }, [navigation]);
+  //   return unsubscribe;
+  // }, [navigation]);
 
   /**
    * Function to render each TeaserView element in the flatlist.
@@ -225,15 +243,26 @@ export default function TeaserViewList({ navigation }) {
   const renderTeaserViewItem = useCallback(({ item }) => {
     return (
       <TeaserView
-        videoURL={item.video.videoURL}
-        thumbnailURL={item.video.thumbnailURL}
-        videoMode={item.video.videoMode}
-        videoIdx={item.data.id}
+        videoURL={item.video_url}
+        thumbnailURL={item.thumbnail_url}
+        videoMode={item.video_mode}
+        videoIdx={item.id}
         ref={videoRefs}
         navigation={navigation}
         // Post data for UI
-        captionData={item.data.captionData}
-        sidebarData={item.data.sidebarData}
+        captionData={{
+          description: item.description,
+          username: item.user_id__nfc_username,
+          stageName: item.user_id__stage_name,
+          songId: "",
+          songTitle: "ORIGINAL SOUND",
+        }}
+        sidebarData={{
+          likeCount: item.reddit_score,
+          bookmarkCount: item.reddit_score,
+          commentCount: item.reddit_score,
+          shareCount: item.reddit_score,
+        }}
       ></TeaserView>
     );
   }, []);
@@ -244,7 +273,7 @@ export default function TeaserViewList({ navigation }) {
    */
   const handleOnViewableItemsChanged = useRef(({ changed }) => {
     changed.forEach((element) => {
-      const cell = videoRefs.current[element.item.data.id];
+      const cell = videoRefs.current[element.item.id];
       if (cell) {
         if (element.isViewable) {
           cell.playAsync();
@@ -255,13 +284,22 @@ export default function TeaserViewList({ navigation }) {
     });
   });
 
+  if (feedQuery.isLoading) {
+    console.log("Loading");
+    return <Text>Loading...</Text>;
+  }
+  if (feedQuery.isError) {
+    console.Error(feedQuery.error);
+    return <Text>Error...</Text>;
+  }
+  console.log(feedQuery.data.pages);
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={feed}
+        data={feedQuery.data.pages[0].items}
         ref={scrollRef}
         renderItem={renderTeaserViewItem}
-        keyExtractor={(item) => item.data.id.toString()}
+        keyExtractor={(item) => item.id.toString()}
         onViewableItemsChanged={handleOnViewableItemsChanged.current}
         // Determines how the video snaps
         viewabilityConfig={{

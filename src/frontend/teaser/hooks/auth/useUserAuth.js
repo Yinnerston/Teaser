@@ -1,7 +1,7 @@
 import { atom, useAtom, useSetAtom } from "jotai";
 import * as SecureStore from "expo-secure-store";
 
-export const userAuthAtom = atom("");
+export const userAuthAtom = atom(null);
 export const readOnlyUserAuthAtom = atom((get) => get(userAuthAtom));
 export const writeOnlyUserAuthAtom = atom(
   null, // Cannot get the userAuthAtom

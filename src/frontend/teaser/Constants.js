@@ -51,3 +51,6 @@ export const AUDIO_DEFAULT_CODEC = {
 export const TEASER_POST_TYPE = 0;
 export const QUESTION_POST_TYPE = 1;
 export const NO_SONG_CHOSEN_FOREIGN_KEY = -1;
+
+// Pagination
+export const PAGINATION_LIMIT = 20;
