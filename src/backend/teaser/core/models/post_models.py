@@ -49,6 +49,14 @@ class PostsModel(models.Model):
         PRESIGNED_UPLOAD_FINISHED = 7
         PRESIGNED_UPLOAD_FAILED = 8
 
+    class PostTypes(models.IntegerChoices):
+        TEASER_TYPE = 0
+        Q_AND_A_TYPE = 1
+
+    class VideoModes(models.IntegerChoices):
+        PORTRAIT = 0
+        LANDSCAPE = 1
+
     video_id = models.UUIDField(
         blank=True,
         null=True,
@@ -62,11 +70,19 @@ class PostsModel(models.Model):
         SongsModel, on_delete=models.DO_NOTHING, blank=True, null=True
     )
     # ENUM {TEASER: 0, QUESTION: 1}
-    post_type = models.IntegerField(default=0)
+    post_type = models.IntegerField(
+        choices=PostTypes.choices, default=PostTypes.TEASER_TYPE
+    )
     post_data = models.JSONField(
         help_text="data: {urls, categories, thumbnails, ...}, question: {question_text, voiceover_url}"
     )
     upload_url = models.URLField(default="")
+    video_url = models.URLField(default="")
+    thumbnail_url = models.URLField(default="")
+    video_mode = models.IntegerField(
+        choices=VideoModes.choices, default=VideoModes.PORTRAIT
+    )
+
     status = models.IntegerField(choices=PostStatuses.choices, default=-1)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     reddit_id = models.CharField(max_length=8, blank=True, null=True)
@@ -77,6 +93,7 @@ class PostsModel(models.Model):
             models.Index(fields=["video_id"]),
             models.Index(fields=["description"]),
         ]
+        ordering = ("status",)
 
 
 class TagsModel(models.Model):

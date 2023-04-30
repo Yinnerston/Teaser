@@ -4,7 +4,14 @@ from core.models.post_models import PostsModel, SongsModel, PostCategoriesModel
 
 @admin.register(PostsModel)
 class PostsModelAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        "description",
+        "user_id",
+        "song_id",
+        "video_id",
+        "video_url",
+        "upload_url",
+    ]
 
 
 @admin.register(SongsModel)

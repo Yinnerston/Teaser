@@ -34,6 +34,8 @@ from core.services.post_service import (
     create_post_service,
     create_song_service,
     update_post_status_service,
+    get_general_feed_service,
+    get_feed_for_you_service,
 )
 from core.services.user_profile_service import (
     create_user_categories_service,
@@ -57,6 +59,8 @@ from core.views.views import OpenAIGeneratedImageView
 
 from ninja import NinjaAPI, File
 from ninja.files import UploadedFile
+from ninja.pagination import paginate
+from typing import List
 
 api = NinjaAPI(
     description="""
@@ -301,7 +305,7 @@ def complete_text_endpoint(request, payload: OpenaiTextCompletionSchema):
 
 
 @api.post("openai/image_generation", tags=["openai"], auth=AuthBearer())
-def generate_image(request, payload: OpenaiImageGenerationSchema):
+def generate_image_endpoint(request, payload: OpenaiImageGenerationSchema):
     openai_text_completion_dict = payload.dict()
     # Get unsafe fields from payload
     us_prompt = openai_text_completion_dict["prompt"]
@@ -312,7 +316,9 @@ def generate_image(request, payload: OpenaiImageGenerationSchema):
 
 
 @api.post("posts/create", tags=["posts"], auth=AuthBearer())
-def create_post(request, payload: CreatePostSchema, file: UploadedFile = File(...)):
+def create_post_endpoint(
+    request, payload: CreatePostSchema, file: UploadedFile = File(...)
+):
     post_dict = payload.dict()
     # Get unsafe fields from payload
     us_description = post_dict["description"]
@@ -346,7 +352,7 @@ def create_post(request, payload: CreatePostSchema, file: UploadedFile = File(..
 
 
 @api.post("posts/update_status", tags=["posts"])
-def update_posts_status(request, payload: UpdatePostStatusSchema):
+def update_posts_status_endpoint(request, payload: UpdatePostStatusSchema):
     post_status_dict = payload.dict()
     us_library_id = post_status_dict["VideoLibraryId"]
     us_video_id = post_status_dict["VideoGuid"]
@@ -355,8 +361,26 @@ def update_posts_status(request, payload: UpdatePostStatusSchema):
     return update_post_status_service(us_library_id, us_video_id, us_status)
 
 
+@api.get("posts/feed", tags=["posts"], response=List[PostsFeedResponseSchema])
+@paginate
+def get_posts_general_feed_endpoint(request):
+    return get_general_feed_service()
+
+
+@api.get(
+    "posts/forYouFeed",
+    tags=["posts"],
+    response=List[PostsFeedResponseSchema],
+    auth=AuthBearer(),
+)
+# @paginate
+def get_posts_for_you_feed_endpoint(request):
+    s_teaser_user = request.auth.teaser_user_id
+    return get_feed_for_you_service(s_teaser_user)
+
+
 @api.post("songs/create", tags=["songs"], auth=AuthBearer())
-def create_song(request, payload: CreateSongSchema):
+def create_song_endpoint(request, payload: CreateSongSchema):
     song_dict = payload.dict()
     # Get unsafe fields from payload
     us_title = song_dict["title"]

@@ -7,7 +7,7 @@ from core.utils.post_validator import (
 from django.db import transaction
 from core.models.user_auth_models import TeaserUserModel
 from core.models.post_models import PostsModel, SongsModel, PostCategoriesModel
-from core.models.user_profile_models import CategoriesModel
+from core.models.user_profile_models import CategoriesModel, UserCategoriesModel
 from teaser.settings import env
 from uuid import uuid4
 import requests
@@ -79,6 +79,7 @@ def create_post_service(
     # Upload the video data to the created video
     video_id = create_video_response.json()["guid"]
     upload_url = url + "/" + str(video_id)
+    pull_zone = str(env("CDN_PULL_ZONE_URL"))
     upload_response = requests.put(
         upload_url, files={"file": us_file.read()}, headers=headers
     )
@@ -111,6 +112,10 @@ def create_post_service(
     uploader.upload()
     post_model.video_id = video_id
     post_model.upload_url = upload_url
+    post_model.video_url = (
+        "https://" + pull_zone + ".b-cdn.net/" + str(video_id) + "/play_720p.mp4"
+    )
+    # TODO: post_model.video_mode
     post_model.save()
     return {
         "upload_url": upload_url,
@@ -169,6 +174,7 @@ def etl_post_service(
     # Upload the video data to the created video
     video_id = create_video_response.json()["guid"]
     upload_url = url + "/" + str(video_id)
+    pull_zone = str(env("CDN_PULL_ZONE_URL"))
     upload_response = requests.put(
         upload_url, files={"file": us_file.read()}, headers=headers
     )
@@ -200,6 +206,11 @@ def etl_post_service(
     uploader.upload()
     post_model.video_id = video_id
     post_model.upload_url = upload_url
+    # https://{pull_zone_url}.b-cdn.net/{video_id}/play_{resolution_height}p.mp4
+    post_model.video_url = (
+        "https://" + pull_zone + ".b-cdn.net/" + str(video_id) + "/play_720p.mp4"
+    )
+    # TODO: post_model.video_mode
     post_model.save()
     return {
         "upload_url": upload_url,
@@ -219,6 +230,47 @@ def update_post_status_service(us_library_id: int, us_video_id: str, us_status: 
     post.status = us_status
     post.save()
     return {}
+
+
+def get_general_feed_service():
+    """
+    Get general feed for all users / users that aren't logged in
+    """
+    # TODO: upload_url --> video_url, thumbnail_url
+    # return PostsModel.objects.alias(
+    #     author_id="user_id__id", username="user_id__nfc_username", stage_name="user_id__stage_name"
+    #     ).values(
+    #     "id", "description", "author_id", "username", "stage_name", "video_url", "thumbnail_url", "video_mode", "post_data", "reddit_score").all()
+    return (
+        PostsModel.objects.values(
+            "id",
+            "description",
+            "user_id__id",
+            "user_id__nfc_username",
+            "user_id__stage_name",
+            "video_url",
+            "thumbnail_url",
+            "video_mode",
+            "post_data",
+            "reddit_score",
+        )
+        .order_by("?")
+        .all()
+    )
+
+
+def get_feed_for_you_service(s_teaser_user):
+    """
+    Returns a paginated feed for a user.
+    """
+    # Get the categories the user likes
+    user_categories = UserCategoriesModel.objects.filter(
+        user_id=s_teaser_user
+    ).select_related("categories_id")
+    # Get all posts (TODO: within a range?) for those categories sorted by score
+    # Get all posts (TODO: within a range?) in other categories sorted by score
+    # return posts with the format https://{pull_zone_url}.b-cdn.net/{video_id}/play_{resolution_height}p.mp4
+    return PostsModel.objects.all()
 
 
 def create_song_service(s_title: str, s_author: str, s_song_url: str):
