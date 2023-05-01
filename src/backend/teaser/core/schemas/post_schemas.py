@@ -53,6 +53,9 @@ class PostsFeedResponseSchema(Schema):
     user_id__id: int = Field(example=1)
     user_id__nfc_username: str = Field("testuser1")
     user_id__stage_name: str = Field("Cat Person")
+    user_id__profile_photo_url: str = Field(
+        example="https://teasernsfw-dev.s3.ap-southeast-2.amazonaws.com/amogus.png"
+    )
     # Video data
     video_url: str = Field(example="https://i.imgur.com/xaAAjDk.mp4")
     thumbnail_url: str = Field(

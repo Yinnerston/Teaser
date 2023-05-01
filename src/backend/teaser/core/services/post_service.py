@@ -248,6 +248,7 @@ def get_general_feed_service():
             "user_id__id",
             "user_id__nfc_username",
             "user_id__stage_name",
+            "user_id__profile_photo_url",
             "video_url",
             "thumbnail_url",
             "video_mode",

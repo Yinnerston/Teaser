@@ -1,4 +1,4 @@
-import { useRef, useCallback, useMemo, useEffect } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -7,177 +7,16 @@ import {
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import {
-  VIDEO_LANDSCAPE,
-  VIDEO_PORTRAIT,
   VIEWABILITY_CONFIG_THRESHOLD,
   STATUS_BAR_HEIGHT,
-  PAGINATION_LIMIT,
 } from "../../Constants";
 import { TeaserView } from "./TeaserView";
 import { useScrollToTop } from "@react-navigation/native";
-import { useQueryClient, useInfiniteQuery } from "react-query";
+import { useInfiniteQuery } from "react-query";
 import { getFeedQueryKey } from "../../hooks/feed/useFeed";
 import { getPostsFeed } from "../../api/feed/postsFeedApi";
 import { readOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
 import { useAtom } from "jotai";
-
-// const PLAYLIST = [
-//   {
-//     data: {
-//       id: "7b01992c65d10978a5cbb0ccc5e83ef0",
-//       captionData: {
-//         description:
-//           "Most awesome Cat Video! Most awesome Cat Video! Most awesome Cat Video! Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video! #cat #catVideo",
-//         username: "@myself",
-//         stageName: "Cat Person",
-//         songId: "",
-//         songTitle: "ORIGINAL SOUND",
-//         // actors: []
-//       },
-//       sidebarData: {
-//         likeCount: 21,
-//         bookmarkCount: 0,
-//         commentCount: 0,
-//         shareCount: 0,
-//       },
-//     },
-//     video: {
-//       videoURL: "https://i.imgur.com/xaAAjDk.mp4",
-//       thumbnailURL: "https://i.imgur.com/OYCAEpd.png",
-//       videoMode: VIDEO_PORTRAIT,
-//     },
-//   },
-//   {
-//     data: {
-//       id: "254aed11d93529b5c0413cb44b86d16c",
-//       captionData: {
-//         description: "I heckin' love beans on toast",
-//         username: "@BeansOnToast",
-//         stageName: "",
-//         songId: "",
-//         songTitle: "ORIGINAL SOUND",
-//         // actors: []
-//       },
-//       sidebarData: {
-//         likeCount: 21,
-//         bookmarkCount: 33,
-//         commentCount: 0,
-//         shareCount: 0,
-//       },
-//     },
-//     video: {
-//       videoURL: "https://i.imgur.com/9RwUfgJ.mp4",
-//       thumbnailURL: "https://i.imgur.com/MlCqb3r.png",
-//       videoMode: VIDEO_PORTRAIT,
-//     },
-//   },
-//   {
-//     data: {
-//       id: "62927b9918c2868d1dc29cd355cb74f1",
-//       captionData: {
-//         description: "It's so sad..",
-//         username: "@drmanhattan",
-//         stageName: "Doctor Manhattan",
-//         songId: "",
-//         songTitle: "ORIGINAL SOUND",
-//         // actors: []
-//       },
-//       sidebarData: {
-//         likeCount: 21,
-//         bookmarkCount: 49,
-//         commentCount: 0,
-//         shareCount: 0,
-//       },
-//     },
-//     video: {
-//       videoURL: "https://i.imgur.com/6UGTKlH.mp4",
-//       thumbnailURL: "https://i.imgur.com/2pt4fKv.jpeg",
-//       videoMode: VIDEO_LANDSCAPE,
-//     },
-//   },
-//   {
-//     data: {
-//       id: "31fc4e5909e09bf3163be8cbacce6250",
-//       captionData: {
-//         description: "Sigma Female",
-//         username: "@audreyT",
-//         stageName: "Audrey Tate",
-//         songId: "",
-//         songTitle: "ORIGINAL SOUND",
-//         // actors: []
-//       },
-//       sidebarData: {
-//         likeCount: 24,
-//         bookmarkCount: 23,
-//         commentCount: 22,
-//         shareCount: 21,
-//       },
-//     },
-//     video: {
-//       videoURL: "https://i.imgur.com/7JTRTzw.mp4",
-//       thumbnailURL: "https://i.imgur.com/4ZAjB8X.png",
-//       videoMode: VIDEO_PORTRAIT,
-//     },
-//   },
-//   {
-//     data: {
-//       id: "8c4183952b01b88ac9707e34bb21ae26",
-//       captionData: {
-//         description: "Sharkskin warning",
-//         username: "@theExpert",
-//         stageName: "",
-//         songId: "",
-//         songTitle: "ORIGINAL SOUND",
-//         // actors: []
-//       },
-//       sidebarData: {
-//         likeCount: 6,
-//         bookmarkCount: 6,
-//         commentCount: 6,
-//         shareCount: 6,
-//       },
-//     },
-//     video: {
-//       videoURL: "https://i.imgur.com/OO6Yk2f.mp4",
-//       thumbnailURL: "https://i.imgur.com/lhaXT6Y.png",
-//       videoMode: VIDEO_PORTRAIT,
-//     },
-//   },
-//   {
-//     data: {
-//       id: "5ef0c224edb9d7adaa6bae1c43152fb4",
-//       captionData: {
-//         description: "CAM ON INGERLAND",
-//         username: "@marissa",
-//         stageName: "Marissa Touhou",
-//         songId: "",
-//         songTitle: "ORIGINAL SOUND",
-//         // actors: []
-//       },
-//       sidebarData: {
-//         likeCount: 44,
-//         bookmarkCount: 46,
-//         commentCount: 6,
-//         shareCount: 6,
-//       },
-//     },
-//     video: {
-//       videoURL: "https://i.imgur.com/QlHUHfc.mp4",
-//       thumbnailURL: "https://i.imgur.com/0mmvi7g.png",
-//       videoMode: VIDEO_LANDSCAPE,
-//     },
-//   },
-// ];
-
-function basicHash(inputString) {
-  let hash = 0;
-  for (let i = 0; i < inputString.length; i++) {
-    const char = inputString.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash &= hash; // Convert to 32bit integer
-  }
-  return new Uint32Array([hash])[0].toString(36);
-}
 
 /**
  * Renders a TikTok like feed of TeaserViews.
@@ -253,6 +92,7 @@ export default function TeaserViewList({ navigation }) {
             songTitle: "ORIGINAL SOUND",
           }}
           sidebarData={{
+            profilePhotoUrl: item.user_id__profile_photo_url,
             likeCount: item.reddit_score,
             bookmarkCount: item.reddit_score,
             commentCount: item.reddit_score,
