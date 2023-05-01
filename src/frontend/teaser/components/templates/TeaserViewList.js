@@ -1,4 +1,4 @@
-import { useRef, useCallback, useMemo } from "react";
+import { useRef, useCallback, useMemo, useEffect } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -21,153 +21,153 @@ import { getPostsFeed } from "../../api/feed/postsFeedApi";
 import { readOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
 import { useAtom } from "jotai";
 
-const PLAYLIST = [
-  {
-    data: {
-      id: "7b01992c65d10978a5cbb0ccc5e83ef0",
-      captionData: {
-        description:
-          "Most awesome Cat Video! Most awesome Cat Video! Most awesome Cat Video! Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video! #cat #catVideo",
-        username: "@myself",
-        stageName: "Cat Person",
-        songId: "",
-        songTitle: "ORIGINAL SOUND",
-        // actors: []
-      },
-      sidebarData: {
-        likeCount: 21,
-        bookmarkCount: 0,
-        commentCount: 0,
-        shareCount: 0,
-      },
-    },
-    video: {
-      videoURL: "https://i.imgur.com/xaAAjDk.mp4",
-      thumbnailURL: "https://i.imgur.com/OYCAEpd.png",
-      videoMode: VIDEO_PORTRAIT,
-    },
-  },
-  {
-    data: {
-      id: "254aed11d93529b5c0413cb44b86d16c",
-      captionData: {
-        description: "I heckin' love beans on toast",
-        username: "@BeansOnToast",
-        stageName: "",
-        songId: "",
-        songTitle: "ORIGINAL SOUND",
-        // actors: []
-      },
-      sidebarData: {
-        likeCount: 21,
-        bookmarkCount: 33,
-        commentCount: 0,
-        shareCount: 0,
-      },
-    },
-    video: {
-      videoURL: "https://i.imgur.com/9RwUfgJ.mp4",
-      thumbnailURL: "https://i.imgur.com/MlCqb3r.png",
-      videoMode: VIDEO_PORTRAIT,
-    },
-  },
-  {
-    data: {
-      id: "62927b9918c2868d1dc29cd355cb74f1",
-      captionData: {
-        description: "It's so sad..",
-        username: "@drmanhattan",
-        stageName: "Doctor Manhattan",
-        songId: "",
-        songTitle: "ORIGINAL SOUND",
-        // actors: []
-      },
-      sidebarData: {
-        likeCount: 21,
-        bookmarkCount: 49,
-        commentCount: 0,
-        shareCount: 0,
-      },
-    },
-    video: {
-      videoURL: "https://i.imgur.com/6UGTKlH.mp4",
-      thumbnailURL: "https://i.imgur.com/2pt4fKv.jpeg",
-      videoMode: VIDEO_LANDSCAPE,
-    },
-  },
-  {
-    data: {
-      id: "31fc4e5909e09bf3163be8cbacce6250",
-      captionData: {
-        description: "Sigma Female",
-        username: "@audreyT",
-        stageName: "Audrey Tate",
-        songId: "",
-        songTitle: "ORIGINAL SOUND",
-        // actors: []
-      },
-      sidebarData: {
-        likeCount: 24,
-        bookmarkCount: 23,
-        commentCount: 22,
-        shareCount: 21,
-      },
-    },
-    video: {
-      videoURL: "https://i.imgur.com/7JTRTzw.mp4",
-      thumbnailURL: "https://i.imgur.com/4ZAjB8X.png",
-      videoMode: VIDEO_PORTRAIT,
-    },
-  },
-  {
-    data: {
-      id: "8c4183952b01b88ac9707e34bb21ae26",
-      captionData: {
-        description: "Sharkskin warning",
-        username: "@theExpert",
-        stageName: "",
-        songId: "",
-        songTitle: "ORIGINAL SOUND",
-        // actors: []
-      },
-      sidebarData: {
-        likeCount: 6,
-        bookmarkCount: 6,
-        commentCount: 6,
-        shareCount: 6,
-      },
-    },
-    video: {
-      videoURL: "https://i.imgur.com/OO6Yk2f.mp4",
-      thumbnailURL: "https://i.imgur.com/lhaXT6Y.png",
-      videoMode: VIDEO_PORTRAIT,
-    },
-  },
-  {
-    data: {
-      id: "5ef0c224edb9d7adaa6bae1c43152fb4",
-      captionData: {
-        description: "CAM ON INGERLAND",
-        username: "@marissa",
-        stageName: "Marissa Touhou",
-        songId: "",
-        songTitle: "ORIGINAL SOUND",
-        // actors: []
-      },
-      sidebarData: {
-        likeCount: 44,
-        bookmarkCount: 46,
-        commentCount: 6,
-        shareCount: 6,
-      },
-    },
-    video: {
-      videoURL: "https://i.imgur.com/QlHUHfc.mp4",
-      thumbnailURL: "https://i.imgur.com/0mmvi7g.png",
-      videoMode: VIDEO_LANDSCAPE,
-    },
-  },
-];
+// const PLAYLIST = [
+//   {
+//     data: {
+//       id: "7b01992c65d10978a5cbb0ccc5e83ef0",
+//       captionData: {
+//         description:
+//           "Most awesome Cat Video! Most awesome Cat Video! Most awesome Cat Video! Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video!Most awesome Cat Video! #cat #catVideo",
+//         username: "@myself",
+//         stageName: "Cat Person",
+//         songId: "",
+//         songTitle: "ORIGINAL SOUND",
+//         // actors: []
+//       },
+//       sidebarData: {
+//         likeCount: 21,
+//         bookmarkCount: 0,
+//         commentCount: 0,
+//         shareCount: 0,
+//       },
+//     },
+//     video: {
+//       videoURL: "https://i.imgur.com/xaAAjDk.mp4",
+//       thumbnailURL: "https://i.imgur.com/OYCAEpd.png",
+//       videoMode: VIDEO_PORTRAIT,
+//     },
+//   },
+//   {
+//     data: {
+//       id: "254aed11d93529b5c0413cb44b86d16c",
+//       captionData: {
+//         description: "I heckin' love beans on toast",
+//         username: "@BeansOnToast",
+//         stageName: "",
+//         songId: "",
+//         songTitle: "ORIGINAL SOUND",
+//         // actors: []
+//       },
+//       sidebarData: {
+//         likeCount: 21,
+//         bookmarkCount: 33,
+//         commentCount: 0,
+//         shareCount: 0,
+//       },
+//     },
+//     video: {
+//       videoURL: "https://i.imgur.com/9RwUfgJ.mp4",
+//       thumbnailURL: "https://i.imgur.com/MlCqb3r.png",
+//       videoMode: VIDEO_PORTRAIT,
+//     },
+//   },
+//   {
+//     data: {
+//       id: "62927b9918c2868d1dc29cd355cb74f1",
+//       captionData: {
+//         description: "It's so sad..",
+//         username: "@drmanhattan",
+//         stageName: "Doctor Manhattan",
+//         songId: "",
+//         songTitle: "ORIGINAL SOUND",
+//         // actors: []
+//       },
+//       sidebarData: {
+//         likeCount: 21,
+//         bookmarkCount: 49,
+//         commentCount: 0,
+//         shareCount: 0,
+//       },
+//     },
+//     video: {
+//       videoURL: "https://i.imgur.com/6UGTKlH.mp4",
+//       thumbnailURL: "https://i.imgur.com/2pt4fKv.jpeg",
+//       videoMode: VIDEO_LANDSCAPE,
+//     },
+//   },
+//   {
+//     data: {
+//       id: "31fc4e5909e09bf3163be8cbacce6250",
+//       captionData: {
+//         description: "Sigma Female",
+//         username: "@audreyT",
+//         stageName: "Audrey Tate",
+//         songId: "",
+//         songTitle: "ORIGINAL SOUND",
+//         // actors: []
+//       },
+//       sidebarData: {
+//         likeCount: 24,
+//         bookmarkCount: 23,
+//         commentCount: 22,
+//         shareCount: 21,
+//       },
+//     },
+//     video: {
+//       videoURL: "https://i.imgur.com/7JTRTzw.mp4",
+//       thumbnailURL: "https://i.imgur.com/4ZAjB8X.png",
+//       videoMode: VIDEO_PORTRAIT,
+//     },
+//   },
+//   {
+//     data: {
+//       id: "8c4183952b01b88ac9707e34bb21ae26",
+//       captionData: {
+//         description: "Sharkskin warning",
+//         username: "@theExpert",
+//         stageName: "",
+//         songId: "",
+//         songTitle: "ORIGINAL SOUND",
+//         // actors: []
+//       },
+//       sidebarData: {
+//         likeCount: 6,
+//         bookmarkCount: 6,
+//         commentCount: 6,
+//         shareCount: 6,
+//       },
+//     },
+//     video: {
+//       videoURL: "https://i.imgur.com/OO6Yk2f.mp4",
+//       thumbnailURL: "https://i.imgur.com/lhaXT6Y.png",
+//       videoMode: VIDEO_PORTRAIT,
+//     },
+//   },
+//   {
+//     data: {
+//       id: "5ef0c224edb9d7adaa6bae1c43152fb4",
+//       captionData: {
+//         description: "CAM ON INGERLAND",
+//         username: "@marissa",
+//         stageName: "Marissa Touhou",
+//         songId: "",
+//         songTitle: "ORIGINAL SOUND",
+//         // actors: []
+//       },
+//       sidebarData: {
+//         likeCount: 44,
+//         bookmarkCount: 46,
+//         commentCount: 6,
+//         shareCount: 6,
+//       },
+//     },
+//     video: {
+//       videoURL: "https://i.imgur.com/QlHUHfc.mp4",
+//       thumbnailURL: "https://i.imgur.com/0mmvi7g.png",
+//       videoMode: VIDEO_LANDSCAPE,
+//     },
+//   },
+// ];
 
 function basicHash(inputString) {
   let hash = 0;
@@ -183,6 +183,7 @@ function basicHash(inputString) {
  * Renders a TikTok like feed of TeaserViews.
  * Videos automatically play if they are in the window.
  * Videos outside the window are paused.
+ * https://snack.expo.dev/@aldrinc/optimized-video-flatlist
  * @returns FlatList of TeaserViews
  */
 export default function TeaserViewList({ navigation }) {
@@ -211,40 +212,24 @@ export default function TeaserViewList({ navigation }) {
     keepPreviousData: true,
   });
   // Scroll to top of list on Home tab press
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener("tabPress", (e) => {
-  //     // Prevent default behavior
-  //     e.preventDefault();
-  //     // TODO: Prevent too many consecutive tab presses. E.G. Only do
-  //     // const now = new Date();
-  //     // if ((now.getTime() - homeButtonTaps.slice(-1).getTime()) / 1000 < 1)
-  //     // TODO: Get new posts --> Implement in backend
-  //     // TODO: Handle async data get in useEffect
-  //     // This implementation shuffles a copy of PLAYLIST
-  //     var newFeed = PLAYLIST.slice(0);
-  //     for (var i = newFeed.length - 1; i > 0; i--) {
-  //       var j = Math.floor(Math.random() * (i + 1));
-  //       var temp = newFeed[i];
-  //       newFeed[i] = newFeed[j];
-  //       newFeed[j] = temp;
-  //       // Get "new" teasers with different ids
-  //       newFeed[i].data.id = basicHash(newFeed[i].data.id);
-  //       newFeed[j].data.id = basicHash(newFeed[j].data.id);
-  //     }
-  //     setFeed(newFeed);
-  //     // Scroll to top
-  //     if (scrollRef.current) {
-  //       scrollRef.current.scrollToOffset({ offset: 0 });
-  //     }
-  //     // Navigate to homepage
-  //     navigation.navigate("Home");
-  //   });
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("tabPress", (e) => {
+      // Prevent default behavior
+      e.preventDefault();
+      // TODO: Prevent too many consecutive tab presses. E.G. Only do
+      // Scroll to top
+      if (scrollRef.current) {
+        scrollRef.current.scrollToOffset({ offset: 0 });
+      }
+      // Navigate to homepage
+      navigation.navigate("Home");
+    });
 
-  //   // TODO: Pause video when no longer focused
-  //   // https://reactnavigation.org/docs/function-after-focusing-screen/
+    // TODO: Pause video when no longer focused
+    // https://reactnavigation.org/docs/function-after-focusing-screen/
 
-  //   return unsubscribe;
-  // }, [navigation]);
+    return unsubscribe;
+  }, [navigation]);
 
   /**
    * Function to render each TeaserView element in the flatlist.
@@ -283,7 +268,7 @@ export default function TeaserViewList({ navigation }) {
    * Play videos that take up >= viewAreaCoveragePercentThreshold % of the window.
    * Pause videos that are not in the window anymore.
    */
-  const handleOnViewableItemsChanged = useRef(({ changed }) => {
+  const handleOnViewableItemsChanged = ({ changed }) => {
     changed.forEach((element) => {
       const cell = videoRefs.current[element.item.id];
       if (cell) {
@@ -294,7 +279,7 @@ export default function TeaserViewList({ navigation }) {
         }
       }
     });
-  });
+  };
 
   if (feedQuery.isLoading) {
     return <Text>Loading...</Text>;
@@ -311,11 +296,11 @@ export default function TeaserViewList({ navigation }) {
         ref={scrollRef}
         renderItem={renderTeaserViewItem}
         keyExtractor={(item) => item.id.toString()}
-        onViewableItemsChanged={handleOnViewableItemsChanged.current}
+        onViewableItemsChanged={handleOnViewableItemsChanged}
         // Determines how the video snaps
         viewabilityConfig={{
           viewAreaCoveragePercentThreshold: VIEWABILITY_CONFIG_THRESHOLD,
-          waitForInteraction: true,
+          waitForInteraction: false,
         }}
         snapToInterval={windowDimensions.height - STATUS_BAR_HEIGHT}
         decelerationRate="fast"
@@ -329,8 +314,11 @@ export default function TeaserViewList({ navigation }) {
             feedQuery.fetchNextPage();
           }
         }}
-        onEndReachedThreshold={0.2}
-        maxToRenderPerBatch={5}
+        onEndReachedThreshold={0}
+        initialNumToRender={3}
+        maxToRenderPerBatch={3}
+        windowSize={5}
+        removeClippedSubviews={true}
       ></FlatList>
     </SafeAreaView>
   );
