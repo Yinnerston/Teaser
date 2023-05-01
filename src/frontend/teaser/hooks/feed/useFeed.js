@@ -9,22 +9,8 @@ import { PAGINATION_LIMIT } from "../../Constants";
  * @param {*} offset
  * @returns
  */
-export function getFeedQueryKey(userAuthAtomValue, limit, offset) {
+export function getFeedQueryKey(userAuthAtomValue) {
   return userAuthAtomValue === null
-    ? ["posts", "feed", null, limit, offset]
-    : ["posts", "feed", userAuthAtomValue.token_hash, limit, offset];
-}
-
-/**
- * Prefetch a feed
- * @param {*} queryClient
- * @param {*} userAuthAtomValue
- */
-export async function prefetchFeed(queryClient, userAuthAtomValue) {
-  await queryClient.prefetchInfiniteQuery({
-    queryKey: getFeedQueryKey(userAuthAtomValue, PAGINATION_LIMIT, 0),
-    queryFn: getPostsFeed,
-    getNextPageParam: (lastPage, allPages) =>
-      lastPage?.items.length < PAGINATION_LIMIT ? undefined : 2, // TODO: implement cursor page number in backend
-  });
+    ? ["posts", "feed", null]
+    : ["posts", "feed", userAuthAtomValue.token_hash];
 }

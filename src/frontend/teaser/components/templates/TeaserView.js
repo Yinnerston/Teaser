@@ -3,7 +3,7 @@ import TeaserCaption from "../navs/caption/TeaserCaption";
 import TeaserHeader from "../navs/header/TeaserHeader";
 import TeaserSidebar from "../navs/sidebar/TeaserSidebar";
 import { TeaserVideo } from "../navs/video/TeaserVideo";
-import { forwardRef } from "react";
+import { forwardRef, memo } from "react";
 import { STATUS_BAR_HEIGHT } from "../../Constants";
 
 /**
@@ -26,6 +26,7 @@ export const TeaserView = forwardRef(function TeaserView(props, ref) {
     sidebarData,
   } = props;
   const styles = useTeaserViewStyle();
+  console.log(videoIdx);
   return (
     <View style={styles.container}>
       <TeaserVideo

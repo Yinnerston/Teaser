@@ -59,10 +59,16 @@ from core.views.views import OpenAIGeneratedImageView
 
 from ninja import NinjaAPI, File
 from ninja.files import UploadedFile
-from ninja.pagination import paginate
+
+from ninja_extra import api_controller, route, NinjaExtraAPI
+from ninja_extra.pagination import (
+    paginate,
+    PageNumberPaginationExtra,
+    PaginatedResponseSchema,
+)
 from typing import List
 
-api = NinjaAPI(
+api = NinjaExtraAPI(
     description="""
     # Documentation for Teaser API V1
     """
@@ -361,22 +367,27 @@ def update_posts_status_endpoint(request, payload: UpdatePostStatusSchema):
     return update_post_status_service(us_library_id, us_video_id, us_status)
 
 
-@api.get("posts/feed", tags=["posts"], response=List[PostsFeedResponseSchema])
-@paginate
-def get_posts_general_feed_endpoint(request):
-    return get_general_feed_service()
+@api_controller("/posts")
+class PostsFeedController:
+    @route.get(
+        "/feed",
+        tags=["posts"],
+        response=PaginatedResponseSchema[PostsFeedResponseSchema],
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_posts_general_feed_endpoint(self):
+        return get_general_feed_service()
 
-
-@api.get(
-    "posts/forYouFeed",
-    tags=["posts"],
-    response=List[PostsFeedResponseSchema],
-    auth=AuthBearer(),
-)
-# @paginate
-def get_posts_for_you_feed_endpoint(request):
-    s_teaser_user = request.auth.teaser_user_id
-    return get_feed_for_you_service(s_teaser_user)
+    @route.get(
+        "/forYou",
+        tags=["posts"],
+        response=PaginatedResponseSchema[PostsFeedResponseSchema],
+        auth=AuthBearer(),
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_posts_for_you_feed_endpoint(self):
+        s_teaser_user = self.request.auth.teaser_user_id
+        return get_feed_for_you_service(s_teaser_user)
 
 
 @api.post("songs/create", tags=["songs"], auth=AuthBearer())
@@ -394,6 +405,8 @@ def create_song_endpoint(request, payload: CreateSongSchema):
         s_title=s_title, s_author=s_author, s_song_url=s_song_url
     )
 
+
+api.register_controllers(PostsFeedController)
 
 urlpatterns = [
     path("admin/", include("admin_honeypot.urls", namespace="admin_honeypot")),

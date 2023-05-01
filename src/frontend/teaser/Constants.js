@@ -53,4 +53,4 @@ export const QUESTION_POST_TYPE = 1;
 export const NO_SONG_CHOSEN_FOREIGN_KEY = -1;
 
 // Pagination
-export const PAGINATION_LIMIT = 20;
+export const PAGINATION_LIMIT = 50;

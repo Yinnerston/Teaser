@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useState } from "react";
+import { useRef, useCallback, useMemo } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -192,15 +192,24 @@ export default function TeaserViewList({ navigation }) {
   const videoRefs = useRef([]);
   const scrollRef = useRef(null);
   useScrollToTop(scrollRef);
+
   // List of teaser video metadata rendered into a FlatList
   const feedQuery = useInfiniteQuery({
-    queryKey: getFeedQueryKey(userAuthAtomValue, PAGINATION_LIMIT, 0),
+    queryKey: getFeedQueryKey(userAuthAtomValue),
     queryFn: getPostsFeed,
-    getNextPageParam: (lastPage, allPages) => lastPage, // TODO: implement cursor page number in backend
-    staleTime: 50000,
+    getNextPageParam: (lastPage, allPages) => {
+      const pageParam = lastPage.next
+        ? lastPage.next.split("page=").pop().split("&")[0]
+        : undefined;
+      console.log(
+        "LastPage has n entries:",
+        lastPage.results.length,
+        pageParam,
+      );
+      return pageParam;
+    }, // TODO: implement cursor page number in backend
+    keepPreviousData: true,
   });
-  const [feed, setFeed] = useState(PLAYLIST);
-  var homeButtonTaps = [];
   // Scroll to top of list on Home tab press
   // useEffect(() => {
   //   const unsubscribe = navigation.addListener("tabPress", (e) => {
@@ -240,32 +249,35 @@ export default function TeaserViewList({ navigation }) {
   /**
    * Function to render each TeaserView element in the flatlist.
    */
-  const renderTeaserViewItem = useCallback(({ item }) => {
-    return (
-      <TeaserView
-        videoURL={item.video_url}
-        thumbnailURL={item.thumbnail_url}
-        videoMode={item.video_mode}
-        videoIdx={item.id}
-        ref={videoRefs}
-        navigation={navigation}
-        // Post data for UI
-        captionData={{
-          description: item.description,
-          username: item.user_id__nfc_username,
-          stageName: item.user_id__stage_name,
-          songId: "",
-          songTitle: "ORIGINAL SOUND",
-        }}
-        sidebarData={{
-          likeCount: item.reddit_score,
-          bookmarkCount: item.reddit_score,
-          commentCount: item.reddit_score,
-          shareCount: item.reddit_score,
-        }}
-      ></TeaserView>
-    );
-  }, []);
+  const renderTeaserViewItem = useCallback(
+    ({ item }) => {
+      return (
+        <TeaserView
+          videoURL={item.video_url}
+          thumbnailURL={item.thumbnail_url}
+          videoMode={item.video_mode}
+          videoIdx={item.id}
+          ref={videoRefs}
+          navigation={navigation}
+          // Post data for UI
+          captionData={{
+            description: item.description,
+            username: item.user_id__nfc_username,
+            stageName: item.user_id__stage_name,
+            songId: "",
+            songTitle: "ORIGINAL SOUND",
+          }}
+          sidebarData={{
+            likeCount: item.reddit_score,
+            bookmarkCount: item.reddit_score,
+            commentCount: item.reddit_score,
+            shareCount: item.reddit_score,
+          }}
+        ></TeaserView>
+      );
+    },
+    [feedQuery, videoRefs],
+  );
 
   /**
    * Play videos that take up >= viewAreaCoveragePercentThreshold % of the window.
@@ -285,18 +297,17 @@ export default function TeaserViewList({ navigation }) {
   });
 
   if (feedQuery.isLoading) {
-    console.log("Loading");
     return <Text>Loading...</Text>;
   }
   if (feedQuery.isError) {
     console.Error(feedQuery.error);
     return <Text>Error...</Text>;
   }
-  console.log(feedQuery.data.pages);
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={feedQuery.data.pages[0].items}
+        data={feedQuery.data.pages.map((page) => page.results).flat()}
         ref={scrollRef}
         renderItem={renderTeaserViewItem}
         keyExtractor={(item) => item.id.toString()}
@@ -310,8 +321,16 @@ export default function TeaserViewList({ navigation }) {
         decelerationRate="fast"
         snapToAlignment="start"
         // TODO: Load next chunk of flatlist from recommendation algorithm
-        // onEndReached={}
-        // onEndReachedThreshold={1}
+        onEndReached={() => {
+          console.log("END REACHED, FETCHING NEW PAGE");
+
+          if (feedQuery.isFetchingNextPage) return;
+          if (feedQuery.hasNextPage) {
+            feedQuery.fetchNextPage();
+          }
+        }}
+        onEndReachedThreshold={0.2}
+        maxToRenderPerBatch={5}
       ></FlatList>
     </SafeAreaView>
   );

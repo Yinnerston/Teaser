@@ -1,9 +1,7 @@
 import axiosAPIClient from "../axiosAPIClient";
-
-export function getPostsFeed({ queryKey }) {
+import { PAGINATION_LIMIT } from "../../Constants";
+export function getPostsFeed({ queryKey, pageParam = 1 }) {
   const token_hash = queryKey[2];
-  const limit = queryKey[3];
-  const offset = queryKey[4];
   // TODO: queryKey is defined as length == 3 if logged in otherwise 2? ==> ["posts", "feed", token_hash === queryKey[2]]
   // if (userAuthAtomValue != null)  {   // get general feed
   //     const response = await axiosAPIClient.get("posts/feed",)
@@ -15,7 +13,7 @@ export function getPostsFeed({ queryKey }) {
   //     return response.data;
   // }
   const response = axiosAPIClient
-    .get(`posts/feed?limit=${limit}&offset=${offset}`)
+    .get(`posts/feed?page=${pageParam}&page_size=${PAGINATION_LIMIT}`)
     .then((res) => res.data);
   return response;
 }
