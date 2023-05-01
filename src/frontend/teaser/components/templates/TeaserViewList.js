@@ -92,6 +92,7 @@ export default function TeaserViewList({ navigation }) {
             songTitle: "ORIGINAL SOUND",
           }}
           sidebarData={{
+            username: item.user_id__nfc_username,
             profilePhotoUrl: item.user_id__profile_photo_url,
             likeCount: item.reddit_score,
             bookmarkCount: item.reddit_score,

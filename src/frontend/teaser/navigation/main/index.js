@@ -18,6 +18,7 @@ import HomeNavigator from "../home";
 import UploadSoundScreen from "../../screens/upload/UploadSoundScreen";
 import UploadSeeMoreSongsScreen from "../../screens/upload/UploadSeeMoreSongsScreen";
 import SetInterestsScreen from "../../screens/auth/SetInterestsScreen";
+import ProfileView from "../../components/templates/profile/ProfileView";
 
 const Stack = createStackNavigator();
 
@@ -114,6 +115,13 @@ export default function MainNavigator() {
           name="UploadPostDetails"
           component={UploadPostDetailsScreen}
           options={{ title: "Edit the post details", headerShown: true }}
+        />
+      </Stack.Group>
+      <Stack.Group>
+        <Stack.Screen
+          name="ProfileViewFromFeed"
+          component={ProfileView}
+          options={({ route }) => ({ title: route.params?.username })}
         />
       </Stack.Group>
     </Stack.Navigator>

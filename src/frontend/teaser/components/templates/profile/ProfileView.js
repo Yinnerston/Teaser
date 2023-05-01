@@ -80,7 +80,8 @@ const PROFILE_TEASER_DATA = [
  * @param {navigation} props
  * @returns
  */
-export default function ProfileView({ navigation }) {
+export default function ProfileView({ navigation, route }) {
+  const username = route?.params?.username;
   const profileVideoRefs = useRef([]);
   const styles = useProfileViewStyle();
   const renderProfileDataView = () => {

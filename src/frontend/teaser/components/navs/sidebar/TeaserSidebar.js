@@ -15,6 +15,7 @@ import { SIDEBAR_WIDTH } from "../../../Constants";
 export default function TeaserSidebar(props) {
   const { navigation, sidebarData } = props;
   const {
+    username,
     profilePhotoUrl,
     likeCount,
     bookmarkCount,
@@ -25,7 +26,9 @@ export default function TeaserSidebar(props) {
   return (
     <View style={styles.container}>
       <ProfilePhoto
+        username={username}
         profilePhotoUrl={profilePhotoUrl}
+        navigation={navigation}
         style={styles.sidebarItem}
       />
       <LikePostButton
