@@ -4,6 +4,7 @@ import LikePostButton from "../../elements/button/LikePostButton";
 import CommentPostButton from "../../elements/button/CommentPostButton";
 import BookmarkPostButton from "../../elements/button/BookmarkPostButton";
 import SharePostButton from "../../elements/button/SharePostButton";
+import { SIDEBAR_WIDTH } from "../../../Constants";
 
 /**
  * Container for the sidebar of a teaser.
@@ -13,18 +14,40 @@ import SharePostButton from "../../elements/button/SharePostButton";
  */
 export default function TeaserSidebar(props) {
   const { navigation, sidebarData } = props;
-  const { likeCount, bookmarkCount, commentCount, shareCount } = sidebarData;
+  const {
+    profilePhotoUrl,
+    likeCount,
+    bookmarkCount,
+    commentCount,
+    shareCount,
+  } = sidebarData;
   const styles = useSidebarStyle();
   return (
     <View style={styles.container}>
-      <ProfilePhoto></ProfilePhoto>
-      <LikePostButton numLikes={likeCount} style={styles.sidebarItem} />
-      <CommentPostButton numLikes={commentCount} style={styles.sidebarItem} />
-      <BookmarkPostButton
-        numBookmarks={bookmarkCount}
+      <ProfilePhoto
+        profilePhotoUrl={profilePhotoUrl}
         style={styles.sidebarItem}
       />
-      <SharePostButton numShares={shareCount} style={styles.sidebarItem} />
+      <LikePostButton
+        numLikes={likeCount}
+        textStyle={styles.sidebarText}
+        style={styles.sidebarItem}
+      />
+      <CommentPostButton
+        numLikes={commentCount}
+        textStyle={styles.sidebarText}
+        style={styles.sidebarItem}
+      />
+      <BookmarkPostButton
+        numBookmarks={bookmarkCount}
+        textStyle={styles.sidebarText}
+        style={styles.sidebarItem}
+      />
+      <SharePostButton
+        numShares={shareCount}
+        textStyle={styles.sidebarText}
+        style={styles.sidebarItem}
+      />
     </View>
   );
 }
@@ -39,14 +62,21 @@ const useSidebarStyle = () => {
       left: "auto",
       right: 16,
       height: height / 2,
-      backgroundColor: "yellow",
+      width: SIDEBAR_WIDTH,
+      justifyContent: "flex-end",
+      alignItems: "center",
     },
     sidebarText: {
-      fontSize: 10,
+      color: "white",
+      fontWeight: "bold",
+      fontSize: 12,
+      textAlign: "center",
+      textShadowColor: "gray",
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 1,
     },
     sidebarItem: {
-      justifyContent: "center",
-      alignItems: "center",
+      marginBottom: 20,
     },
   });
   return styles;

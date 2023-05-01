@@ -37,17 +37,22 @@ const styles = StyleSheet.create({
     bottom: 16,
     left: 16,
     right: "auto",
-    backgroundColor: "green",
     maxWidth: 200,
   },
   captionTitle: {
     fontWeight: "bold",
     fontSize: 16,
     color: "white",
+    textShadowColor: "gray",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 1,
   },
   captionDescription: {
     // fontWeight: "bold",
     fontSize: 12,
     color: "white",
+    textShadowColor: "gray",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 1,
   },
 });

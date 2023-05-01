@@ -5,18 +5,22 @@ const personOutlineImage = require("../../../assets/person-outline.png");
 
 /**
  * Profile photo shown on the teaser feed
+ * @param profilePhotoUrl: str
  * @returns
  */
-export default function ProfilePhoto() {
-  return <Image style={styles.profilePhotoStyle} source={personOutlineImage} />;
+export default function ProfilePhoto({ profilePhotoUrl }) {
+  const imageSource =
+    profilePhotoUrl !== "" ? { uri: profilePhotoUrl } : personOutlineImage;
+  return <Image style={styles.profilePhotoStyle} source={imageSource} />;
 }
 
 const styles = StyleSheet.create({
   profilePhotoStyle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16, // width or height / 2 ?
+    width: 36,
+    height: 36,
+    borderRadius: 18, // width or height / 2 ?
     margin: 3,
     backgroundColor: "white",
+    marginBottom: 20,
   },
 });
