@@ -3,6 +3,8 @@ import {
   SafeAreaView,
   StyleSheet,
   useWindowDimensions,
+  ActivityIndicator,
+  View,
   Text,
 } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -17,6 +19,7 @@ import { getFeedQueryKey } from "../../hooks/feed/useFeed";
 import { getPostsFeed } from "../../api/feed/postsFeedApi";
 import { readOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
 import { useAtom } from "jotai";
+import SplashScreen from "../../screens/SplashScreen";
 
 /**
  * Renders a TikTok like feed of TeaserViews.
@@ -27,6 +30,7 @@ import { useAtom } from "jotai";
  */
 export default function TeaserViewList({ navigation }) {
   const windowDimensions = useWindowDimensions();
+  const loadingStyles = useLoadingStyles();
   const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
   // Array of Refs to all the videos in the list
   const videoRefs = useRef([]);
@@ -123,7 +127,12 @@ export default function TeaserViewList({ navigation }) {
   };
 
   if (feedQuery.isLoading) {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={loadingStyles.container}>
+        <Text style={loadingStyles.splashLogo}>TEASER</Text>
+        <ActivityIndicator size="large" color="gray" />
+      </View>
+    );
   }
   if (feedQuery.isError) {
     console.Error(feedQuery.error);
@@ -170,3 +179,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+const useLoadingStyles = () => {
+  const { height, width } = useWindowDimensions();
+
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: "black",
+      alignContent: "center",
+      height: height,
+      width: width,
+    },
+    splashLogo: {
+      margin: "auto",
+      fontSize: 32,
+      margin: "auto",
+      color: "white",
+      fontWeight: "bold",
+      // fontFamily: "Georgia",
+    },
+  });
+  return styles;
+};

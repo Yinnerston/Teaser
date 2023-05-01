@@ -15,7 +15,7 @@ export default function SplashScreen({ navigation }) {
   // TODO: Prefetch the first page on first load
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate("HomeNavigator", { screen: "Home" }, 1000);
+      navigation.navigate("HomeNavigator", { screen: "Home" }, 500);
     });
   }, []);
 

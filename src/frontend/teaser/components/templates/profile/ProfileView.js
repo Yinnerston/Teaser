@@ -85,7 +85,7 @@ export default function ProfileView({ navigation, route }) {
   const profileVideoRefs = useRef([]);
   const styles = useProfileViewStyle();
   const renderProfileDataView = () => {
-    return <ProfileDataView></ProfileDataView>;
+    return <ProfileDataView username={username} />;
   };
   const renderProfileTeaserGridItem = ({ item }) => (
     <ProfileTeaserGridCard

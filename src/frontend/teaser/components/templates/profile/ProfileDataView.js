@@ -13,9 +13,10 @@ import ProfileStatsTable from "../../elements/table/ProfileStatsTable";
 /**
  * User profile's data.
  * Contains profile picture, description, etc.
+ * @param username
  * @returns
  */
-export default function ProfileDataView() {
+export default function ProfileDataView({ username }) {
   const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
   const styles = useProfileViewStyle();
   return (
@@ -30,7 +31,7 @@ export default function ProfileDataView() {
         ></Image>
       </View>
       <View style={styles.profileDataContainer}>
-        <Text>@username</Text>
+        <Text>@{username}</Text>
         <ProfileStatsTable></ProfileStatsTable>
         <ProfileButtonsTable></ProfileButtonsTable>
         <Text>
