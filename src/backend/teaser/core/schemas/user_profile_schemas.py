@@ -15,3 +15,27 @@ class GetUserProfileSchema(Schema):
 
 class CreateUserCategorySchema(Schema):
     categories: list = Field(example=["Amateur", "Fitness"])
+
+
+class ProfileFeedResponseSchema(Schema):
+    """
+    Output schema of /posts/feed
+    """
+
+    # Caption data / Author fields
+    id: str = Field(example="uuid4")
+    is_pinned: bool = Field(example=False)
+    description: str = Field(example="Some Post")
+    # Video data
+    video_url: str = Field(example="https://i.imgur.com/xaAAjDk.mp4")
+    thumbnail_url: str = Field(
+        example="https://teasernsfw-dev.s3.ap-southeast-2.amazonaws.com/amogus.png"
+    )
+    post_data: dict = Field(example={})
+    video_mode: int = Field(example=0, description="Portrait=0, Landscape=1")
+    # sidebar fields
+    reddit_score: int = None
+    # n_likes: int = Field(example=30)
+    # n_bookmarks: int = Field(example=20)
+    # n_shares: int = Field(example=10)
+    # n_comments: int = Field(example=5)

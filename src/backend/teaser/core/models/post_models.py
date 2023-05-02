@@ -63,6 +63,7 @@ class PostsModel(models.Model):
         help_text="UUID used by bunny.net for categorizing videos",
     )
     description = models.CharField(max_length=200)
+    is_pinned = models.BooleanField(default=False)
     is_private = models.BooleanField(default=False)
     has_comments = models.BooleanField(default=True)
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE)

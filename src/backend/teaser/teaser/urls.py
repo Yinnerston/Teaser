@@ -39,7 +39,8 @@ from core.services.post_service import (
 )
 from core.services.user_profile_service import (
     create_user_categories_service,
-    get_user_profile_service,
+    get_authenticated_user_profile_service,
+    get_profile_posts_service,
 )
 
 # Import schemas
@@ -229,7 +230,7 @@ def add_user_category_endpoint(request, payload: CreateUserCategorySchema):
     auth=AuthBearer(),
 )
 def get_user_profile(request):
-    return get_user_profile_service(request.auth.teaser_user_id)
+    return get_authenticated_user_profile_service(request.auth.teaser_user_id)
 
 
 # TODO: Change password endpoint
@@ -381,13 +382,25 @@ class PostsFeedController:
     @route.get(
         "/forYou",
         tags=["posts"],
-        response=PaginatedResponseSchema[PostsFeedResponseSchema],
+        response={
+            200: PaginatedResponseSchema[PostsFeedResponseSchema],
+            462: UserAuthError,
+        },
         auth=AuthBearer(),
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
     def get_posts_for_you_feed_endpoint(self):
         s_teaser_user = self.request.auth.teaser_user_id
         return get_feed_for_you_service(s_teaser_user)
+
+    @route.get(
+        "/users/{username}",
+        tags=["posts"],
+        response=PaginatedResponseSchema[ProfileFeedResponseSchema],
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_profile_posts(self, username):
+        return get_profile_posts_service(username)
 
 
 @api.post("songs/create", tags=["songs"], auth=AuthBearer())
