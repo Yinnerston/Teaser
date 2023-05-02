@@ -4,7 +4,11 @@ from core.models.event_metric_models import EventMetricsModel, EventMetricsTypeM
 
 @admin.register(EventMetricsModel)
 class EventMetricsModelAdmin(admin.ModelAdmin):
-    list_display = ("event_type", "event_data", "timestamp", "user_id")
+    def get_username(self, obj):
+        if obj.user_id:
+            return obj.user_id.nfc_username
+
+    list_display = ("event_type", "event_data", "timestamp", "user_id", "get_username")
 
 
 @admin.register(EventMetricsTypeModel)

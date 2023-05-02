@@ -20,10 +20,16 @@ class LocationsModelAdmin(admin.ModelAdmin):
 
 @admin.register(AuthTokenModel)
 class AuthTokenModelAdmin(admin.ModelAdmin):
+    def get_username(self, obj):
+        if obj.teaser_user_id:
+            return obj.teaser_user_id.nfc_username
+
     list_display = (
         "token_hash",
         "teaser_user_id",
+        "get_username",
         "expiry_date",
         "created_date",
         "is_valid",
     )
+    search_fields = ["teaser_user_id__nfc_username"]
