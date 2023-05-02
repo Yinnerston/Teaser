@@ -40,6 +40,7 @@ from core.services.post_service import (
 from core.services.user_profile_service import (
     create_user_categories_service,
     get_authenticated_user_profile_service,
+    get_user_profile_from_username_service,
     get_profile_posts_service,
 )
 
@@ -229,8 +230,23 @@ def add_user_category_endpoint(request, payload: CreateUserCategorySchema):
     tags=["users"],
     auth=AuthBearer(),
 )
-def get_user_profile(request):
+def get_authenticated_user_profile_endpoint(request):
+    """
+    Get user profile requiring authentication
+    """
     return get_authenticated_user_profile_service(request.auth.teaser_user_id)
+
+
+@api.get(
+    "users/{username}/profile",
+    tags=["users"],
+)
+def get_user_profile_from_username_endpoint(request, username: str):
+    """
+    Get profile from username without authentication
+    """
+    us_username = sanitization_utils.sanitize_str(username)
+    return get_user_profile_from_username_service(us_username)
 
 
 # TODO: Change password endpoint

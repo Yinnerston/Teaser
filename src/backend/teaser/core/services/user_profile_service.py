@@ -48,6 +48,23 @@ def get_authenticated_user_profile_service(s_teaser_user):
     }
 
 
+def get_user_profile_from_username_service(us_username: str):
+    # Validate username
+    s_username = validate_username(us_username)
+    # Get profile
+    teaser_user_model = TeaserUserModel.objects.get(nfc_username=s_username)
+    user_profile_model = UserProfileModel.objects.get(user_id=teaser_user_model)
+    return {
+        "display_name": teaser_user_model.stage_name,
+        "username": teaser_user_model.nfc_username,
+        "description": user_profile_model.description,
+        "profile_photo_url": teaser_user_model.profile_photo_url,
+        "n_following": 1,  # TODO:
+        "n_followers": 2,  # TODO:
+        "n_likes": 3,  # TODO:
+    }
+
+
 def get_profile_posts_service(us_username):
     """
     Get the profile of a user given a username
