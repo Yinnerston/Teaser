@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.http import HttpRequest, HttpResponse
 from django.urls import include, path
 import json
 
@@ -42,6 +43,7 @@ from core.services.user_profile_service import (
     get_authenticated_user_profile_service,
     get_user_profile_from_username_service,
     get_profile_posts_service,
+    get_own_profile_posts_service,
 )
 
 # Import schemas
@@ -405,8 +407,10 @@ class PostsFeedController:
         auth=AuthBearer(),
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
-    def get_posts_for_you_feed_endpoint(self):
-        s_teaser_user = self.request.auth.teaser_user_id
+    def get_posts_for_you_feed_endpoint(
+        self, request: HttpRequest, response: HttpResponse
+    ):
+        s_teaser_user = request.auth.teaser_user_id
         return get_feed_for_you_service(s_teaser_user)
 
     @route.get(
@@ -417,6 +421,18 @@ class PostsFeedController:
     @paginate(PageNumberPaginationExtra, page_size=50)
     def get_profile_posts(self, username):
         return get_profile_posts_service(username)
+
+    @route.get(
+        "/self",
+        tags=["posts"],
+        response=PaginatedResponseSchema[ProfileFeedResponseSchema],
+        auth=AuthBearer(),
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_own_profile_posts(self, request: HttpRequest, response: HttpResponse):
+        s_teaser_user = request.auth.teaser_user_id
+
+        return get_own_profile_posts_service(s_teaser_user)
 
 
 @api.post("songs/create", tags=["songs"], auth=AuthBearer())

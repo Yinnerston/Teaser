@@ -88,3 +88,26 @@ def get_profile_posts_service(us_username):
         )
         .all()
     )
+
+
+def get_own_profile_posts_service(s_teaser_user):
+    """
+    Get the profile of a user given a user.
+    Different from get_profile_posts_service because it can potentially return private user post information
+    """
+    # Get posts made by the user
+    return (
+        PostsModel.objects.filter(user_id=s_teaser_user)
+        .order_by("is_pinned", "created_at")
+        .values(
+            "id",
+            "is_pinned",
+            "description",
+            "video_url",
+            "thumbnail_url",
+            "video_mode",
+            "post_data",
+            "reddit_score",
+        )
+        .all()
+    )
