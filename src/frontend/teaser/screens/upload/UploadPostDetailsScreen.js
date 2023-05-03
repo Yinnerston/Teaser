@@ -27,6 +27,7 @@ import { useState } from "react";
 import HDIcon from "../../components/elements/icon/upload/HDIcon";
 import { uploadVideo } from "../../api/upload/uploadApi";
 import CategoriesIcon from "../../components/elements/icon/upload/CategoriesIcon";
+import HeartIcon from "../../components/elements/icon/HeartIcon";
 
 /**
  * Upload post details screen for setting description and post parameters.
@@ -45,7 +46,7 @@ export default function UploadPostDetailsScreen({ navigation }) {
   const [numCategories, setNumCategories] = useState(0);
   const [postIsPrivate, setPostIsPrivate] = useState(false); // TODO: Add dropdown
   const [hasComments, setHasComments] = useState(true);
-  const [hasHDUpload, setHasHDUpload] = useState(true);
+  const [postIsNSFW, setPostIsNSFW] = useState(true);
   const [postLinks, setPostLinks] = useState([]);
   const [submissionHasError, setSubmissionHasError] = useState(false);
   return (
@@ -144,15 +145,15 @@ export default function UploadPostDetailsScreen({ navigation }) {
         <TouchableOpacity
           style={styles.row}
           onPress={() => {
-            setHasHDUpload((prev) => !prev);
+            setPostIsNSFW((prev) => !prev);
           }}
         >
           <View style={styles.rowFirstFlex}>
-            <HDIcon color="#5A5A5A" />
-            <Text style={styles.rowText}>Allow HD Uploads</Text>
+            <HeartIcon color="#5A5A5A" />
+            <Text style={styles.rowText}>Post is NSFW</Text>
           </View>
           <View style={styles.rowSecondFlex}>
-            <Switch value={hasHDUpload} color="#0bde9b" />
+            <Switch value={postIsNSFW} color="#0bde9b" />
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.row} onPress={() => {}}>
@@ -182,7 +183,7 @@ export default function UploadPostDetailsScreen({ navigation }) {
               postCategories,
               postIsPrivate,
               hasComments,
-              hasHDUpload,
+              postIsNSFW,
               postLinks,
             );
             navigation.navigate("Home");

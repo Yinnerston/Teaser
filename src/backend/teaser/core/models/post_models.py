@@ -64,6 +64,7 @@ class PostsModel(models.Model):
     )
     description = models.CharField(max_length=200)
     is_pinned = models.BooleanField(default=False)
+    is_nsfw = models.BooleanField(default=True)
     is_private = models.BooleanField(default=False)
     has_comments = models.BooleanField(default=True)
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE)
@@ -91,8 +92,10 @@ class PostsModel(models.Model):
 
     class Meta:
         indexes = [
+            models.Index(fields=["status"]),
             models.Index(fields=["video_id"]),
             models.Index(fields=["description"]),
+            models.Index(fields=["is_nsfw"]),
         ]
         ordering = ("status",)
 

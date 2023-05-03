@@ -24,6 +24,7 @@ def create_post_service(
     s_song_id: int,
     s_post_type: int,
     s_post_data: dict,
+    s_is_nsfw: bool,
     s_is_private: bool,
     s_has_comments: bool,
     us_file: UploadedFile,  # Temporarily uploaded file if 2.5+ Mb
@@ -45,6 +46,7 @@ def create_post_service(
         # TODO: create video
         post_model = PostsModel.objects.create(
             description=s_description,
+            is_nsfw=s_is_nsfw,
             is_private=s_is_private,
             has_comments=s_has_comments,
             user_id=teaser_user_model,
@@ -246,7 +248,8 @@ def get_general_feed_service():
     #     ).values(
     #     "id", "description", "author_id", "username", "stage_name", "video_url", "thumbnail_url", "video_mode", "post_data", "reddit_score").all()
     return (
-        PostsModel.objects.values(
+        PostsModel.objects.filter(status=PostsModel.PostStatuses.FINISHED)
+        .values(
             "id",
             "description",
             "user_id__id",
