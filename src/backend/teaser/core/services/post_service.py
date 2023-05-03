@@ -115,6 +115,10 @@ def create_post_service(
     post_model.video_url = (
         "https://" + pull_zone + ".b-cdn.net/" + str(video_id) + "/play_720p.mp4"
     )
+    # TODO: figure out a way to make this preview.webp given possible data rate constraints?
+    post_model.thumbnail_url = (
+        "https://" + pull_zone + ".b-cdn.net/" + str(video_id) + "/thumbnail.jpg"
+    )
     # TODO: post_model.video_mode
     post_model.save()
     return {
