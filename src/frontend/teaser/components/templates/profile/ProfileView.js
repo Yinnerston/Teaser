@@ -1,9 +1,21 @@
-import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  useWindowDimensions,
+  Text,
+} from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useRef } from "react";
 import { VIDEO_PORTRAIT } from "../../../Constants";
 import { ProfileTeaserGridCard } from "../../cards/ProfileTeaserGridCard";
 import ProfileDataView from "./ProfileDataView";
+import {
+  getUserProfileKey,
+  getUserProfileData,
+} from "../../../hooks/profile/useProfile";
+import { useQuery } from "react-query";
+import { useAtom } from "jotai";
+import { readOnlyUserAuthAtom } from "../../../hooks/auth/useUserAuth";
 
 /**
  * Example data in format
@@ -82,10 +94,21 @@ const PROFILE_TEASER_DATA = [
  */
 export default function ProfileView({ navigation, route }) {
   const username = route?.params?.username;
+  const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
+
+  const profileQuery = useQuery({
+    queryKey: getUserProfileKey(userAuthAtomValue?.token_hash, username),
+    queryFn: getUserProfileData,
+  });
   const profileVideoRefs = useRef([]);
   const styles = useProfileViewStyle();
+
   const renderProfileDataView = () => {
-    return <ProfileDataView username={username} />;
+    return (
+      <ProfileDataView
+        profileQueryData={profileQuery.isLoading ? {} : profileQuery.data}
+      />
+    );
   };
   const renderProfileTeaserGridItem = ({ item }) => (
     <ProfileTeaserGridCard
@@ -99,10 +122,13 @@ export default function ProfileView({ navigation, route }) {
     />
   );
 
+  if (profileQuery.isError) {
+    console.error(profileQuery.error);
+  }
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={PROFILE_TEASER_DATA}
+        data={profileQuery.isLoading ? {} : PROFILE_TEASER_DATA}
         renderItem={renderProfileTeaserGridItem}
         keyExtractor={(item) => item.id}
         numColumns={3}
