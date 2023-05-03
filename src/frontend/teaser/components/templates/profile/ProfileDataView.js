@@ -5,40 +5,52 @@ import {
   Image,
   useWindowDimensions,
 } from "react-native";
-import { readOnlyUserAuthAtom } from "../../../hooks/auth/useUserAuth";
-import { useAtom } from "jotai";
 import ProfileButtonsTable from "../../elements/table/ProfileButtonsTable";
 import ProfileStatsTable from "../../elements/table/ProfileStatsTable";
 
 /**
  * User profile's data.
  * Contains profile picture, description, etc.
- * @param username
+ * @param {display_name, username, description, profile_photo_url, n_following, n_followers, n_likes} profileQueryData
  * @returns
  */
-export default function ProfileDataView({ username }) {
-  const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
+export default function ProfileDataView({ profileQueryData }) {
+  const {
+    display_name,
+    username,
+    description,
+    profile_photo_url,
+    n_following,
+    n_followers,
+    n_likes,
+  } = profileQueryData;
   const styles = useProfileViewStyle();
   return (
     <View>
       <View style={styles.profilePhotoContainer}>
         <Image
           style={styles.profilePhoto}
-          source={{
-            uri: "https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png",
-            // TODO: Use react query to fetch user profile with userAuthAtomValue token
-          }}
+          source={
+            profile_photo_url !== ""
+              ? {
+                  uri: profile_photo_url,
+                }
+              : {
+                  uri: "https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png",
+                  // TODO: Use react query to fetch user profile with userAuthAtomValue token
+                }
+          }
         ></Image>
       </View>
       <View style={styles.profileDataContainer}>
         <Text>@{username}</Text>
-        <ProfileStatsTable></ProfileStatsTable>
+        <ProfileStatsTable
+          nFollowing={n_following}
+          nFollowers={n_followers}
+          nLikes={n_likes}
+        />
         <ProfileButtonsTable></ProfileButtonsTable>
-        <Text>
-          {userAuthAtomValue["token_hash"]}
-          {"\n"}
-          {userAuthAtomValue["token_expiry_date"]}
-        </Text>
+        <Text style={styles.bioText}>{description}</Text>
       </View>
     </View>
   );
@@ -62,6 +74,9 @@ const useProfileViewStyle = () => {
       borderRadius: 200 / 2,
     },
     usernameHandleTextStyle: {},
+    bioText: {
+      marginVertical: 5,
+    },
   });
   return styles;
 };
