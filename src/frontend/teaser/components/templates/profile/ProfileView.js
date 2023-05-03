@@ -12,8 +12,10 @@ import ProfileDataView from "./ProfileDataView";
 import {
   getUserProfileKey,
   getUserProfileData,
+  getUserProfilePostsKey,
+  getUserProfilePostsData,
 } from "../../../hooks/profile/useProfile";
-import { useQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
 import { useAtom } from "jotai";
 import { readOnlyUserAuthAtom } from "../../../hooks/auth/useUserAuth";
 
@@ -100,6 +102,18 @@ export default function ProfileView({ navigation, route }) {
     queryKey: getUserProfileKey(userAuthAtomValue?.token_hash, username),
     queryFn: getUserProfileData,
   });
+
+  const userProfilePostsQuery = useInfiniteQuery({
+    queryKey: getUserProfilePostsKey(userAuthAtomValue?.token_hash, username),
+    queryFn: getUserProfilePostsData,
+    getNextPageParam: (lastPage, allPages) => {
+      const pageParam = lastPage.next
+        ? lastPage.next.split("page=").pop().split("&")[0]
+        : undefined;
+      return pageParam;
+    },
+    keepPreviousData: true,
+  });
   const profileVideoRefs = useRef([]);
   const styles = useProfileViewStyle();
 
@@ -112,12 +126,12 @@ export default function ProfileView({ navigation, route }) {
   };
   const renderProfileTeaserGridItem = ({ item }) => (
     <ProfileTeaserGridCard
-      videoURL={item.video.videoURL}
-      thumbnailURL={item.video.thumbnailURL}
-      videoMode={item.video.videoMode}
-      videoIdx={item.data.id}
-      viewCount={item.data.viewCount}
-      isPinned={item.data.isPinned}
+      videoURL={item.video_url}
+      thumbnailURL={item.thumbnail_url}
+      videoMode={item.video_mode}
+      videoIdx={item.id}
+      viewCount={item.reddit_score != null ? item.reddit_score : 0}
+      isPinned={item.is_pinned}
       ref={profileVideoRefs}
     />
   );
@@ -128,10 +142,28 @@ export default function ProfileView({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={profileQuery.isLoading ? {} : PROFILE_TEASER_DATA}
+        data={
+          profileQuery.isLoading || userProfilePostsQuery.isLoading
+            ? PROFILE_TEASER_DATA
+            : userProfilePostsQuery.data.pages
+                .map((page) => page.results)
+                .flat()
+        }
         renderItem={renderProfileTeaserGridItem}
         keyExtractor={(item) => item.id}
         numColumns={3}
+        initialNumToRender={12}
+        maxToRenderPerBatch={12}
+        windowSize={12}
+        removeClippedSubviews={true}
+        onEndReached={() => {
+          console.log("END REACHED, FETCHING NEW PAGE");
+
+          if (userProfilePostsQuery.isFetchingNextPage) return;
+          if (userProfilePostsQuery.hasNextPage) {
+            userProfilePostsQuery.fetchNextPage();
+          }
+        }}
         ListHeaderComponent={renderProfileDataView}
       />
     </SafeAreaView>

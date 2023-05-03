@@ -45,11 +45,6 @@ export default function TeaserViewList({ navigation }) {
       const pageParam = lastPage.next
         ? lastPage.next.split("page=").pop().split("&")[0]
         : undefined;
-      console.log(
-        "LastPage has n entries:",
-        lastPage.results.length,
-        pageParam,
-      );
       return pageParam;
     }, // TODO: implement cursor page number in backend
     keepPreviousData: true,
