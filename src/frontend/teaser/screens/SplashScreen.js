@@ -10,13 +10,14 @@ import { setUserAuthFromStore } from "../hooks/auth/useUserAuth";
  */
 export default function SplashScreen({ navigation }) {
   const styles = useAuthStyles();
+  // TODO: Check login token_hash
   setUserAuthFromStore();
-
+  // TODO: Prefetch the first page on first load
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate("HomeNavigator", { screen: "Home" }, 1000);
+      navigation.navigate("HomeNavigator", { screen: "Home" }, 500);
     });
-  });
+  }, []);
 
   return (
     <View style={styles.container}>

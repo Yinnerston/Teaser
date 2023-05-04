@@ -3,7 +3,7 @@ import TeaserCaption from "../navs/caption/TeaserCaption";
 import TeaserHeader from "../navs/header/TeaserHeader";
 import TeaserSidebar from "../navs/sidebar/TeaserSidebar";
 import { TeaserVideo } from "../navs/video/TeaserVideo";
-import { forwardRef } from "react";
+import { forwardRef, memo } from "react";
 import { STATUS_BAR_HEIGHT } from "../../Constants";
 
 /**
@@ -15,32 +15,34 @@ import { STATUS_BAR_HEIGHT } from "../../Constants";
  * @argument videoIdx id of the video
  * @returns
  */
-export const TeaserView = forwardRef(function TeaserView(props, ref) {
-  const {
-    videoURL,
-    thumbnailURL,
-    videoMode,
-    videoIdx,
-    navigation,
-    captionData,
-    sidebarData,
-  } = props;
-  const styles = useTeaserViewStyle();
-  return (
-    <View style={styles.container}>
-      <TeaserVideo
-        videoURL={{ uri: videoURL }}
-        thumbnailURL={{ uri: thumbnailURL }}
-        videoMode={videoMode}
-        videoIdx={videoIdx}
-        ref={ref}
-      ></TeaserVideo>
-      <TeaserHeader></TeaserHeader>
-      <TeaserSidebar navigation={navigation} sidebarData={sidebarData} />
-      <TeaserCaption navigation={navigation} captionData={captionData} />
-    </View>
-  );
-});
+export const TeaserView = memo(
+  forwardRef(function TeaserView(props, ref) {
+    const {
+      videoURL,
+      thumbnailURL,
+      videoMode,
+      videoIdx,
+      navigation,
+      captionData,
+      sidebarData,
+    } = props;
+    const styles = useTeaserViewStyle();
+    return (
+      <View style={styles.container}>
+        <TeaserVideo
+          videoURL={{ uri: videoURL }}
+          thumbnailURL={{ uri: thumbnailURL }}
+          videoMode={videoMode}
+          videoIdx={videoIdx}
+          ref={ref}
+        ></TeaserVideo>
+        <TeaserHeader></TeaserHeader>
+        <TeaserSidebar navigation={navigation} sidebarData={sidebarData} />
+        <TeaserCaption navigation={navigation} captionData={captionData} />
+      </View>
+    );
+  }),
+);
 
 const useTeaserViewStyle = () => {
   const { height, width } = useWindowDimensions();

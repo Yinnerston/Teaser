@@ -18,7 +18,7 @@ import mime from "mime";
  * @param {*} postCategories
  * @param {*} postVisibility
  * @param {*} hasComments
- * @param {*} hasHDUpload
+ * @param {*} postIsNSFW
  * @param {*} postLinks
  */
 export function uploadVideo(
@@ -30,7 +30,7 @@ export function uploadVideo(
   postCategories,
   postVisibility,
   hasComments,
-  hasHDUpload,
+  postIsNSFW,
   postLinks,
 ) {
   // Concat the videos together
@@ -52,6 +52,7 @@ export function uploadVideo(
           "payload",
           JSON.stringify({
             description: description,
+            is_nsfw: postIsNSFW,
             is_private: postVisibility,
             has_comments: hasComments,
             song_id: editorSound ? editorSound.id : NO_SONG_CHOSEN_FOREIGN_KEY,

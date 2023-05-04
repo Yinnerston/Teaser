@@ -11,15 +11,36 @@ from django.contrib import admin
 
 
 @admin.register(UserProfileModel)
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["user_id", "description"]
+class UserProfileModelAdmin(admin.ModelAdmin):
+    """
+    UserProfileModel admin
+    """
+
+    def get_username(self, obj):
+        if obj.user_id:
+            return obj.user_id.nfc_username
+
+    list_display = ["user_id", "get_username", "description"]
 
 
 @admin.register(UserCategoriesModel)
-class UserCategoriesAdmin(admin.ModelAdmin):
-    list_display = ["user_id", "categories_id"]
+class UserCategoriesModelAdmin(admin.ModelAdmin):
+    """
+    UserCategoriesModel admin for intersection table between TeaserUserModel and CategoriesModel
+    """
+
+    def get_username(self, obj):
+        if obj.user_id:
+            return obj.user_id.nfc_username
+
+    list_display = ["user_id", "get_username", "categories_id"]
 
 
 @admin.register(CategoriesModel)
-class CategoriesAdmin(admin.ModelAdmin):
-    pass
+class CategoriesModelAdmin(admin.ModelAdmin):
+    """
+    CategoriesModel admin.
+    """
+
+    list_display = ["title", "alias"]
+    ordering = ("alias",)

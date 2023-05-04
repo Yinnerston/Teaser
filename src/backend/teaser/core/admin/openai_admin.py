@@ -6,4 +6,8 @@ from core.models.openai_models import (
 
 @admin.register(OpenaiGeneratedImagesModel)
 class OpenaiGeneratedImagesModelAdmin(admin.ModelAdmin):
+    """
+    Generated images admin
+    """
+
     list_display = ("request_id", "prompt", "url", "file_path")

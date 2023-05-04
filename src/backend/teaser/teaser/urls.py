@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.http import HttpRequest, HttpResponse
 from django.urls import include, path
 import json
 
@@ -34,10 +35,15 @@ from core.services.post_service import (
     create_post_service,
     create_song_service,
     update_post_status_service,
+    get_general_feed_service,
+    get_feed_for_you_service,
 )
 from core.services.user_profile_service import (
     create_user_categories_service,
-    get_user_profile_service,
+    get_authenticated_user_profile_service,
+    get_user_profile_from_username_service,
+    get_profile_posts_service,
+    get_own_profile_posts_service,
 )
 
 # Import schemas
@@ -58,7 +64,15 @@ from core.views.views import OpenAIGeneratedImageView
 from ninja import NinjaAPI, File
 from ninja.files import UploadedFile
 
-api = NinjaAPI(
+from ninja_extra import api_controller, route, NinjaExtraAPI
+from ninja_extra.pagination import (
+    paginate,
+    PageNumberPaginationExtra,
+    PaginatedResponseSchema,
+)
+from typing import List
+
+api = NinjaExtraAPI(
     description="""
     # Documentation for Teaser API V1
     """
@@ -218,8 +232,23 @@ def add_user_category_endpoint(request, payload: CreateUserCategorySchema):
     tags=["users"],
     auth=AuthBearer(),
 )
-def get_user_profile(request):
-    return get_user_profile_service(request.auth.teaser_user_id)
+def get_authenticated_user_profile_endpoint(request):
+    """
+    Get user profile requiring authentication
+    """
+    return get_authenticated_user_profile_service(request.auth.teaser_user_id)
+
+
+@api.get(
+    "users/{username}/profile",
+    tags=["users"],
+)
+def get_user_profile_from_username_endpoint(request, username: str):
+    """
+    Get profile from username without authentication
+    """
+    us_username = sanitization_utils.sanitize_str(username)
+    return get_user_profile_from_username_service(us_username)
 
 
 # TODO: Change password endpoint
@@ -301,7 +330,7 @@ def complete_text_endpoint(request, payload: OpenaiTextCompletionSchema):
 
 
 @api.post("openai/image_generation", tags=["openai"], auth=AuthBearer())
-def generate_image(request, payload: OpenaiImageGenerationSchema):
+def generate_image_endpoint(request, payload: OpenaiImageGenerationSchema):
     openai_text_completion_dict = payload.dict()
     # Get unsafe fields from payload
     us_prompt = openai_text_completion_dict["prompt"]
@@ -312,7 +341,12 @@ def generate_image(request, payload: OpenaiImageGenerationSchema):
 
 
 @api.post("posts/create", tags=["posts"], auth=AuthBearer())
-def create_post(request, payload: CreatePostSchema, file: UploadedFile = File(...)):
+def create_post_endpoint(
+    request, payload: CreatePostSchema, file: UploadedFile = File(...)
+):
+    """
+    Create a post with an uplaoded file
+    """
     post_dict = payload.dict()
     # Get unsafe fields from payload
     us_description = post_dict["description"]
@@ -346,7 +380,10 @@ def create_post(request, payload: CreatePostSchema, file: UploadedFile = File(..
 
 
 @api.post("posts/update_status", tags=["posts"])
-def update_posts_status(request, payload: UpdatePostStatusSchema):
+def update_posts_status_endpoint(request, payload: UpdatePostStatusSchema):
+    """
+    Bunny.net webhook for updating the status of a post on video encoding completion.
+    """
     post_status_dict = payload.dict()
     us_library_id = post_status_dict["VideoLibraryId"]
     us_video_id = post_status_dict["VideoGuid"]
@@ -355,8 +392,76 @@ def update_posts_status(request, payload: UpdatePostStatusSchema):
     return update_post_status_service(us_library_id, us_video_id, us_status)
 
 
+@api_controller("/posts")
+class PostsFeedController:
+    """
+    For /posts endpoints that require pagination
+    """
+
+    @route.get(
+        "/feed",
+        tags=["posts"],
+        response=PaginatedResponseSchema[PostsFeedResponseSchema],
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_posts_general_feed_endpoint(self):
+        """
+        General feed endpoint (login not required).
+        """
+        return get_general_feed_service()
+
+    @route.get(
+        "/forYou",
+        tags=["posts"],
+        response={
+            200: PaginatedResponseSchema[PostsFeedResponseSchema],
+            462: UserAuthError,
+        },
+        auth=AuthBearer(),
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_posts_for_you_feed_endpoint(
+        self, request: HttpRequest, response: HttpResponse
+    ):
+        """
+        User specific endpoint. Auth / login required.
+        """
+        s_teaser_user = request.auth.teaser_user_id
+        return get_feed_for_you_service(s_teaser_user)
+
+    @route.get(
+        "/users/{username}",
+        tags=["posts"],
+        response=PaginatedResponseSchema[ProfileFeedResponseSchema],
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_profile_posts(self, username):
+        """
+        Get posts from a user's profile. Auth not required
+        """
+        return get_profile_posts_service(username)
+
+    @route.get(
+        "/self",
+        tags=["posts"],
+        response=PaginatedResponseSchema[ProfileFeedResponseSchema],
+        auth=AuthBearer(),
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_own_profile_posts(self, request: HttpRequest, response: HttpResponse):
+        """
+        Get your own posts, auth required.
+        TODO: May contain sensitive data?
+        """
+        s_teaser_user = request.auth.teaser_user_id
+        return get_own_profile_posts_service(s_teaser_user)
+
+
 @api.post("songs/create", tags=["songs"], auth=AuthBearer())
-def create_song(request, payload: CreateSongSchema):
+def create_song_endpoint(request, payload: CreateSongSchema):
+    """
+    Create a song record in the db.
+    """
     song_dict = payload.dict()
     # Get unsafe fields from payload
     us_title = song_dict["title"]
@@ -370,6 +475,8 @@ def create_song(request, payload: CreateSongSchema):
         s_title=s_title, s_author=s_author, s_song_url=s_song_url
     )
 
+
+api.register_controllers(PostsFeedController)
 
 urlpatterns = [
     path("admin/", include("admin_honeypot.urls", namespace="admin_honeypot")),

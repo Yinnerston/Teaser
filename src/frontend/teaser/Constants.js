@@ -8,6 +8,14 @@ export const TEXT_BUBBLE_CATEGORY_COLOR = "#fcdae2";
 export const TEXT_BUBBLE_RELATED_ELEMENT_COLOR = "#F8ABBD";
 export const HOME_NAV_ICON_SIZE = 24;
 export const SIGN_UP_VIEW_ICON_SIZE = 100;
+
+// Styling for home feed
+export const SIDEBAR_WIDTH = 48;
+export const SIDEBAR_ICON_SIZE = 32;
+export const SIDEBAR_MARGIN_BOTTOM = 20;
+// Styling for profile page
+export const PROFILE_PHOTO_DIAMETER = 36;
+
 // TODO: Change in production assuming no docker?
 export const BASE_URL = "https://wocchit.com/api/v1/";
 
@@ -51,3 +59,6 @@ export const AUDIO_DEFAULT_CODEC = {
 export const TEASER_POST_TYPE = 0;
 export const QUESTION_POST_TYPE = 1;
 export const NO_SONG_CHOSEN_FOREIGN_KEY = -1;
+
+// Pagination
+export const PAGINATION_LIMIT = 50;

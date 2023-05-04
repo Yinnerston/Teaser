@@ -23,6 +23,11 @@ class CategoriesModel(models.Model):
     """
 
     title = models.CharField(max_length=50, primary_key=True)
+    alias = models.CharField(max_length=50)
+
+    class Meta:
+        indexes = [models.Index(fields=["alias"])]
+        ordering = ["alias", "title"]
 
 
 class UserCategoriesModel(models.Model):

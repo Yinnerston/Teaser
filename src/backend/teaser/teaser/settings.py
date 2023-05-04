@@ -67,6 +67,8 @@ INSTALLED_APPS = [
     "core",
 ]
 
+NINJA_EXTRA = {"PAGINATION_CLASS": "ninja_extra.pagination.PageNumberPaginationExtra"}
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

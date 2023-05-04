@@ -9,7 +9,8 @@ import {
 import { forwardRef } from "react";
 
 /**
- * Grid Item (Card) displayed by ProfileTeaserGridView
+ * Grid Item (Card) displayed by ProfileTeaserGridView.
+ * If thumbnailURL is invalid, image defaults to Fujiwara gif.
  */
 export const ProfileTeaserGridCard = forwardRef(
   function ProfileTeaserGridCard(props, ref) {
@@ -22,7 +23,14 @@ export const ProfileTeaserGridCard = forwardRef(
     return (
       <View style={styles.container}>
         <TouchableOpacity style={styles.image} onPress={() => {}}>
-          <Image source={{ uri: thumbnailURL }} style={styles.image} />
+          <Image
+            source={
+              thumbnailURL !== ""
+                ? { uri: thumbnailURL }
+                : { uri: "https://i.imgur.com/Xi20BYv.gif" }
+            }
+            style={styles.image}
+          />
           <Text style={styles.isPinnedText}>{isPinned ? "Pinned" : null}</Text>
           <Text style={styles.viewCountText}>{viewCount}</Text>
         </TouchableOpacity>

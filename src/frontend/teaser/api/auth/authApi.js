@@ -1,6 +1,3 @@
-import axios from "axios";
-import { useQuery, useMutation } from "react-query";
-import { BASE_URL } from "../../Constants";
 import axiosAPIClient from "../axiosAPIClient";
 
 // axiosAPIClient.defaults.headers.common["Content-Type"] = "application/json";
