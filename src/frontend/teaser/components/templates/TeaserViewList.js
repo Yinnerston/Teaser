@@ -111,7 +111,7 @@ export default function TeaserViewList({ navigation }) {
    * Play videos that take up >= viewAreaCoveragePercentThreshold % of the window.
    * Pause videos that are not in the window anymore.
    */
-  const handleOnViewableItemsChanged = ({ changed }) => {
+  const handleOnViewableItemsChanged = useRef(({ changed }) => {
     changed.forEach((element) => {
       const cell = videoRefs.current[element.item.post_id];
       if (cell) {
@@ -122,7 +122,7 @@ export default function TeaserViewList({ navigation }) {
         }
       }
     });
-  };
+  });
 
   if (feedQuery.isLoading) {
     return (
@@ -144,7 +144,7 @@ export default function TeaserViewList({ navigation }) {
         ref={scrollRef}
         renderItem={renderTeaserViewItem}
         keyExtractor={(item) => item.post_id.toString()}
-        onViewableItemsChanged={handleOnViewableItemsChanged}
+        onViewableItemsChanged={handleOnViewableItemsChanged.current}
         // Determines how the video snaps
         viewabilityConfig={viewabilityConfig.current}
         snapToInterval={windowDimensions.height - STATUS_BAR_HEIGHT}
