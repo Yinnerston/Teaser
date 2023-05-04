@@ -229,6 +229,7 @@ def etl_post_service(
 def update_post_status_service(us_library_id: int, us_video_id: str, us_status: int):
     """
     only update post status if finished.
+    # TODO: If status is failed, ?delete post?
     """
     if us_library_id != int(env("CDN_VIDEO_LIBRARY_ID")):
         raise Exception()  # TODO:

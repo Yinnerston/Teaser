@@ -344,6 +344,9 @@ def generate_image_endpoint(request, payload: OpenaiImageGenerationSchema):
 def create_post_endpoint(
     request, payload: CreatePostSchema, file: UploadedFile = File(...)
 ):
+    """
+    Create a post with an uplaoded file
+    """
     post_dict = payload.dict()
     # Get unsafe fields from payload
     us_description = post_dict["description"]
@@ -378,6 +381,9 @@ def create_post_endpoint(
 
 @api.post("posts/update_status", tags=["posts"])
 def update_posts_status_endpoint(request, payload: UpdatePostStatusSchema):
+    """
+    Bunny.net webhook for updating the status of a post on video encoding completion.
+    """
     post_status_dict = payload.dict()
     us_library_id = post_status_dict["VideoLibraryId"]
     us_video_id = post_status_dict["VideoGuid"]
@@ -388,6 +394,10 @@ def update_posts_status_endpoint(request, payload: UpdatePostStatusSchema):
 
 @api_controller("/posts")
 class PostsFeedController:
+    """
+    For /posts endpoints that require pagination
+    """
+
     @route.get(
         "/feed",
         tags=["posts"],
@@ -395,6 +405,9 @@ class PostsFeedController:
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
     def get_posts_general_feed_endpoint(self):
+        """
+        General feed endpoint (login not required).
+        """
         return get_general_feed_service()
 
     @route.get(
@@ -410,6 +423,9 @@ class PostsFeedController:
     def get_posts_for_you_feed_endpoint(
         self, request: HttpRequest, response: HttpResponse
     ):
+        """
+        User specific endpoint. Auth / login required.
+        """
         s_teaser_user = request.auth.teaser_user_id
         return get_feed_for_you_service(s_teaser_user)
 
@@ -420,6 +436,9 @@ class PostsFeedController:
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
     def get_profile_posts(self, username):
+        """
+        Get posts from a user's profile. Auth not required
+        """
         return get_profile_posts_service(username)
 
     @route.get(
@@ -430,13 +449,19 @@ class PostsFeedController:
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
     def get_own_profile_posts(self, request: HttpRequest, response: HttpResponse):
+        """
+        Get your own posts, auth required.
+        TODO: May contain sensitive data?
+        """
         s_teaser_user = request.auth.teaser_user_id
-
         return get_own_profile_posts_service(s_teaser_user)
 
 
 @api.post("songs/create", tags=["songs"], auth=AuthBearer())
 def create_song_endpoint(request, payload: CreateSongSchema):
+    """
+    Create a song record in the db.
+    """
     song_dict = payload.dict()
     # Get unsafe fields from payload
     us_title = song_dict["title"]
