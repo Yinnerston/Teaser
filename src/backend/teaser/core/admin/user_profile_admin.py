@@ -11,7 +11,11 @@ from django.contrib import admin
 
 
 @admin.register(UserProfileModel)
-class UserProfileAdmin(admin.ModelAdmin):
+class UserProfileModelAdmin(admin.ModelAdmin):
+    """
+    UserProfileModel admin
+    """
+
     def get_username(self, obj):
         if obj.user_id:
             return obj.user_id.nfc_username
@@ -20,7 +24,11 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 
 @admin.register(UserCategoriesModel)
-class UserCategoriesAdmin(admin.ModelAdmin):
+class UserCategoriesModelAdmin(admin.ModelAdmin):
+    """
+    UserCategoriesModel admin for intersection table between TeaserUserModel and CategoriesModel
+    """
+
     def get_username(self, obj):
         if obj.user_id:
             return obj.user_id.nfc_username
@@ -29,6 +37,10 @@ class UserCategoriesAdmin(admin.ModelAdmin):
 
 
 @admin.register(CategoriesModel)
-class CategoriesAdmin(admin.ModelAdmin):
+class CategoriesModelAdmin(admin.ModelAdmin):
+    """
+    CategoriesModel admin.
+    """
+
     list_display = ["title", "alias"]
     ordering = ("alias",)

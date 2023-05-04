@@ -4,6 +4,10 @@ from core.models.post_models import PostsModel, SongsModel, PostCategoriesModel
 
 @admin.register(PostsModel)
 class PostsModelAdmin(admin.ModelAdmin):
+    """
+    PostsModel admin with PostCategories
+    """
+
     def get_username(self, obj):
         if obj.user_id:
             return obj.user_id.nfc_username
@@ -32,11 +36,19 @@ class PostsModelAdmin(admin.ModelAdmin):
 
 @admin.register(SongsModel)
 class SongsModelAdmin(admin.ModelAdmin):
+    """
+    Songs model admin.
+    """
+
     pass
 
 
 @admin.register(PostCategoriesModel)
 class PostCategoriesAdmin(admin.ModelAdmin):
+    """
+    PostCategories admin for intersection table between posts and categories.
+    """
+
     def get_post_description(self, obj):
         if obj.post_id:
             return obj.post_id.description

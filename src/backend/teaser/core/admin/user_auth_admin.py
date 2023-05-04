@@ -4,6 +4,10 @@ from core.models.user_auth_models import TeaserUserModel, LocationsModel, AuthTo
 
 @admin.register(TeaserUserModel)
 class TeaserUserModelAdmin(admin.ModelAdmin):
+    """
+    TeaserUserModel admin. 1:1 mapping to user
+    """
+
     list_display = (
         "nfc_username",
         "phone_str",
@@ -15,11 +19,19 @@ class TeaserUserModelAdmin(admin.ModelAdmin):
 
 @admin.register(LocationsModel)
 class LocationsModelAdmin(admin.ModelAdmin):
+    """
+    LocationsModel admin.
+    """
+
     list_display = ("address", "country_code", "state", "city")
 
 
 @admin.register(AuthTokenModel)
 class AuthTokenModelAdmin(admin.ModelAdmin):
+    """
+    AuthTokenModel admin for user related authentication tokens.
+    """
+
     def get_username(self, obj):
         if obj.teaser_user_id:
             return obj.teaser_user_id.nfc_username
