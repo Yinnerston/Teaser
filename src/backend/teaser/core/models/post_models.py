@@ -27,6 +27,12 @@ class SongsModel(models.Model):
         indexes = [models.Index(fields=["title", "author"])]
 
 
+class PostModelsManager(models.Manager):
+    def bias_vanilla(self, *args, **kwargs):
+        qs = self.get_query_set().filter(*args, **kwargs)
+        return sorted(qs, key=lambda n: ())
+
+
 class PostsModel(models.Model):
     """
     Posts model.
@@ -56,6 +62,8 @@ class PostsModel(models.Model):
     class VideoModes(models.IntegerChoices):
         PORTRAIT = 0
         LANDSCAPE = 1
+
+    objects = PostModelsManager()
 
     video_id = models.UUIDField(
         blank=True,

@@ -49,12 +49,12 @@ class PostsFeedResponseSchema(Schema):
     """
 
     # Caption data / Author fields
-    id: str = Field(example="uuid4")
+    post_id: str = Field(example="uuid4")
     description: str = Field(example="Some Post")
-    user_id__id: int = Field(example=1)
-    user_id__nfc_username: str = Field("testuser1")
-    user_id__stage_name: str = Field("Cat Person")
-    user_id__profile_photo_url: str = Field(
+    user_id: int = Field(example=1)
+    username: str = Field("testuser1")
+    stage_name: str = Field("Cat Person")
+    profile_photo_url: str = Field(
         example="https://teasernsfw-dev.s3.ap-southeast-2.amazonaws.com/amogus.png"
     )
     # Video data

@@ -36,7 +36,10 @@ export default function TeaserViewList({ navigation }) {
   const videoRefs = useRef([]);
   const scrollRef = useRef(null);
   useScrollToTop(scrollRef);
-
+  const viewabilityConfig = useRef({
+    viewAreaCoveragePercentThreshold: VIEWABILITY_CONFIG_THRESHOLD,
+    waitForInteraction: false,
+  });
   // List of teaser video metadata rendered into a FlatList
   const feedQuery = useInfiniteQuery({
     queryKey: getFeedQueryKey(userAuthAtomValue),
@@ -79,20 +82,20 @@ export default function TeaserViewList({ navigation }) {
           videoURL={item.video_url}
           thumbnailURL={item.thumbnail_url}
           videoMode={item.video_mode}
-          videoIdx={item.id}
+          videoIdx={item.post_id}
           ref={videoRefs}
           navigation={navigation}
           // Post data for UI
           captionData={{
             description: item.description,
-            username: item.user_id__nfc_username,
-            stageName: item.user_id__stage_name,
+            username: item.username,
+            stageName: item.stage_name,
             songId: "",
             songTitle: "ORIGINAL SOUND",
           }}
           sidebarData={{
-            username: item.user_id__nfc_username,
-            profilePhotoUrl: item.user_id__profile_photo_url,
+            username: item.username,
+            profilePhotoUrl: item.profile_photo_url,
             likeCount: item.reddit_score,
             bookmarkCount: item.reddit_score,
             commentCount: item.reddit_score,
@@ -110,7 +113,7 @@ export default function TeaserViewList({ navigation }) {
    */
   const handleOnViewableItemsChanged = ({ changed }) => {
     changed.forEach((element) => {
-      const cell = videoRefs.current[element.item.id];
+      const cell = videoRefs.current[element.item.post_id];
       if (cell) {
         if (element.isViewable) {
           cell.playAsync();
@@ -140,13 +143,10 @@ export default function TeaserViewList({ navigation }) {
         data={feedQuery.data.pages.map((page) => page.results).flat()}
         ref={scrollRef}
         renderItem={renderTeaserViewItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.post_id.toString()}
         onViewableItemsChanged={handleOnViewableItemsChanged}
         // Determines how the video snaps
-        viewabilityConfig={{
-          viewAreaCoveragePercentThreshold: VIEWABILITY_CONFIG_THRESHOLD,
-          waitForInteraction: false,
-        }}
+        viewabilityConfig={viewabilityConfig.current}
         snapToInterval={windowDimensions.height - STATUS_BAR_HEIGHT}
         decelerationRate="fast"
         snapToAlignment="start"

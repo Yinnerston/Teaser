@@ -5,6 +5,7 @@ from core.utils.post_validator import (
     TEASER_POST_TYPE,
 )
 from django.db import transaction
+from django.db.models import F
 from core.models.user_auth_models import TeaserUserModel
 from core.models.post_models import PostsModel, SongsModel, PostCategoriesModel
 from core.models.user_profile_models import CategoriesModel, UserCategoriesModel
@@ -247,24 +248,40 @@ def get_general_feed_service():
     #     author_id="user_id__id", username="user_id__nfc_username", stage_name="user_id__stage_name"
     #     ).values(
     #     "id", "description", "author_id", "username", "stage_name", "video_url", "thumbnail_url", "video_mode", "post_data", "reddit_score").all()
-    return (
-        PostsModel.objects.filter(status=PostsModel.PostStatuses.FINISHED)
-        .values(
-            "id",
-            "description",
-            "user_id__id",
-            "user_id__nfc_username",
-            "user_id__stage_name",
-            "user_id__profile_photo_url",
-            "video_url",
-            "thumbnail_url",
-            "video_mode",
-            "post_data",
-            "reddit_score",
+    # TODO: THIS IS A N+1 PROBLEM:
+    vanilla_category_aliases = [
+        "Amateur",
+        "Roleplay",
+        "Romantic",
+        "Funny",
+        "Fitness",
+        "How To / Educational",
+        "Video Games",
+        "Dance",
+        "Oral",
+    ]
+    output = (
+        PostCategoriesModel.objects.filter(
+            category_id__alias__in=vanilla_category_aliases
         )
-        .order_by("?")
+        .select_related("post_id", "post_id__user_id")
+        .filter(post_id__status=PostsModel.PostStatuses.FINISHED)
+        .values(
+            "post_id",  #
+            description=F("post_id__description"),
+            user_id=F("post_id__user_id__id"),  #
+            username=F("post_id__user_id__nfc_username"),
+            stage_name=F("post_id__user_id__stage_name"),  #
+            profile_photo_url=F("post_id__user_id__profile_photo_url"),  #
+            video_url=F("post_id__video_url"),
+            thumbnail_url=F("post_id__thumbnail_url"),
+            video_mode=F("post_id__video_mode"),
+            post_data=F("post_id__post_data"),
+            reddit_score=F("post_id__reddit_score"),
+        )
         .all()
     )
+    return output
 
 
 def get_feed_for_you_service(s_teaser_user):
