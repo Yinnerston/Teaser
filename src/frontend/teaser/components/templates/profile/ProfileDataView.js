@@ -11,6 +11,7 @@ import ProfileStatsTable from "../../elements/table/ProfileStatsTable";
 /**
  * User profile's data.
  * Contains profile picture, description, etc.
+ * See GetUserProfileSchema for schema if it changes.
  * @param {display_name, username, description, profile_photo_url, n_following, n_followers, n_likes} profileQueryData
  * @returns
  */

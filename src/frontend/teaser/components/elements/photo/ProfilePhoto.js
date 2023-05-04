@@ -1,5 +1,9 @@
 import { StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import {
+  PROFILE_PHOTO_DIAMETER,
+  SIDEBAR_MARGIN_BOTTOM,
+} from "../../../Constants";
 // Placeholder image
 const personOutlineImage = require("../../../assets/person-outline.png");
 
@@ -29,11 +33,11 @@ export default function ProfilePhoto({
 
 const styles = StyleSheet.create({
   profilePhotoStyle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18, // width or height / 2 ?
+    width: PROFILE_PHOTO_DIAMETER,
+    height: PROFILE_PHOTO_DIAMETER,
+    borderRadius: PROFILE_PHOTO_DIAMETER / 2,
     margin: 3,
     backgroundColor: "white",
-    marginBottom: 20,
+    marginBottom: SIDEBAR_MARGIN_BOTTOM,
   },
 });

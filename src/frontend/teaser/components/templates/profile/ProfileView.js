@@ -1,9 +1,4 @@
-import {
-  SafeAreaView,
-  StyleSheet,
-  useWindowDimensions,
-  Text,
-} from "react-native";
+import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useRef } from "react";
 import { VIDEO_PORTRAIT } from "../../../Constants";
@@ -117,6 +112,10 @@ export default function ProfileView({ navigation, route }) {
   const profileVideoRefs = useRef([]);
   const styles = useProfileViewStyle();
 
+  /**
+   * See GetUserProfileSchema for schema of profileQueryData
+   * @returns
+   */
   const renderProfileDataView = () => {
     return (
       <ProfileDataView
@@ -124,6 +123,12 @@ export default function ProfileView({ navigation, route }) {
       />
     );
   };
+
+  /**
+   * See ProfileFeedResponseSchema for schema of item
+   * @param { item } param0
+   * @returns
+   */
   const renderProfileTeaserGridItem = ({ item }) => (
     <ProfileTeaserGridCard
       videoURL={item.video_url}

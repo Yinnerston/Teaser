@@ -1,6 +1,3 @@
-import { getPostsFeed } from "../../api/feed/postsFeedApi";
-import { PAGINATION_LIMIT } from "../../Constants";
-
 /**
  * Get the queryKey for the home feed.
  * Changes if the user is logged in.

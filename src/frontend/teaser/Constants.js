@@ -12,6 +12,9 @@ export const SIGN_UP_VIEW_ICON_SIZE = 100;
 // Styling for home feed
 export const SIDEBAR_WIDTH = 48;
 export const SIDEBAR_ICON_SIZE = 32;
+export const SIDEBAR_MARGIN_BOTTOM = 20;
+// Styling for profile page
+export const PROFILE_PHOTO_DIAMETER = 36;
 
 // TODO: Change in production assuming no docker?
 export const BASE_URL = "https://wocchit.com/api/v1/";

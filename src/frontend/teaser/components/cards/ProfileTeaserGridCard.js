@@ -9,7 +9,8 @@ import {
 import { forwardRef } from "react";
 
 /**
- * Grid Item (Card) displayed by ProfileTeaserGridView
+ * Grid Item (Card) displayed by ProfileTeaserGridView.
+ * If thumbnailURL is invalid, image defaults to Fujiwara gif.
  */
 export const ProfileTeaserGridCard = forwardRef(
   function ProfileTeaserGridCard(props, ref) {

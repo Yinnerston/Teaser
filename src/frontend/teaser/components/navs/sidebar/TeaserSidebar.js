@@ -1,10 +1,10 @@
-import { StyleSheet, View, Text, useWindowDimensions } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import ProfilePhoto from "../../elements/photo/ProfilePhoto";
 import LikePostButton from "../../elements/button/LikePostButton";
 import CommentPostButton from "../../elements/button/CommentPostButton";
 import BookmarkPostButton from "../../elements/button/BookmarkPostButton";
 import SharePostButton from "../../elements/button/SharePostButton";
-import { SIDEBAR_WIDTH } from "../../../Constants";
+import { SIDEBAR_MARGIN_BOTTOM, SIDEBAR_WIDTH } from "../../../Constants";
 
 /**
  * Container for the sidebar of a teaser.
@@ -79,7 +79,7 @@ const useSidebarStyle = () => {
       textShadowRadius: 1,
     },
     sidebarItem: {
-      marginBottom: 20,
+      marginBottom: SIDEBAR_MARGIN_BOTTOM,
     },
   });
   return styles;

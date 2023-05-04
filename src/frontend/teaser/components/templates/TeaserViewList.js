@@ -19,7 +19,6 @@ import { getFeedQueryKey } from "../../hooks/feed/useFeed";
 import { getPostsFeed } from "../../api/feed/postsFeedApi";
 import { readOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
 import { useAtom } from "jotai";
-import SplashScreen from "../../screens/SplashScreen";
 
 /**
  * Renders a TikTok like feed of TeaserViews.
@@ -74,6 +73,7 @@ export default function TeaserViewList({ navigation }) {
 
   /**
    * Function to render each TeaserView element in the flatlist.
+   * SEE PostsFeedResponseSchema for attributes of item
    */
   const renderTeaserViewItem = useCallback(
     ({ item }) => {

@@ -24,10 +24,23 @@ export function getUserProfileData({ queryKey }) {
   return {};
 }
 
+/**
+ * Get queryKey for user's posts on their profile.
+ * @param {*} token_hash
+ * @param {*} username
+ * @returns
+ */
 export function getUserProfilePostsKey(token_hash, username) {
   return ["users", "posts", token_hash, username];
 }
 
+/**
+ * Gets profile data by username if username is specified.
+ * If username is not specified and the user is logged in --> This means you get your own profile.
+ * Otherwise invalid query
+ * @param { queryKey, pageParam } param0
+ * @returns
+ */
 export function getUserProfilePostsData({ queryKey, pageParam = 1 }) {
   const [_usersString, _postsString, token_hash, username] = queryKey;
   if (token_hash !== null && username === undefined) {
