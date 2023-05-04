@@ -32,6 +32,7 @@ def create_post_service(
 ):
     """
     Create a post entry that can be filled in later
+    TODO: set VIDEO_MODE.
     @returns
     """
     # Validate inputs
@@ -138,6 +139,7 @@ def etl_post_service(
 ):
     """
     Create a post entry that can be filled in later
+    TODO: set VIDEO_MODE.
     @returns
     """
     s_categories = s_post_data["data"]["categories"]
