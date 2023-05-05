@@ -1,4 +1,5 @@
-import { FlatList, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SongCard from "../../components/cards/SongCard";
 import SongForYouHeader from "../../components/navs/header/SongForYouHeader";

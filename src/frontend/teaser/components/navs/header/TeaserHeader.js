@@ -13,7 +13,9 @@ export default function TeaserHeader({ navigation }) {
     <View style={styles.header}>
       <View style={styles.headerTextContainer}></View>
       <View style={styles.searchIconContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate("Search")}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("SearchSuggestions")}
+        >
           <SearchIcon size={32} color="white" />
         </TouchableOpacity>
       </View>
@@ -26,11 +28,11 @@ const useTeaserHeaderStyle = () => {
   const styles = StyleSheet.create({
     header: {
       position: "absolute",
-      top: 32,
-      marginHorizontal: 32,
+      top: 16,
+      marginHorizontal: 16,
       left: "auto",
       right: "auto",
-      width: width - 64,
+      width: width - 32,
       flexDirection: "row",
     },
     headerTextContainer: {

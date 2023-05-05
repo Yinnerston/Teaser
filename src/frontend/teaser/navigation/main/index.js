@@ -21,6 +21,7 @@ import SetInterestsScreen from "../../screens/auth/SetInterestsScreen";
 // From Home navigation
 import SearchSuggestionsScreen from "../../screens/search/SearchSuggestionsScreen";
 import ProfileView from "../../components/templates/profile/ProfileView";
+import SearchResultsScreen from "../../screens/search/SearchResultsScreen";
 
 const Stack = createStackNavigator();
 
@@ -127,7 +128,15 @@ export default function MainNavigator() {
         />
       </Stack.Group>
       <Stack.Group>
-        <Stack.Screen name="Search" component={SearchSuggestionsScreen} />
+        <Stack.Screen
+          name="SearchSuggestions"
+          component={SearchSuggestionsScreen}
+        />
+        <Stack.Screen
+          name="SearchResults"
+          component={SearchResultsScreen}
+          options={{ title: "Search Results", headerShown: true }}
+        />
       </Stack.Group>
     </Stack.Navigator>
   );
