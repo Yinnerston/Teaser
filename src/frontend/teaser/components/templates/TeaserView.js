@@ -36,7 +36,7 @@ export const TeaserView = memo(
           videoIdx={videoIdx}
           ref={ref}
         ></TeaserVideo>
-        <TeaserHeader></TeaserHeader>
+        <TeaserHeader navigation={navigation} />
         <TeaserSidebar navigation={navigation} sidebarData={sidebarData} />
         <TeaserCaption navigation={navigation} captionData={captionData} />
       </View>

@@ -1,24 +1,46 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import SearchIcon from "../../elements/icon/upload/SearchIcon";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 /**
  * Container for header of a Teaser.
  * Handles seeking between ForYou / Following.
  * @returns
  */
-export default function TeaserHeader() {
+export default function TeaserHeader({ navigation }) {
+  const styles = useTeaserHeaderStyle();
   return (
     <View style={styles.header}>
-      <Text>HEADER</Text>
+      <View style={styles.headerTextContainer}></View>
+      <View style={styles.searchIconContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate("Search")}>
+          <SearchIcon size={32} color="white" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    position: "absolute",
-    top: 32,
-    left: "auto",
-    right: "auto",
-    backgroundColor: "red",
-  },
-});
+const useTeaserHeaderStyle = () => {
+  const { width } = useWindowDimensions();
+  const styles = StyleSheet.create({
+    header: {
+      position: "absolute",
+      top: 32,
+      marginHorizontal: 32,
+      left: "auto",
+      right: "auto",
+      width: width - 64,
+      flexDirection: "row",
+    },
+    headerTextContainer: {
+      flex: 3,
+    },
+    searchIconContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "flex-end",
+    },
+  });
+  return styles;
+};

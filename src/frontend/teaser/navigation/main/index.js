@@ -18,6 +18,8 @@ import HomeNavigator from "../home";
 import UploadSoundScreen from "../../screens/upload/UploadSoundScreen";
 import UploadSeeMoreSongsScreen from "../../screens/upload/UploadSeeMoreSongsScreen";
 import SetInterestsScreen from "../../screens/auth/SetInterestsScreen";
+// From Home navigation
+import SearchSuggestionsScreen from "../../screens/search/SearchSuggestionsScreen";
 import ProfileView from "../../components/templates/profile/ProfileView";
 
 const Stack = createStackNavigator();
@@ -123,6 +125,9 @@ export default function MainNavigator() {
           component={ProfileView}
           options={({ route }) => ({ title: route.params?.username })}
         />
+      </Stack.Group>
+      <Stack.Group>
+        <Stack.Screen name="Search" component={SearchSuggestionsScreen} />
       </Stack.Group>
     </Stack.Navigator>
   );
