@@ -40,7 +40,7 @@ export default function SearchSuggestionsScreen({ navigation }) {
               console.log(text);
               // TODO: Navigate to search page
               if (text !== "") {
-                navigation.navigate("SearchResults", { text: text });
+                navigation.navigate("SearchResults", { searchTerm: text });
               }
             }}
             placeholder="Search Term"
@@ -60,7 +60,9 @@ export default function SearchSuggestionsScreen({ navigation }) {
               console.log(searchText);
               // TODO: Navigate to search page
               if (searchText !== "") {
-                navigation.navigate("SearchResults", { text: searchText }); // TODO: state variable means react query will invalidate previous query next time you change searchText ?
+                navigation.navigate("SearchResults", {
+                  searchTerm: searchText,
+                }); // TODO: state variable means react query will invalidate previous query next time you change searchText ?
               }
             }}
           >

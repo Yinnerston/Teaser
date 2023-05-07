@@ -1,3 +1,5 @@
+import { getSearchResults } from "../../api/search/searchApi";
+
 /**
  * Get the key for search suggestions
  * @param {*} token_hash
@@ -38,8 +40,9 @@ export function getSearchSuggestions({ queryKey }) {
  * @param { queryKey, pageParam = 1 } param0
  * @returns
  */
-export function getSearchResults({ queryKey, pageParam = 1 }) {
+export function getSearchResultsQueryFn({ queryKey, pageParam = 1 }) {
   const [__searchString, _queryString, token_hash, searchTerm] = queryKey;
+  console.log("SEARCHING", searchTerm);
   // TODO: optionally add auth from token hash
-  return {};
+  return getSearchResults(searchTerm, pageParam);
 }
