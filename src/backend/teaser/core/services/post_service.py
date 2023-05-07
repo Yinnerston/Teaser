@@ -57,6 +57,7 @@ def create_post_service(
             else None,
             post_type=s_post_type,
             post_data=s_post_data,
+            nfc_username=s_teaser_user.nfc_username,
         )
         # Link post categories to post
         for category in s_categories:
@@ -159,6 +160,7 @@ def etl_post_service(
             post_data=s_post_data,
             reddit_id=s_reddit_id,
             reddit_score=s_reddit_score,
+            nfc_username=teaser_user_model.nfc_username,
         )
         # Link post categories to post
         for category in s_categories:
@@ -263,6 +265,8 @@ def get_general_feed_service():
         "Dance",
         "Oral",
     ]
+    # TODO: Probably more efficient to generate PostCategoriesModel queryset by iterating through vanilla_category_aliases
+    # then selecting using the __in operator on ^.post_id?
     output = (
         PostCategoriesModel.objects.filter(
             category_id__alias__in=vanilla_category_aliases

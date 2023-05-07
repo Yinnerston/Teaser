@@ -45,12 +45,17 @@ from core.services.user_profile_service import (
     get_profile_posts_service,
     get_own_profile_posts_service,
 )
+from core.services.search_service import (
+    search_posts_suggestions_service,
+    search_posts_results_service,
+)
 
 # Import schemas
 from core.schemas.user_auth_schemas import *
 from core.schemas.openai_schemas import *
 from core.schemas.post_schemas import *
 from core.schemas.user_profile_schemas import *
+from core.schemas.search_schemas import *
 
 # Basic Sanitizers
 from core.utils import sanitization_utils
@@ -457,6 +462,38 @@ class PostsFeedController:
         return get_own_profile_posts_service(s_teaser_user)
 
 
+@api_controller("/search")
+class SearchController:
+    @route.get(
+        "/suggestions/{query_str}",
+        tags=["search"],
+        response=PaginatedResponseSchema[SearchSuggestionSchema],
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_search_suggestions_endpoint(
+        self, query_str: str, request: HttpRequest, response: HttpResponse
+    ):
+        """
+        Get search suggestions as the user creates a search query.
+        """
+        return search_posts_suggestions_service()
+
+    @route.get(
+        "/query/{query_str}",
+        tags=["search"],
+        response=PaginatedResponseSchema[SearchResultSchema],
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_search_results_endpoint(
+        self, query_str: str, request: HttpRequest, response: HttpResponse
+    ):
+        """
+        Search for a post by the query_str
+        """
+        s_query_str = sanitization_utils.sanitize_str(query_str)
+        return search_posts_results_service(s_query_str)
+
+
 @api.post("songs/create", tags=["songs"], auth=AuthBearer())
 def create_song_endpoint(request, payload: CreateSongSchema):
     """
@@ -477,6 +514,7 @@ def create_song_endpoint(request, payload: CreateSongSchema):
 
 
 api.register_controllers(PostsFeedController)
+api.register_controllers(SearchController)
 
 urlpatterns = [
     path("admin/", include("admin_honeypot.urls", namespace="admin_honeypot")),
