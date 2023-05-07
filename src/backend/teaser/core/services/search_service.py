@@ -1,9 +1,11 @@
 from core.models.post_models import PostsModel
+from core.models.event_metric_models import EventMetricsModel
 from django.contrib.postgres.search import SearchVector
 from django.db.models import F
 from core.utils.search_validator import validate_query_str
 from django.db.models import CharField
 from django.db.models.functions import Cast
+import json
 
 
 def search_posts_suggestions_service(query_str):
@@ -16,6 +18,11 @@ def search_posts_results_service(s_query_str):
         "description", "nfc_username", Cast("post_data__data__categories", CharField())
     )
     # TODO: is search_vector_idx being used correctly here?
+    # Create event metric for search
+    EventMetricsModel.objects.create(
+        event_type=EventMetricsModel.EventMetricTypes.SEARCH,
+        event_data={"query_str": s_query_str},
+    )
     return (
         PostsModel.objects.annotate(search=search_vector)
         .filter(search=s_query_str)
