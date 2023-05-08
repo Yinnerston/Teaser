@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { forwardRef } from "react";
-
+import { numberFormatter } from "../../utils/numberFormatter";
 /**
  * Grid Item (Card) displayed by ProfileTeaserGridView.
  * If thumbnailURL is invalid, image defaults to Fujiwara gif.
@@ -32,7 +32,9 @@ export const ProfileTeaserGridCard = forwardRef(
             style={styles.image}
           />
           <Text style={styles.isPinnedText}>{isPinned ? "Pinned" : null}</Text>
-          <Text style={styles.viewCountText}>{viewCount}</Text>
+          <Text style={styles.viewCountText}>
+            {numberFormatter.format(viewCount)}
+          </Text>
         </TouchableOpacity>
       </View>
     );

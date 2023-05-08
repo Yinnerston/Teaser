@@ -26,7 +26,9 @@ export default function SearchResultCard({
             }
             style={styles.image}
           />
-          <Text style={styles.viewCountText}>{viewCount}</Text>
+          <Text style={styles.viewCountText}>
+            {numberFormatter.format(viewCount)}
+          </Text>
         </View>
         <View style={styles.captionContainer}>
           <View style={styles.descriptionTextContainer}>
