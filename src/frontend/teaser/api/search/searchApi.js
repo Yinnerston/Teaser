@@ -6,7 +6,6 @@ export async function getSearchSuggestions(query_str) {
     `search/suggestions/${query_str}`,
     {},
   );
-  console.log("SUGGESTION", response.data);
   return response.data;
 }
 

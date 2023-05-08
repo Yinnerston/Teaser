@@ -12,17 +12,18 @@ def search_posts_suggestions_service(query_str):
     return [
         {"suggestion": "Amateur", "is_hot": True, "is_trending": True},
         {"suggestion": "Roleplay", "is_hot": False, "is_trending": True},
-        {"suggestion": "Romantic", "is_hot": True, "is_trending": False},
-        {"suggestion": "Funny", "is_hot": False, "is_trending": False},
-        {"suggestion": "Fitness", "is_hot": True, "is_trending": False},
-        {"suggestion": "How To / Educational", "is_hot": False, "is_trending": False},
-        {"suggestion": "Video Games", "is_hot": False, "is_trending": False},
-        {"suggestion": "Dance", "is_hot": True, "is_trending": False},
+        {"suggestion": "Lesbian", "is_hot": True, "is_trending": False},
+        {"suggestion": "Group", "is_hot": False, "is_trending": False},
+        {"suggestion": "Anal", "is_hot": True, "is_trending": False},
+        {"suggestion": "Social Media", "is_hot": False, "is_trending": False},
+        {"suggestion": "Romantic", "is_hot": False, "is_trending": False},
+        {"suggestion": "MILF", "is_hot": True, "is_trending": False},
     ]
 
 
 def search_posts_results_service(s_query_str):
     s_query_str = validate_query_str(s_query_str)
+    # TODO: SearchVector doesn't consider category aliases
     search_vector = SearchVector(
         "description", "nfc_username", Cast("post_data__data__categories", CharField())
     )
@@ -33,6 +34,7 @@ def search_posts_results_service(s_query_str):
         event_type=EventMetricsModel.EventMetricTypes.SEARCH,
         event_data={"query_str": s_query_str},
     )
+    # TODO: https://stackoverflow.com/a/46303264 weighted search vector?
     return (
         PostsModel.objects.annotate(search=search_vector)
         .filter(search=search_query)

@@ -15,46 +15,14 @@ import { Ionicons } from "@expo/vector-icons";
 import SearchSuggestionCard from "../../components/cards/SearchSuggestionsCard";
 
 const searchSuggestions = [
-  {
-    suggestion: "Amateur",
-    is_hot: true,
-    is_trending: true,
-  },
-  {
-    suggestion: "Roleplay",
-    is_hot: false,
-    is_trending: true,
-  },
-  {
-    suggestion: "Romantic",
-    is_hot: true,
-    is_trending: false,
-  },
-  {
-    suggestion: "Funny",
-    is_hot: false,
-    is_trending: false,
-  },
-  {
-    suggestion: "Fitness",
-    is_hot: true,
-    is_trending: false,
-  },
-  {
-    suggestion: "How To / Educational",
-    is_hot: false,
-    is_trending: false,
-  },
-  {
-    suggestion: "Video Games",
-    is_hot: false,
-    is_trending: false,
-  },
-  {
-    suggestion: "Dance",
-    is_hot: true,
-    is_trending: false,
-  },
+  { suggestion: "Amateur", is_hot: true, is_trending: true },
+  { suggestion: "Roleplay", is_hot: false, is_trending: true },
+  { suggestion: "Lesbian", is_hot: true, is_trending: false },
+  { suggestion: "Group", is_hot: false, is_trending: false },
+  { suggestion: "Anal", is_hot: true, is_trending: false },
+  { suggestion: "Social Media", is_hot: false, is_trending: false },
+  { suggestion: "MILF", is_hot: false, is_trending: false },
+  { suggestion: "Romantic", is_hot: true, is_trending: false },
 ];
 
 export default function SearchSuggestionsScreen({ navigation }) {
