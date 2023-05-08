@@ -240,6 +240,33 @@ def update_post_status_service(us_library_id: int, us_video_id: str, us_status: 
     # TODO: Other validiation?
     post = PostsModel.objects.get(video_id=us_video_id)
     post.status = us_status
+    headers = {"accept": "application/json", "AccessKey": str(env("CDN_API_KEY"))}
+    response = requests.get(post.upload_url, headers=headers)
+    # Set max resolution
+    # library_id = str(env("CDN_VIDEO_LIBRARY_ID"))
+    pull_zone = str(env("CDN_PULL_ZONE_URL"))
+    response_json = response.json()
+    # bunny.net mp4 fallback only encodes up to 720p
+    max_res_int = max(
+        [
+            int(res[:-1])
+            for res in response.json()["availableResolutions"].split(",")
+            if int(res[:-1]) <= 720
+        ]
+    )
+    post.video_url = (
+        "https://"
+        + pull_zone
+        + ".b-cdn.net/"
+        + str(post.video_id)
+        + "/play_"
+        + str(max_res_int)
+        + "p.mp4"
+    )
+    # set video mode to landscape if aspect ratio > 1
+    aspect_ratio = response_json["width"] / response_json["height"]
+    if aspect_ratio > 1:
+        post.video_mode = PostsModel.VideoModes.LANDSCAPE
     post.save()
     return {}
 
