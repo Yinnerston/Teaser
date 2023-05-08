@@ -18,3 +18,7 @@ class EventMetricsModel(models.Model):
     )
     event_data = models.JSONField()
     timestamp = models.DateTimeField(auto_now_add=True, blank=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["event_type", "timestamp"])]
+        ordering = ["event_type", "-timestamp"]
