@@ -143,7 +143,7 @@ export default function TeaserViewList({ navigation }) {
         data={feedQuery.data.pages.map((page) => page.results).flat()}
         ref={scrollRef}
         renderItem={renderTeaserViewItem}
-        keyExtractor={(item) => item.post_id.toString()}
+        keyExtractor={(item) => "TEASERVIEWLISTITEM" + item.post_id.toString()}
         onViewableItemsChanged={handleOnViewableItemsChanged.current}
         // Determines how the video snaps
         viewabilityConfig={viewabilityConfig.current}

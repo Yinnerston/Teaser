@@ -68,7 +68,6 @@ export function uploadVideo(
             },
           }),
         );
-        console.log(formData);
         axios({
           baseURL: BASE_URL,
           url: "posts/create",

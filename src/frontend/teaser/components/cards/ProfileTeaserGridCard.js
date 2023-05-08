@@ -4,25 +4,48 @@ import {
   Text,
   useWindowDimensions,
   Image,
-  TouchableOpacity,
 } from "react-native";
-import { forwardRef } from "react";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useRef, useState } from "react";
+import { Video } from "expo-av";
+import { numberFormatter } from "../../utils/numberFormatter";
+import { VIDEO_PORTRAIT } from "../../Constants";
 
 /**
  * Grid Item (Card) displayed by ProfileTeaserGridView.
  * If thumbnailURL is invalid, image defaults to Fujiwara gif.
  */
-export const ProfileTeaserGridCard = forwardRef(
-  function ProfileTeaserGridCard(props, ref) {
-    const { videoIdx, viewCount, isPinned, videoURL, thumbnailURL, videoMode } =
-      props;
-    const styles = useProfileTeaserGridCardStyle();
-    // https://github.com/wonday/react-native-image-cache-wrapper
-    // TODO: Cachable image?
+export function ProfileTeaserGridCard(props, ref) {
+  const { videoIdx, viewCount, isPinned, videoURL, thumbnailURL, videoMode } =
+    props;
+  const [isPlayingVideo, setIsPlayingVideo] = useState(false);
+  const videoRef = useRef(null);
+  const styles = useProfileTeaserGridCardStyle();
+  // https://github.com/wonday/react-native-image-cache-wrapper
+  // TODO: Cachable image?
 
-    return (
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.image} onPress={() => {}}>
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.image}
+        onPress={() => setIsPlayingVideo((prev) => !prev)}
+      >
+        {isPlayingVideo ? (
+          <Video
+            source={
+              videoURL !== ""
+                ? { uri: videoURL }
+                : { uri: "https://i.imgur.com/Xi20BYv.gif" }
+            }
+            ref={videoRef}
+            isLooping={true}
+            shouldPlay={true}
+            style={{
+              ...styles.image,
+              resizeMode: videoMode === VIDEO_PORTRAIT ? "cover" : "contain",
+            }}
+          />
+        ) : (
           <Image
             source={
               thumbnailURL !== ""
@@ -31,13 +54,15 @@ export const ProfileTeaserGridCard = forwardRef(
             }
             style={styles.image}
           />
-          <Text style={styles.isPinnedText}>{isPinned ? "Pinned" : null}</Text>
-          <Text style={styles.viewCountText}>{viewCount}</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  },
-);
+        )}
+        <Text style={styles.isPinnedText}>{isPinned ? "Pinned" : null}</Text>
+        <Text style={styles.viewCountText}>
+          {numberFormatter.format(viewCount)}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 const useProfileTeaserGridCardStyle = () => {
   const { height, width } = useWindowDimensions();
@@ -53,8 +78,8 @@ const useProfileTeaserGridCardStyle = () => {
       top: 0,
     },
     viewCountText: {
-      backgroundColor: "green",
       color: "white",
+      fontWeight: "bold",
       position: "absolute",
       bottom: 0,
     },

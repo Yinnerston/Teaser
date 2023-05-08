@@ -57,6 +57,7 @@ def create_post_service(
             else None,
             post_type=s_post_type,
             post_data=s_post_data,
+            nfc_username=s_teaser_user.nfc_username,
         )
         # Link post categories to post
         for category in s_categories:
@@ -159,6 +160,7 @@ def etl_post_service(
             post_data=s_post_data,
             reddit_id=s_reddit_id,
             reddit_score=s_reddit_score,
+            nfc_username=teaser_user_model.nfc_username,
         )
         # Link post categories to post
         for category in s_categories:
@@ -238,6 +240,33 @@ def update_post_status_service(us_library_id: int, us_video_id: str, us_status: 
     # TODO: Other validiation?
     post = PostsModel.objects.get(video_id=us_video_id)
     post.status = us_status
+    headers = {"accept": "application/json", "AccessKey": str(env("CDN_API_KEY"))}
+    response = requests.get(post.upload_url, headers=headers)
+    # Set max resolution
+    # library_id = str(env("CDN_VIDEO_LIBRARY_ID"))
+    pull_zone = str(env("CDN_PULL_ZONE_URL"))
+    response_json = response.json()
+    # bunny.net mp4 fallback only encodes up to 720p
+    max_res_int = max(
+        [
+            int(res[:-1])
+            for res in response.json()["availableResolutions"].split(",")
+            if int(res[:-1]) <= 720
+        ]
+    )
+    post.video_url = (
+        "https://"
+        + pull_zone
+        + ".b-cdn.net/"
+        + str(post.video_id)
+        + "/play_"
+        + str(max_res_int)
+        + "p.mp4"
+    )
+    # set video mode to landscape if aspect ratio > 1
+    aspect_ratio = response_json["width"] / response_json["height"]
+    if aspect_ratio > 1:
+        post.video_mode = PostsModel.VideoModes.LANDSCAPE
     post.save()
     return {}
 
@@ -263,6 +292,8 @@ def get_general_feed_service():
         "Dance",
         "Oral",
     ]
+    # TODO: Probably more efficient to generate PostCategoriesModel queryset by iterating through vanilla_category_aliases
+    # then selecting using the __in operator on ^.post_id?
     output = (
         PostCategoriesModel.objects.filter(
             category_id__alias__in=vanilla_category_aliases

@@ -5,16 +5,29 @@ from core.models.user_auth_models import TeaserUserModel
 from django.db import models
 
 
-class EventMetricsTypeModel(models.Model):
-    type = models.CharField(
-        max_length=20,
-        primary_key=True,
-        help_text="Events created by a user: Clicks, watch, swipe right, etc..",
-    )
-
-
 class EventMetricsModel(models.Model):
+    """
+    Event metrics taken to generate insights.
+    Register / Login times, search histories, etc.
+    """
+
+    class EventMetricTypes(models.IntegerChoices):
+        """
+        Types of event metrics.
+        """
+
+        UNDEFINED = 0
+        LOGIN = 1
+        REGISTER = 2
+        SEARCH = 3
+
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE, null=True)
-    event_type = models.ForeignKey(EventMetricsTypeModel, on_delete=models.DO_NOTHING)
+    event_type = models.IntegerField(
+        choices=EventMetricTypes.choices, default=EventMetricTypes.UNDEFINED
+    )
     event_data = models.JSONField()
     timestamp = models.DateTimeField(auto_now_add=True, blank=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["event_type", "timestamp"])]
+        ordering = ["event_type", "-timestamp"]

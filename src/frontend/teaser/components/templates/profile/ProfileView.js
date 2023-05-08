@@ -1,4 +1,9 @@
-import { SafeAreaView, StyleSheet, useWindowDimensions } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+} from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useRef } from "react";
 import { VIDEO_PORTRAIT } from "../../../Constants";
@@ -109,7 +114,6 @@ export default function ProfileView({ navigation, route }) {
     },
     keepPreviousData: true,
   });
-  const profileVideoRefs = useRef([]);
   const styles = useProfileViewStyle();
 
   /**
@@ -137,25 +141,21 @@ export default function ProfileView({ navigation, route }) {
       videoIdx={item.id}
       viewCount={item.reddit_score != null ? item.reddit_score : 0}
       isPinned={item.is_pinned}
-      ref={profileVideoRefs}
     />
   );
 
   if (profileQuery.isError) {
     console.error(profileQuery.error);
   }
+  if (profileQuery.isLoading || userProfilePostsQuery.isLoading) return;
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={
-          profileQuery.isLoading || userProfilePostsQuery.isLoading
-            ? PROFILE_TEASER_DATA
-            : userProfilePostsQuery.data.pages
-                .map((page) => page.results)
-                .flat()
-        }
+        data={userProfilePostsQuery.data.pages
+          .map((page) => page.results)
+          .flat()}
         renderItem={renderProfileTeaserGridItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => "PROFILEVIEWITEM" + item.id.toString()}
         numColumns={3}
         initialNumToRender={12}
         maxToRenderPerBatch={12}
@@ -171,15 +171,20 @@ export default function ProfileView({ navigation, route }) {
         }}
         ListHeaderComponent={renderProfileDataView}
       />
+      {userProfilePostsQuery.data.pages[0].count === 0 ? (
+        <Text style={styles.noPostsText}>No Posts.</Text>
+      ) : null}
     </SafeAreaView>
   );
 }
 const useProfileViewStyle = () => {
   const { height, width } = useWindowDimensions();
-
   const styles = StyleSheet.create({
     container: { flex: 1, height: height },
     usernameHandleTextStyle: {},
+    noPostsText: {
+      textAlign: "center",
+    },
   });
   return styles;
 };

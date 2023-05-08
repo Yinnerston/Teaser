@@ -6,6 +6,9 @@ from core.models.user_profile_models import CategoriesModel
 from django.db import models
 import uuid
 from django.utils.timezone import now
+from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVector
+from django.db.models.functions import Cast
 
 
 class SongsModel(models.Model):
@@ -76,6 +79,9 @@ class PostsModel(models.Model):
     is_private = models.BooleanField(default=False)
     has_comments = models.BooleanField(default=True)
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE)
+    nfc_username = models.CharField(
+        max_length=32, null=True
+    )  # denormalised nfc_username field from user_id for gin index
     song_id = models.ForeignKey(
         SongsModel, on_delete=models.DO_NOTHING, blank=True, null=True
     )
@@ -104,6 +110,16 @@ class PostsModel(models.Model):
             models.Index(fields=["video_id"]),
             models.Index(fields=["description"]),
             models.Index(fields=["is_nsfw"]),
+            GinIndex(
+                # GIN index on description, #tags, username and category
+                SearchVector(
+                    "description",
+                    "nfc_username",
+                    Cast("post_data__data__categories", models.CharField()),
+                    config="english",
+                ),
+                name="search_vector_idx",
+            ),  # TODO: What if post_data__data__categories, description or nfc_username changes? Will the model update?
         ]
         ordering = ("status",)
 

@@ -1,4 +1,5 @@
-import { FlatList, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SongCard from "../../components/cards/SongCard";
 import SongForYouHeader from "../../components/navs/header/SongForYouHeader";
@@ -160,7 +161,7 @@ export default function UploadSoundScreen({ navigation }) {
     <FlatList
       data={SONGS_DATA}
       renderItem={renderSongCard}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => "UPLOADSOUNDSONGCARDITEM" + item.id.toString()}
       ListHeaderComponent={renderSongForYouHeader}
     />
   );
@@ -171,7 +172,7 @@ export default function UploadSoundScreen({ navigation }) {
         <FlatList
           data={SONG_TAGS_DATA}
           renderItem={renderSongTagCard}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => "UPLOADSOUNDSONGTAGITEM" + item.id.toString()}
           numColumns={2}
           ListHeaderComponent={renderForYouSongs}
         />

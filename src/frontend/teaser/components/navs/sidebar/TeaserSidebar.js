@@ -5,6 +5,7 @@ import CommentPostButton from "../../elements/button/CommentPostButton";
 import BookmarkPostButton from "../../elements/button/BookmarkPostButton";
 import SharePostButton from "../../elements/button/SharePostButton";
 import { SIDEBAR_MARGIN_BOTTOM, SIDEBAR_WIDTH } from "../../../Constants";
+import { numberFormatter } from "../../../utils/numberFormatter";
 
 /**
  * Container for the sidebar of a teaser.
@@ -32,22 +33,22 @@ export default function TeaserSidebar(props) {
         style={styles.sidebarItem}
       />
       <LikePostButton
-        numLikes={likeCount}
+        numLikes={numberFormatter.format(likeCount)}
         textStyle={styles.sidebarText}
         style={styles.sidebarItem}
       />
       <CommentPostButton
-        numLikes={commentCount}
+        numLikes={numberFormatter.format(commentCount)}
         textStyle={styles.sidebarText}
         style={styles.sidebarItem}
       />
       <BookmarkPostButton
-        numBookmarks={bookmarkCount}
+        numBookmarks={numberFormatter.format(bookmarkCount)}
         textStyle={styles.sidebarText}
         style={styles.sidebarItem}
       />
       <SharePostButton
-        numShares={shareCount}
+        numShares={numberFormatter.format(shareCount)}
         textStyle={styles.sidebarText}
         style={styles.sidebarItem}
       />

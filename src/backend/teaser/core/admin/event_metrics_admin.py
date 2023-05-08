@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.models.event_metric_models import EventMetricsModel, EventMetricsTypeModel
+from core.models.event_metric_models import EventMetricsModel
 
 
 @admin.register(EventMetricsModel)
@@ -13,12 +13,3 @@ class EventMetricsModelAdmin(admin.ModelAdmin):
             return obj.user_id.nfc_username
 
     list_display = ("event_type", "event_data", "timestamp", "user_id", "get_username")
-
-
-@admin.register(EventMetricsTypeModel)
-class EventMetricsTypeModelAdmin(admin.ModelAdmin):
-    """
-    Admin for type of event metric
-    """
-
-    list_display = ("type",)

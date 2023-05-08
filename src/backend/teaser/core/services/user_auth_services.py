@@ -4,7 +4,7 @@ Services layer for user_auth_services models.
 
 from django.http import HttpRequest
 from core.models.user_auth_models import TeaserUserModel, AuthTokenModel
-from core.models.event_metric_models import EventMetricsModel, EventMetricsTypeModel
+from core.models.event_metric_models import EventMetricsModel
 from core.models.user_profile_models import UserProfileModel
 from core.utils.user_auth_validator import (
     validate_register,
@@ -142,11 +142,8 @@ def register_user_service(
         teaser_user_model.save()
         # Log register Action
         # TODO: Should I have the logging in the same atomic commit or another commit?
-        register_event_type, created = EventMetricsTypeModel.objects.get_or_create(
-            type="REGISTER"
-        )
         register_event_metric = EventMetricsModel.objects.create(
-            event_type=register_event_type,
+            event_type=EventMetricsModel.EventMetricTypes.REGISTER,
             event_data=json.loads("{}"),
             user_id=teaser_user_model,
         )
@@ -204,11 +201,8 @@ def login_user_service(request, s_username: str, us_password: str):
             )
             # Log login Action
             # TODO: Should I have the logging in the same atomic commit or another commit?
-            login_event_type, created = EventMetricsTypeModel.objects.get_or_create(
-                type="LOGIN"
-            )
             register_event_metric = EventMetricsModel.objects.create(
-                event_type=login_event_type,
+                event_type=EventMetricsModel.EventMetricTypes.LOGIN,
                 event_data=json.loads("{}"),
                 user_id=logged_in_teaser_user,
             )
@@ -222,11 +216,8 @@ def login_user_service(request, s_username: str, us_password: str):
         with transaction.atomic():
             # Log failed login Action
             # TODO: Should I have the logging in the same atomic commit or another commit?
-            login_event_type, created = EventMetricsTypeModel.objects.get_or_create(
-                type="LOGIN"
-            )
             register_event_metric = EventMetricsModel.objects.create(
-                event_type=login_event_type,
+                event_type=EventMetricsModel.EventMetricTypes.LOGIN,
                 event_data=json.loads('{"login_fail": true}'),
                 user_id=logged_in_user,
             )

@@ -4,6 +4,7 @@ Models for the user, and the related categories.
 from django.contrib.auth.models import User
 from django.db import models
 from datetime import datetime
+from django.db.models.signals import post_save, post_init
 
 
 class LocationsModel(models.Model):
@@ -24,7 +25,9 @@ class TeaserUserModel(models.Model):
     """
 
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
-    nfc_username = models.CharField(max_length=32)
+    nfc_username = models.CharField(
+        max_length=32
+    )  # TODO: on change, change PostsModel denormalized nfc_username
     phone_str = models.CharField(max_length=16)
     profile_photo_url = models.URLField(default="", blank=True)
     stage_name = models.CharField(max_length=64, default="", blank=True)
