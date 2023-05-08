@@ -34,6 +34,12 @@ export default function SearchSuggestionsScreen({ navigation }) {
   //   queryFn: getSearchSuggestionsQueryFn,
   //   keepPreviousData: true,
   // }); // TODO: implement fetch autocomplete
+
+  /**
+   * Render search terms highlighting hot or trending search terms.
+   * @param { item } param0
+   * @returns
+   */
   const renderSearchTerms = ({ item }) => (
     <SearchSuggestionCard
       suggestion={item.suggestion}
@@ -47,6 +53,7 @@ export default function SearchSuggestionsScreen({ navigation }) {
       }}
     />
   );
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.searchBarContainer}>
@@ -57,8 +64,6 @@ export default function SearchSuggestionsScreen({ navigation }) {
             onChangeText={(text) => setSearchText(text)}
             value={searchText}
             onSubmitEditing={({ nativeEvent: { text } }) => {
-              console.log(text);
-              // TODO: Navigate to search page
               if (text !== "") {
                 navigation.navigate("SearchResults", { searchTerm: text });
               }
@@ -77,8 +82,6 @@ export default function SearchSuggestionsScreen({ navigation }) {
         <View style={styles.searchTextContainer}>
           <TouchableOpacity
             onPress={() => {
-              console.log(searchText);
-              // TODO: Navigate to search page
               if (searchText !== "") {
                 navigation.navigate("SearchResults", {
                   searchTerm: searchText,

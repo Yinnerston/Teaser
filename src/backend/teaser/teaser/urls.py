@@ -464,6 +464,10 @@ class PostsFeedController:
 
 @api_controller("/search")
 class SearchController:
+    """
+    Controller for search endpoints
+    """
+
     @route.get(
         "/suggestions/{query_str}",
         tags=["search"],
@@ -473,7 +477,7 @@ class SearchController:
         self, query_str: str, request: HttpRequest, response: HttpResponse
     ):
         """
-        Get search suggestions as the user creates a search query.
+        Get static search suggestions as the user creates a search query.
         """
         return search_posts_suggestions_service(query_str)
 
@@ -487,7 +491,7 @@ class SearchController:
         self, query_str: str, request: HttpRequest, response: HttpResponse
     ):
         """
-        Search for a post by the query_str
+        Search for a post by the query_str.
         """
         s_query_str = sanitization_utils.sanitize_str(query_str)
         return search_posts_results_service(s_query_str)

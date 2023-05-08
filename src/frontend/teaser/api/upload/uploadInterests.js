@@ -15,7 +15,6 @@ export async function setUserInterests(authToken, interests) {
         Authorization: `Bearer ${authToken}`,
       },
     );
-    console.log(response.status, response.data);
     return { status: response.status };
   } catch (error) {
     console.error(error);

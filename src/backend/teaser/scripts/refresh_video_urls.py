@@ -4,6 +4,11 @@ from teaser.settings import env
 
 
 def refresh_video_urls():
+    """
+    Refresh video urls before changes to update_post_status_service.
+    This script was used to fix inconsistencies in the video fallback resolutions used by PostsModel.video_url.
+    Deprecated by changes to update_post_status_service.
+    """
     invalid_posts = []
     for post in PostsModel.objects.all():
         # Thumbnail is good enough standin

@@ -5,10 +5,13 @@ from django.db.models import F
 from core.utils.search_validator import validate_query_str
 from django.db.models import CharField
 from django.db.models.functions import Cast
-import json
 
 
 def search_posts_suggestions_service(query_str):
+    """
+    Static list of search suggestions.
+    TODO: Tailor based on previous searches.
+    """
     return [
         {"suggestion": "Amateur", "is_hot": True, "is_trending": True},
         {"suggestion": "Roleplay", "is_hot": False, "is_trending": True},
@@ -22,6 +25,9 @@ def search_posts_suggestions_service(query_str):
 
 
 def search_posts_results_service(s_query_str):
+    """
+    Search for a description, user or category.
+    """
     s_query_str = validate_query_str(s_query_str)
     # TODO: SearchVector doesn't consider category aliases
     search_vector = SearchVector(
@@ -46,12 +52,9 @@ def search_posts_results_service(s_query_str):
             "video_url",
             "thumbnail_url",
             "video_mode",
-            "post_data",
             "reddit_score",
-            "user_id",
             post_id=F("id"),
             username=F("user_id__nfc_username"),
-            stage_name=F("user_id__stage_name"),  #
             profile_photo_url=F("user_id__profile_photo_url"),  #
         )
         .all()

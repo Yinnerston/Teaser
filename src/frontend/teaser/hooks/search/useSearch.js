@@ -47,7 +47,6 @@ export function getSearchSuggestionsQueryFn({ queryKey }) {
  */
 export function getSearchResultsQueryFn({ queryKey, pageParam = 1 }) {
   const [__searchString, _queryString, token_hash, searchTerm] = queryKey;
-  console.log("SEARCHING", searchTerm);
   // TODO: optionally add auth from token hash
   return getSearchResults(searchTerm, pageParam);
 }

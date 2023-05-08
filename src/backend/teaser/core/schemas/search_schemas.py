@@ -11,9 +11,7 @@ class SearchResultSchema(Schema):
     # Caption data / Author fields
     post_id: str = Field(example="uuid4")
     description: str = Field(example="Some Post")
-    user_id: int = Field(example=1)
     username: str = Field("testuser1")
-    stage_name: str = Field("Cat Person")
     profile_photo_url: str = Field(
         example="https://teasernsfw-dev.s3.ap-southeast-2.amazonaws.com/amogus.png"
     )
@@ -22,7 +20,6 @@ class SearchResultSchema(Schema):
     thumbnail_url: str = Field(
         example="https://teasernsfw-dev.s3.ap-southeast-2.amazonaws.com/amogus.png"
     )
-    post_data: dict = Field(example={})
     video_mode: int = Field(example=0, description="Portrait=0, Landscape=1")
     # sidebar fields
     reddit_score: int = None

@@ -6,7 +6,16 @@ from django.db import models
 
 
 class EventMetricsModel(models.Model):
+    """
+    Event metrics taken to generate insights.
+    Register / Login times, search histories, etc.
+    """
+
     class EventMetricTypes(models.IntegerChoices):
+        """
+        Types of event metrics.
+        """
+
         UNDEFINED = 0
         LOGIN = 1
         REGISTER = 2

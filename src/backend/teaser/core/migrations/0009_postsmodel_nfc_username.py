@@ -4,7 +4,9 @@ from django.db import migrations, models
 from core.models.post_models import PostsModel
 
 class Migration(migrations.Migration):
-
+    """
+    Migration that denormalized nfc_username to PostModels.
+    """
     dependencies = [
         ('core', '0008_postsmodel_is_nsfw_and_more'),
     ]

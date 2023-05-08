@@ -26,7 +26,6 @@ export const registerUserFunction = async ({
 
 export const loginUserFunction = async ({ username, password }) => {
   try {
-    console.log(username, password);
     const response = await axiosAPIClient.post("login", {
       username: username,
       password: password,
