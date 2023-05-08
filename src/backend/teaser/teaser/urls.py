@@ -469,14 +469,14 @@ class SearchController:
         tags=["search"],
         response=PaginatedResponseSchema[SearchSuggestionSchema],
     )
-    @paginate(PageNumberPaginationExtra, page_size=50)
+    @paginate(PageNumberPaginationExtra, page_size=8)
     def get_search_suggestions_endpoint(
         self, query_str: str, request: HttpRequest, response: HttpResponse
     ):
         """
         Get search suggestions as the user creates a search query.
         """
-        return search_posts_suggestions_service()
+        return search_posts_suggestions_service(query_str)
 
     @route.get(
         "/query/{query_str}",

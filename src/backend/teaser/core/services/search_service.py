@@ -9,7 +9,16 @@ import json
 
 
 def search_posts_suggestions_service(query_str):
-    return {}
+    return [
+        {"suggestion": "Amateur", "is_hot": True, "is_trending": True},
+        {"suggestion": "Roleplay", "is_hot": False, "is_trending": True},
+        {"suggestion": "Romantic", "is_hot": True, "is_trending": False},
+        {"suggestion": "Funny", "is_hot": False, "is_trending": False},
+        {"suggestion": "Fitness", "is_hot": True, "is_trending": False},
+        {"suggestion": "How To / Educational", "is_hot": False, "is_trending": False},
+        {"suggestion": "Video Games", "is_hot": False, "is_trending": False},
+        {"suggestion": "Dance", "is_hot": True, "is_trending": False},
+    ]
 
 
 def search_posts_results_service(s_query_str):
