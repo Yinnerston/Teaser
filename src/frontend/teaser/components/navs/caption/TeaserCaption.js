@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text } from "react-native";
 import SeeMoreTextExpandable from "../../elements/text/SeeMoreTextExpandable";
-
+import { TouchableOpacity } from "react-native-gesture-handler";
 /**
  * Container for the captions and tags of a teaser.
  * @param {navigation, captionData} props
@@ -14,9 +14,15 @@ export default function TeaserCaption(props) {
   // const {captionText, tags, actors} = captionData;
   return (
     <View style={styles.container}>
-      <Text style={styles.captionTitle}>
-        {stageName ? stageName : username}
-      </Text>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("ProfileViewFromFeed", { username: username })
+        }
+      >
+        <Text style={styles.captionTitle}>
+          {stageName ? stageName : username}
+        </Text>
+      </TouchableOpacity>
       <SeeMoreTextExpandable
         numberOfLines={2}
         textBody={description}
