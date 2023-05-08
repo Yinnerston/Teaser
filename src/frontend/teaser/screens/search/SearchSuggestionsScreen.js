@@ -79,7 +79,7 @@ export default function SearchSuggestionsScreen({ navigation }) {
       ) : (
         <FlatList
           data={searchQuerySuggestions.data}
-          keyExtractor={(item) => item.text}
+          keyExtractor={(item) => "SEARCHSUGGESTIONITEM" + item.text.toString()}
           renderItem={renderSearchTerms}
         />
       )}

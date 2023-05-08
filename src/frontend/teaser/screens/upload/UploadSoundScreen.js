@@ -161,7 +161,7 @@ export default function UploadSoundScreen({ navigation }) {
     <FlatList
       data={SONGS_DATA}
       renderItem={renderSongCard}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => "UPLOADSOUNDSONGCARDITEM" + item.id.toString()}
       ListHeaderComponent={renderSongForYouHeader}
     />
   );
@@ -172,7 +172,7 @@ export default function UploadSoundScreen({ navigation }) {
         <FlatList
           data={SONG_TAGS_DATA}
           renderItem={renderSongTagCard}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => "UPLOADSOUNDSONGTAGITEM" + item.id.toString()}
           numColumns={2}
           ListHeaderComponent={renderForYouSongs}
         />

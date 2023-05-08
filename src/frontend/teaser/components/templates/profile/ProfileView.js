@@ -157,7 +157,7 @@ export default function ProfileView({ navigation, route }) {
           .map((page) => page.results)
           .flat()}
         renderItem={renderProfileTeaserGridItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => "PROFILEVIEWITEM" + item.id.toString()}
         numColumns={3}
         initialNumToRender={12}
         maxToRenderPerBatch={12}

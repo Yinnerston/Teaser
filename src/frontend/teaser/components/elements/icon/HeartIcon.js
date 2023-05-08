@@ -8,10 +8,10 @@ import { HOME_NAV_ICON_SIZE } from "../../../Constants";
  * @returns
  */
 export default function HeartIcon(props) {
-  const { color, size } = props;
+  const { color, size, outline } = props;
   return (
     <AntDesign
-      name="heart"
+      name={outline ? "hearto" : "heart"}
       size={size ? size : HOME_NAV_ICON_SIZE}
       color={color}
     />

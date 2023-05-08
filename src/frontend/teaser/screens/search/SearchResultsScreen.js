@@ -25,7 +25,11 @@ export default function SearchResultsScreen({ navigation, route }) {
     keepPreviousData: true,
   });
 
-  // Render search data
+  /**
+   * Render search data. See SearchResultSchema
+   * @param {*} param0
+   * @returns
+   */
   const renderSearchResultCard = ({ item }) => (
     <SearchResultCard
       description={item.description}
@@ -50,7 +54,7 @@ export default function SearchResultsScreen({ navigation, route }) {
       <FlatList
         data={searchResults.data.pages.map((page) => page.results).flat()}
         renderItem={renderSearchResultCard}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => "SEARCHRESULTSITEM" + item.post_id.toString()}
         initialNumToRender={6}
         maxToRenderPerBatch={6}
         windowSize={6}

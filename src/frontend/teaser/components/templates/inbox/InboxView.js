@@ -57,7 +57,7 @@ export default function InboxView({ navigation }) {
       <FlatList
         data={MESSAGE_DATA}
         renderItem={renderInboxMessageCard}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => "INBOXVIEWITEM" + item.id.toString()}
         ListHeaderComponent={renderInboxHeaderCards}
       />
     </SafeAreaView>

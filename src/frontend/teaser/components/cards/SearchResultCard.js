@@ -2,7 +2,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-
+import HeartIcon from "../elements/icon/HeartIcon";
+import { numberFormatter } from "../../utils/numberFormatter";
 export default function SearchResultCard({
   description,
   thumbnailURL,
@@ -45,7 +46,12 @@ export default function SearchResultCard({
             <TouchableOpacity>
               <Text style={styles.usernameText}>{username}</Text>
             </TouchableOpacity>
-            <Text style={styles.likeCountText}>{likeCount}</Text>
+            <View style={styles.likeCountContainer}>
+              <HeartIcon size={14} color={"gray"} outline={true} />
+              <Text style={styles.likeCountText}>
+                {numberFormatter.format(likeCount)}
+              </Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -99,11 +105,16 @@ const useSearchResultCardStyles = () => {
       height: 16,
       borderRadius: 8,
     },
-    likeCountText: {
-      fontSize: 16,
+    likeCountContainer: {
       position: "absolute",
       right: 0,
       width: Math.min(width / 6 - 16, 44),
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    likeCountText: {
+      fontSize: 14,
       color: "gray",
       textAlign: "right",
     },
