@@ -86,12 +86,13 @@ const useSearchResultCardStyles = () => {
     horizontalCaptionContainer: {
       flex: 1,
       flexDirection: "row",
-      justifyContent: "flex-start",
+      // justifyContent: "flex-start",
       alignItems: "center",
     },
     usernameText: {
       fontSize: 16,
       color: "gray",
+      width: Math.min(width / 3, 120),
     },
     profilePhotoImage: {
       width: 16,
@@ -100,8 +101,11 @@ const useSearchResultCardStyles = () => {
     },
     likeCountText: {
       fontSize: 16,
+      position: "absolute",
+      right: 0,
+      width: Math.min(width / 6 - 16, 44),
       color: "gray",
-      alignContent: "flex-end",
+      textAlign: "right",
     },
   });
   return styles;
