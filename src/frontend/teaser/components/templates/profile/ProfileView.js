@@ -114,7 +114,6 @@ export default function ProfileView({ navigation, route }) {
     },
     keepPreviousData: true,
   });
-  const profileVideoRefs = useRef([]);
   const styles = useProfileViewStyle();
 
   /**
@@ -142,7 +141,6 @@ export default function ProfileView({ navigation, route }) {
       videoIdx={item.id}
       viewCount={item.reddit_score != null ? item.reddit_score : 0}
       isPinned={item.is_pinned}
-      ref={profileVideoRefs}
     />
   );
 
