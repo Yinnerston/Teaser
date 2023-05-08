@@ -35,6 +35,7 @@ export default function SearchResultsScreen({ navigation, route }) {
       description={item.description}
       thumbnailURL={item.thumbnail_url}
       videoURL={item.video_url}
+      videoMode={item.video_mode}
       profilePhotoUrl={item.profile_photo_url}
       username={item.username}
       viewCount={item.reddit_score}
