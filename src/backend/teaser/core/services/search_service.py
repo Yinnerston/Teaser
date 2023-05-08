@@ -1,6 +1,6 @@
 from core.models.post_models import PostsModel
 from core.models.event_metric_models import EventMetricsModel
-from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db.models import F
 from core.utils.search_validator import validate_query_str
 from django.db.models import CharField
@@ -17,6 +17,7 @@ def search_posts_results_service(s_query_str):
     search_vector = SearchVector(
         "description", "nfc_username", Cast("post_data__data__categories", CharField())
     )
+    search_query = SearchQuery(s_query_str, search_type="websearch")
     # TODO: is search_vector_idx being used correctly here?
     # Create event metric for search
     EventMetricsModel.objects.create(
@@ -25,7 +26,9 @@ def search_posts_results_service(s_query_str):
     )
     return (
         PostsModel.objects.annotate(search=search_vector)
-        .filter(search=s_query_str)
+        .filter(search=search_query)
+        .annotate(rank=SearchRank(search_vector, search_query))
+        .order_by("-rank")
         .select_related("user_id")
         .values(
             "description",
