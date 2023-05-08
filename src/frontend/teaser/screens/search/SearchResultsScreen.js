@@ -32,6 +32,7 @@ export default function SearchResultsScreen({ navigation, route }) {
    */
   const renderSearchResultCard = ({ item }) => (
     <SearchResultCard
+      navigation={navigation}
       description={item.description}
       thumbnailURL={item.thumbnail_url}
       videoURL={item.video_url}

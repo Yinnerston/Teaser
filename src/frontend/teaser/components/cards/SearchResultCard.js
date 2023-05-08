@@ -9,6 +9,7 @@ import { Video } from "expo-av";
 import { VIDEO_PORTRAIT } from "../../Constants";
 
 export default function SearchResultCard({
+  navigation,
   description,
   thumbnailURL,
   videoURL,
@@ -72,7 +73,13 @@ export default function SearchResultCard({
                   : { uri: "https://i.imgur.com/Xi20BYv.gif" }
               }
             />
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("ProfileViewFromFeed", {
+                  username: username,
+                })
+              }
+            >
               <Text style={styles.usernameText}>{username}</Text>
             </TouchableOpacity>
             <View style={styles.likeCountContainer}>
