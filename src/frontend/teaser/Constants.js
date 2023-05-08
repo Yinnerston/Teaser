@@ -63,3 +63,4 @@ export const NO_SONG_CHOSEN_FOREIGN_KEY = -1;
 
 // Pagination
 export const PAGINATION_LIMIT = 50;
+export const SEARCH_SUGGESTIONS_PAGINATION_LIMIT = 8;

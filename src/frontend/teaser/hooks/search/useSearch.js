@@ -1,7 +1,11 @@
-import { getSearchResults } from "../../api/search/searchApi";
+import {
+  getSearchResults,
+  getSearchSuggestions,
+} from "../../api/search/searchApi";
 
 /**
  * Get the key for search suggestions
+ * TODO: dynamic search suggestions by searchTerm
  * @param {*} token_hash
  * @param {*} searchTerm
  * @returns
@@ -26,13 +30,14 @@ export function getSearchQueryKey(userAuthAtomValue, searchTerm) {
 
 /**
  * Get search suggestions each time text changes.
+ * TODO: search suggestions implementation in backend
  * @param { queryKey } param0
  * @returns
  */
-export function getSearchSuggestions({ queryKey }) {
+export function getSearchSuggestionsQueryFn({ queryKey }) {
   const [_searchString, _suggestionsString, token_hash, searchTerm] = queryKey;
   // TODO: optionally add auth from token hash
-  return {};
+  return getSearchSuggestions("TODO");
 }
 
 /**

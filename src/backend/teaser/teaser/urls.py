@@ -467,9 +467,8 @@ class SearchController:
     @route.get(
         "/suggestions/{query_str}",
         tags=["search"],
-        response=PaginatedResponseSchema[SearchSuggestionSchema],
+        response=List[SearchSuggestionSchema],
     )
-    @paginate(PageNumberPaginationExtra, page_size=8)
     def get_search_suggestions_endpoint(
         self, query_str: str, request: HttpRequest, response: HttpResponse
     ):

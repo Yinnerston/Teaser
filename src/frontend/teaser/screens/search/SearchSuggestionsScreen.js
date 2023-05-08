@@ -3,29 +3,81 @@ import { TextInput } from "react-native-gesture-handler";
 import { View, StyleSheet, Text } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { useState } from "react";
-import { useQuery } from "react-query";
 import { SEARCH_BUTTON_TEXT_COLOR } from "../../Constants";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  getSearchSuggestions,
-  getSearchSuggestionsKey,
-} from "../../hooks/search/useSearch";
-import { readOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
-import { useAtom } from "jotai";
+// import { useQuery } from "react-query";
+// import {
+// getSearchSuggestionsQueryFn,
+// getSearchSuggestionsKey,
+// } from "../../hooks/search/useSearch";
+// import { readOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
+// import { useAtom } from "jotai";
+import SearchSuggestionCard from "../../components/cards/SearchSuggestionsCard";
+
+const searchSuggestions = [
+  {
+    suggestion: "Amateur",
+    is_hot: true,
+    is_trending: true,
+  },
+  {
+    suggestion: "Roleplay",
+    is_hot: false,
+    is_trending: true,
+  },
+  {
+    suggestion: "Romantic",
+    is_hot: true,
+    is_trending: false,
+  },
+  {
+    suggestion: "Funny",
+    is_hot: false,
+    is_trending: false,
+  },
+  {
+    suggestion: "Fitness",
+    is_hot: true,
+    is_trending: false,
+  },
+  {
+    suggestion: "How To / Educational",
+    is_hot: false,
+    is_trending: false,
+  },
+  {
+    suggestion: "Video Games",
+    is_hot: false,
+    is_trending: false,
+  },
+  {
+    suggestion: "Dance",
+    is_hot: true,
+    is_trending: false,
+  },
+];
 
 export default function SearchSuggestionsScreen({ navigation }) {
-  const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
   const [searchText, setSearchText] = useState("");
+  // const [userAuthAtomValue] = useAtom(readOnlyUserAuthAtom);
   // const [searchQueryOnSubmit, setSearchQueryOnSubmit] = useState("");
-  const searchQuerySuggestions = useQuery({
-    queryKey: getSearchSuggestionsKey(userAuthAtomValue, searchText),
-    queryFn: getSearchSuggestions,
-    keepPreviousData: true,
-  }); // TODO: implement fetch autocomplete
+  // const searchQuerySuggestions = useQuery({
+  //   queryKey: getSearchSuggestionsKey(userAuthAtomValue, searchText),
+  //   queryFn: getSearchSuggestionsQueryFn,
+  //   keepPreviousData: true,
+  // }); // TODO: implement fetch autocomplete
   const renderSearchTerms = ({ item }) => (
-    <View>
-      <Text>{item.text}</Text>
-    </View>
+    <SearchSuggestionCard
+      suggestion={item.suggestion}
+      isHot={item.is_hot}
+      isTrending={item.is_trending}
+      handlePressSuggestion={() => {
+        setSearchText(item.suggestion);
+        if (item.suggestion !== "") {
+          navigation.navigate("SearchResults", { searchTerm: item.suggestion });
+        }
+      }}
+    />
   );
   return (
     <SafeAreaView style={styles.container}>
@@ -70,19 +122,11 @@ export default function SearchSuggestionsScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </View>
-      {searchQuerySuggestions.isLoading ? (
-        searchQuerySuggestions.isError ? (
-          <Text>Error</Text>
-        ) : (
-          <Text>...Loading</Text>
-        )
-      ) : (
-        <FlatList
-          data={searchQuerySuggestions.data}
-          keyExtractor={(item) => "SEARCHSUGGESTIONITEM" + item.text.toString()}
-          renderItem={renderSearchTerms}
-        />
-      )}
+      <FlatList
+        data={searchSuggestions}
+        keyExtractor={(item) => "SEARCHSUGGESTIONITEM" + Math.random()}
+        renderItem={renderSearchTerms}
+      />
     </SafeAreaView>
   );
 }
