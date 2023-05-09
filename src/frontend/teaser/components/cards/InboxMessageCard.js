@@ -13,23 +13,30 @@ import {
  * @param {navigation} props
  * @returns
  */
-export default function InboxMessageCard(props) {
-  const { navigation } = props;
+export default function InboxMessageCard({
+  navigation,
+  username,
+  profilePhotoUrl,
+  lastMessage,
+}) {
   const styles = useInboxMessageCardStyle();
   return (
-    <TouchableOpacity style={styles.container} onPress={() => {}}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => navigation.navigate("ChatScreen", { username: username })}
+    >
       <View style={styles.profilePhotoContainer}>
         <Image
           style={styles.profilePhoto}
           source={{
-            uri: "https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png",
+            uri: profilePhotoUrl,
             // TODO: Use react query to fetch user profile with userAuthAtomValue token
           }}
         ></Image>
       </View>
       <View style={styles.messageBodyContainer}>
-        <Text>Username HERE</Text>
-        <Text>Text body HERE</Text>
+        <Text>{username}</Text>
+        <Text numberOfLines={2}>{lastMessage}</Text>
       </View>
     </TouchableOpacity>
   );
