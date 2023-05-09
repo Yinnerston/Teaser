@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   backend-django:
     build: ./src/backend/teaser
@@ -58,22 +57,31 @@ services:
   certbot:
     image: certbot/certbot
     restart: unless-stopped
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew ${PROSODY_INTEGRATION}; sleep 12h & wait $${!}; done;'"
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
+    environment:
+      - PROSODY_INTEGRATION=--deploy-hook "prosodyctl --root cert import /etc/letsencrypt/live"
   prosody:
     image: prosody/prosody
+    build: ./prosody
     ports:
       - 5222:5222
       - 5269:5269
+      - 5280:5280
+    depends_on:
+      - nginx
     volumes:
       - ./prosody/config:/etc/prosody
       - ./prosody/log:/var/log/prosody
-      - ./prosody/modules:/usr/lib/prosody-modules
+      - ./certbot/conf:/etc/letsencrypt
+      # - ./prosody/modules:/usr/lib/prosody/prosody-modules-enabled
     environment:
       - PROSODY_PASSWORD=${PROSODY_PASSWORD}
       - PROSODY_DOMAIN=${PROSODY_DOMAIN}
+      - PROSODY_VIRTUAL_HOSTS=${PROSODY_VIRTUAL_HOSTS}
+      - PROSODY_INTEGRATION=${PROSODY_INTEGRATION}
 
 volumes:
   static_volume:

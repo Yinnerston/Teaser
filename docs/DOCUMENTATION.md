@@ -19,6 +19,9 @@ CDN_API_KEY=???
 - `.env`:
 ```bash
 POSTGRES_PASSWORD=???
+PROSODY_PASSWORD=???
+PROSODY_DOMAIN=wocchit.com
+PROSODY_VIRTUAL_HOSTS=wocchit.com
 ```
 - Unicode: https://unicode.org/faq/normalization.html
   - nfkc_username --> Use for identifier
@@ -72,7 +75,19 @@ user_agent=Python-Slim:teaser-script:v1.0.0 (by u/YOUR_USERNAME)
 # Known Bugs:
 - `... Invariant Violation:` --> Check first error
 - https://github.com/henninghall/react-native-date-picker#why-does-the-android-app-crash-in-production
-- ```
+-
+```
 Error: Call to function 'ExponentImagePicker.launchImageLibraryAsync' has been rejected.
 Caused by: kotlin.UninitializedPropertyAccessException: lateinit property imageLibraryLauncher has not been initialized
-``` https://github.com/expo/expo/issues/19512
+```
+- https://github.com/expo/expo/issues/19512
+
+# Firewall:
+
+- Need to add port mappings to your modem if you are hosting locally
+- HTTPS: 443:443
+- HTTP: 80:80
+- Frontend Expo Dev Client: 8081:8081
+- XMPP c2s: 5222:5222
+- XMPP s2s: 5269:5269
+- XMPP http: 5280:5280

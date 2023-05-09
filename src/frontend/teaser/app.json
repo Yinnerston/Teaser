@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "teaser",
+    "name": "Teaser",
     "slug": "teaser-dev",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -18,7 +18,7 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.yinnerston.teaser",
       "infoPlist": {
         "NSCameraUsageDescription": "Teaser needs access to your Camera.",
