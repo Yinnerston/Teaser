@@ -6,6 +6,7 @@ services:
     ports:
       - 8069:8000
     volumes:
+      - static_volume:/app/static
       - ./src/backend/teaser:/app
     env_file:
       - .backend.env

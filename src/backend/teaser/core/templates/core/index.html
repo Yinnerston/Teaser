@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE HTML>
+<!-- https://dev.to/miacan2021/fade-in-animation-on-scroll-with-intersectionobserver-vanilla-js-4p27 -->
+<html>
+	<head>
+		<title>TeaserNSFW</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{% static 'core/assets/css/index.css' %}" />
+	</head>
+	<body class="is-preload">
+        <img class="teaserGif" src="{% static 'core/images/Teaser!.gif' %}" alt="TeaserGif" height="auto" width="auto"/>
+		<!-- https://codepen.io/Momika/pen/ydaWmQ -->
+		<div class="downloadBody">
+			<h1 class="sloganText">Tiktok for OnlyFans.</h1>
+			<p class="releaseDateText">Scheduled for release in June.</p>
+			<img class="teaserQRCode" src="{% static 'core/images/qr-code.svg' %}" alt="TeaserQRCode" loading="lazy"/>
+		</div>
+		<div>
+			<h3 class="suggestionsHeader">Screenshots</h3>
+			<!-- TODO: Define onmouseover="enlargePreview(this)" and onClick="handleScreenshotClick(this)" functions -->
+			<ul>
+				<li>
+					<img loading="lazy" />
+				</li>
+			</ul>
+		</div>
+	</body>
+</html>

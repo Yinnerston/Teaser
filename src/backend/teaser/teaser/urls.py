@@ -64,7 +64,7 @@ from core.utils import sanitization_utils
 from core.services.user_auth_services import AuthBearer
 
 # Views
-from core.views.views import OpenAIGeneratedImageView
+from core.views.views import IndexView, OpenAIGeneratedImageView
 
 from ninja import NinjaAPI, File
 from ninja.files import UploadedFile
@@ -371,6 +371,7 @@ def create_post_endpoint(
     # s_post_data = sanitization_utils.CleanJson(us_post_data).get()
 
     s_is_private = post_dict["is_private"]
+    s_is_nsfw = post_dict["is_nsfw"]
     s_has_comments = post_dict["has_comments"]
     return create_post_service(
         s_description=s_description,
@@ -378,6 +379,7 @@ def create_post_endpoint(
         s_song_id=s_song_id,
         s_post_type=s_post_type,
         s_post_data=us_post_data,  # TODO: Validations on fields
+        s_is_nsfw=s_is_nsfw,
         s_is_private=s_is_private,
         s_has_comments=s_has_comments,
         us_file=us_file,  # TODO: Validation on data?
@@ -520,6 +522,7 @@ api.register_controllers(PostsFeedController)
 api.register_controllers(SearchController)
 
 urlpatterns = [
+    path("", IndexView, name="Index View"),
     path("admin/", include("admin_honeypot.urls", namespace="admin_honeypot")),
     path("ratio/", admin.site.urls),
     path("api/v1/", api.urls),

@@ -1,0 +1,38 @@
+.teaserGif {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.downloadBody {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.teaserQRCode {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+  height: 30%;
+}
+
+.sloganText {
+  text-align: center;
+}
+
+.releaseDateText {
+  text-align: center;
+}
+
+.suggestionsList {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  list-style-type: none;
+}
+
+.suggestionsHeader {
+  text-align: center;
+}
