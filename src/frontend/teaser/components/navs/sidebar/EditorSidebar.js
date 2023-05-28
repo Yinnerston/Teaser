@@ -8,7 +8,10 @@ import { useAtom } from "jotai";
 /**
  * Container for the sidebar of a Camera View.
  */
-export default function EditorSidebar() {
+export default function EditorSidebar({
+  setCameraTorchIsOn,
+  handleRecordVideo,
+}) {
   const [isRecording, _setIsRecording] = useAtom(readOnlyIsRecordingAtom);
   const styles = useSidebarStyle();
 
@@ -16,8 +19,8 @@ export default function EditorSidebar() {
     return (
       <View style={styles.container}>
         <FlipCameraButton></FlipCameraButton>
-        <RecordingCountdownButton></RecordingCountdownButton>
-        <CameraFlashButton></CameraFlashButton>
+        <RecordingCountdownButton handleRecordVideo={handleRecordVideo} />
+        <CameraFlashButton setCameraTorchIsOn={setCameraTorchIsOn} />
       </View>
     );
   } else {

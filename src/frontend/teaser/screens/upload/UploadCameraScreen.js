@@ -48,6 +48,7 @@ export default function UploadCameraScreen(props) {
   const isFocused = useIsFocused();
   const cameraRef = useRef(null);
   const styles = useUploadTeaserViewStyles();
+  const [cameraTorchIsOn, setCameraTorchIsOn] = useState("off"); // https://www.react-native-vision-camera.com/docs/api/interfaces/CameraProps#torch
   // UI state variables
   // isRecording --> Hide sidebar
   // useState
@@ -118,8 +119,12 @@ export default function UploadCameraScreen(props) {
         ref={cameraRef}
         video={true}
         audio={true}
+        torch={cameraTorchIsOn}
       />
-      <EditorSidebar></EditorSidebar>
+      <EditorSidebar
+        setCameraTorchIsOn={setCameraTorchIsOn}
+        handleRecordVideo={handleRecordVideo}
+      />
       <UploadCameraShutterView
         navigation={navigation}
         handleRecordVideo={handleRecordVideo}
