@@ -8,9 +8,18 @@ import { VIDEO_EDITOR_SIDEBAR_BUTTON_SIZE } from "../../../../Constants";
  * ^ Hides sidebar, show countdown component over camera shutter
  * @returns
  */
-export default function RecordingCountdownButton() {
+export default function RecordingCountdownButton({ handleRecordVideo }) {
+  const handleRecordingCountdownOnPress = () => {
+    setTimeout(() => {
+      // TODO: add countdown animation
+      handleRecordVideo();
+    }, 3000);
+  };
   return (
-    <TouchableOpacity style={editorSidebarStyles.buttonContainerStyle}>
+    <TouchableOpacity
+      style={editorSidebarStyles.buttonContainerStyle}
+      onPress={handleRecordingCountdownOnPress}
+    >
       <RecordingCountdownIcon
         color={"white"}
         size={VIDEO_EDITOR_SIDEBAR_BUTTON_SIZE}
