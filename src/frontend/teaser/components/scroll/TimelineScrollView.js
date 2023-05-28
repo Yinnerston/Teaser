@@ -185,7 +185,7 @@ export const TimelineScrollView = forwardRef(
             key={"TIMELINEVIDEOELEMENT" + item.key}
           />
         )),
-      [queue, selectedComponentKey],
+      [queue, selectedComponentKey, userIsReorderingTimeline],
     );
 
     // /**
