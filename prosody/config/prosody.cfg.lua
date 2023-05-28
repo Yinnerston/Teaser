@@ -8,6 +8,11 @@ VirtualHost "wocchit.com"
         -- https_certificate = “/etc/prosody/certs/wocchit.com.crt”;
         -- https_key = “/etc/prosody/certs/wocchit.com.key”;
     }
+
+    oauth_external_discovery_url = "https//wocchit.com/api/v1/token/create"
+    oauth_external_token_endpoint = "https//wocchit.com/api/v1/token/valid"
+    oauth_external_validation_endpoint = "https//auth.example.com/auth/realms/TheRealm/protocol/openid-connect/userinfo"
+    oauth_external_username_field = "stage_name"
     -- TODO: https://prosody.im/doc/letsencrypt
     c2s_interfaces = { "192.168.0.1", "::1", "wocchit.com" }
     c2s_require_encryption = true

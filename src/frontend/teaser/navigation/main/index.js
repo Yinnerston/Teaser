@@ -22,6 +22,8 @@ import SetInterestsScreen from "../../screens/auth/SetInterestsScreen";
 import SearchSuggestionsScreen from "../../screens/search/SearchSuggestionsScreen";
 import ProfileView from "../../components/templates/profile/ProfileView";
 import SearchResultsScreen from "../../screens/search/SearchResultsScreen";
+// Chat
+import ChatScreen from "../../screens/ChatScreen";
 
 const Stack = createStackNavigator();
 
@@ -136,6 +138,13 @@ export default function MainNavigator() {
           name="SearchResults"
           component={SearchResultsScreen}
           options={{ title: "Search Results", headerShown: true }}
+        />
+      </Stack.Group>
+      <Stack.Group>
+        <Stack.Screen
+          name="ChatScreen"
+          component={ChatScreen}
+          options={{ title: "Chat screen with X" }}
         />
       </Stack.Group>
     </Stack.Navigator>

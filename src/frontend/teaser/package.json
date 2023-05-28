@@ -9,6 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@converse/headless": "^10.1.2",
     "@expo/vector-icons": "^13.0.0",
     "@react-native-community/cli-platform-android": "^10.2.0",
     "@react-native-community/datetimepicker": "6.7.3",

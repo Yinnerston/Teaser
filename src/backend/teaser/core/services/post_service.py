@@ -281,17 +281,18 @@ def get_general_feed_service():
     #     ).values(
     #     "id", "description", "author_id", "username", "stage_name", "video_url", "thumbnail_url", "video_mode", "post_data", "reddit_score").all()
     # TODO: THIS IS A N+1 PROBLEM:
-    vanilla_category_aliases = [
-        "Amateur",
-        "Roleplay",
-        "Romantic",
-        "Funny",
-        "Fitness",
-        "How To / Educational",
-        "Video Games",
-        "Dance",
-        "Oral",
-    ]
+    # vanilla_category_aliases = [
+    #     "Amateur",
+    #     "Roleplay",
+    #     "Romantic",
+    #     "Funny",
+    #     "Fitness",
+    #     "How To / Educational",
+    #     "Video Games",
+    #     "Dance",
+    #     "Oral",
+    # ]
+    vanilla_category_aliases = ["Funny"]
     # TODO: Probably more efficient to generate PostCategoriesModel queryset by iterating through vanilla_category_aliases
     # then selecting using the __in operator on ^.post_id?
     output = (

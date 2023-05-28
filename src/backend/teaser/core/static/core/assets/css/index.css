@@ -1,0 +1,43 @@
+.teaserGif {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.downloadBody {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.teaserQRCode {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+  height: 30%;
+}
+
+.sloganText {
+  text-align: center;
+}
+
+.releaseDateText {
+  text-align: center;
+}
+
+.suggestionsList {
+  display: block;
+}
+
+.screenshotsHeader {
+  text-align: center;
+}
+
+.screenshotsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  list-style-type: none;
+  margin-left: auto;
+  margin-right: auto;
+}

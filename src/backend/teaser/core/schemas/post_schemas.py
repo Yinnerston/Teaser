@@ -12,7 +12,9 @@ class CreatePostSchema(Schema):
     has_comments: bool = Field(example=True)
     is_nsfw: bool = Field(example=True)
     is_private: bool = Field(example=False)
-    song_id: int = Field(example=1, default=NO_SONG_CHOSEN_FOREIGN_KEY)
+    song_id: int = Field(
+        example=NO_SONG_CHOSEN_FOREIGN_KEY, default=NO_SONG_CHOSEN_FOREIGN_KEY
+    )
     post_type: int = Field(example=0, description="ENUM {TEASER: 0, QUESTION: 1}")
     post_data: dict = Field(default={"data": {"categories": []}, "question": {}})
 
