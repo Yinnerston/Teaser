@@ -51,6 +51,7 @@ from core.services.search_service import (
 )
 from core.services.user_post_relationship_service import (
     like_post_service,
+    bookmark_post_service,
 )
 
 # Import schemas
@@ -416,13 +417,14 @@ def bookmark_post_endpoint(request, payload: UserPostActivitySchema):
     post_dict = payload.dict()
     s_teaser_user = request.auth.teaser_user_id
     us_post_id = post_dict["post_id"]
+    return bookmark_post_service(s_teaser_user, us_post_id)
 
 
-@api.post("posts/share", tags=["posts"], auth=AuthBearer())
-def share_post_endpoint(request, payload: UserPostActivitySchema):
-    post_dict = payload.dict()
-    s_teaser_user = request.auth.teaser_user_id
-    us_post_id = post_dict["post_id"]
+# @api.post("posts/share", tags=["posts"], auth=AuthBearer())
+# def share_post_endpoint(request, payload: UserPostActivitySchema):
+#     post_dict = payload.dict()
+#     s_teaser_user = request.auth.teaser_user_id
+#     us_post_id = post_dict["post_id"]
 
 
 @api_controller("/posts")

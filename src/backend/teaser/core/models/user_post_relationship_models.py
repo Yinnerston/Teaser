@@ -39,6 +39,8 @@ class BookmarkedPostsModel(models.Model):
 class SharedPostsModel(models.Model):
     """
     Shared posts model.
+    TODO: Going to change this instead of counting the number of shares,
+    to instead return the information used on the share post screen
     """
 
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE)
