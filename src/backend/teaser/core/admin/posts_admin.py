@@ -26,6 +26,10 @@ class PostsModelAdmin(admin.ModelAdmin):
         "video_id",
         "video_url",
         "upload_url",
+        "n_likes",
+        "n_bookmarks",
+        "n_shares",
+        "n_comments",
     ]
     search_fields = [
         "description",

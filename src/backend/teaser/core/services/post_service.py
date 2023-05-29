@@ -159,7 +159,9 @@ def etl_post_service(
             post_type=TEASER_POST_TYPE,
             post_data=s_post_data,
             reddit_id=s_reddit_id,
-            reddit_score=s_reddit_score,
+            n_likes=s_reddit_score,
+            n_bookmarks=s_reddit_score,
+            n_shares=s_reddit_score,
             nfc_username=teaser_user_model.nfc_username,
         )
         # Link post categories to post
@@ -312,7 +314,10 @@ def get_general_feed_service():
             thumbnail_url=F("post_id__thumbnail_url"),
             video_mode=F("post_id__video_mode"),
             post_data=F("post_id__post_data"),
-            reddit_score=F("post_id__reddit_score"),
+            n_likes=F("post_id__n_likes"),
+            n_bookmarks=F("post_id__n_bookmarks"),
+            n_shares=F("post_id__n_shares"),
+            n_comments=F("post_id__n_comments"),
         )
         .all()
     )

@@ -49,6 +49,9 @@ from core.services.search_service import (
     search_posts_suggestions_service,
     search_posts_results_service,
 )
+from core.services.user_post_relationship_service import (
+    like_post_service,
+)
 
 # Import schemas
 from core.schemas.user_auth_schemas import *
@@ -56,6 +59,7 @@ from core.schemas.openai_schemas import *
 from core.schemas.post_schemas import *
 from core.schemas.user_profile_schemas import *
 from core.schemas.search_schemas import *
+from core.schemas.user_post_relationship_schemas import *
 
 # Basic Sanitizers
 from core.utils import sanitization_utils
@@ -397,6 +401,28 @@ def update_posts_status_endpoint(request, payload: UpdatePostStatusSchema):
     us_status = post_status_dict["Status"]
     # TODO: Sanitize
     return update_post_status_service(us_library_id, us_video_id, us_status)
+
+
+@api.post("posts/like", tags=["posts"], auth=AuthBearer())
+def like_post_endpoint(request, payload: UserPostActivitySchema):
+    post_dict = payload.dict()
+    s_teaser_user = request.auth.teaser_user_id
+    us_post_id = post_dict["post_id"]
+    return like_post_service(s_teaser_user, us_post_id)
+
+
+@api.post("posts/bookmark", tags=["posts"], auth=AuthBearer())
+def bookmark_post_endpoint(request, payload: UserPostActivitySchema):
+    post_dict = payload.dict()
+    s_teaser_user = request.auth.teaser_user_id
+    us_post_id = post_dict["post_id"]
+
+
+@api.post("posts/share", tags=["posts"], auth=AuthBearer())
+def share_post_endpoint(request, payload: UserPostActivitySchema):
+    post_dict = payload.dict()
+    s_teaser_user = request.auth.teaser_user_id
+    us_post_id = post_dict["post_id"]
 
 
 @api_controller("/posts")
