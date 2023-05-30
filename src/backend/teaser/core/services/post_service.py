@@ -120,10 +120,6 @@ def create_post_service(
     post_model.video_url = (
         "https://" + pull_zone + ".b-cdn.net/" + str(video_id) + "/play_720p.mp4"
     )
-    # TODO: figure out a way to make this preview.webp given possible data rate constraints?
-    post_model.thumbnail_url = (
-        "https://" + pull_zone + ".b-cdn.net/" + str(video_id) + "/thumbnail.jpg"
-    )
     # TODO: post_model.video_mode
     post_model.save()
     return {
@@ -269,6 +265,17 @@ def update_post_status_service(us_library_id: int, us_video_id: str, us_status: 
     aspect_ratio = response_json["width"] / response_json["height"]
     if aspect_ratio > 1:
         post.video_mode = PostsModel.VideoModes.LANDSCAPE
+    # set thumbnail jpg to thumbnail filename otherwise set default
+    if response_json["thumbnailFileName"]:
+        # TODO: figure out a way to make this preview.webp given possible data rate constraints?
+        post.thumbnail_url = (
+            "https://"
+            + pull_zone
+            + ".b-cdn.net/"
+            + str(post.video_id)
+            + "/"
+            + response_json["thumbnailFileName"]
+        )
     post.save()
     return {}
 

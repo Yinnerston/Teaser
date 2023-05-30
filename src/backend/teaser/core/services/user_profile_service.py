@@ -84,7 +84,7 @@ def get_profile_posts_service(us_username):
             "thumbnail_url",
             "video_mode",
             "post_data",
-            "reddit_score",
+            "n_likes",
         )
         .all()
     )
@@ -107,7 +107,7 @@ def get_own_profile_posts_service(s_teaser_user):
             "thumbnail_url",
             "video_mode",
             "post_data",
-            "reddit_score",
+            "n_likes",
         )
         .all()
     )

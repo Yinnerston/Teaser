@@ -39,8 +39,8 @@ export default function SearchResultsScreen({ navigation, route }) {
       videoMode={item.video_mode}
       profilePhotoUrl={item.profile_photo_url}
       username={item.username}
-      viewCount={item.reddit_score}
-      likeCount={item.reddit_score}
+      viewCount={item.n_likes}
+      likeCount={item.n_likes}
     />
   );
 

@@ -139,7 +139,7 @@ export default function ProfileView({ navigation, route }) {
       thumbnailURL={item.thumbnail_url}
       videoMode={item.video_mode}
       videoIdx={item.id}
-      viewCount={item.reddit_score != null ? item.reddit_score : 0}
+      viewCount={item.n_likes != null ? item.n_likes : 0}
       isPinned={item.is_pinned}
     />
   );

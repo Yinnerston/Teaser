@@ -52,7 +52,10 @@ def search_posts_results_service(s_query_str):
             "video_url",
             "thumbnail_url",
             "video_mode",
-            "reddit_score",
+            "n_likes",
+            "n_bookmarks",
+            "n_shares",
+            "n_comments",
             post_id=F("id"),
             username=F("user_id__nfc_username"),
             profile_photo_url=F("user_id__profile_photo_url"),  #

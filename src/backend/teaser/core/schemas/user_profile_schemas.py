@@ -34,8 +34,4 @@ class ProfileFeedResponseSchema(Schema):
     post_data: dict = Field(example={})
     video_mode: int = Field(example=0, description="Portrait=0, Landscape=1")
     # sidebar fields
-    reddit_score: int = None
-    # n_likes: int = Field(example=30)
-    # n_bookmarks: int = Field(example=20)
-    # n_shares: int = Field(example=10)
-    # n_comments: int = Field(example=5)
+    n_likes: int = Field(example=30)

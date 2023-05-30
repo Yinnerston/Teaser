@@ -96,10 +96,10 @@ export default function TeaserViewList({ navigation }) {
           sidebarData={{
             username: item.username,
             profilePhotoUrl: item.profile_photo_url,
-            likeCount: item.reddit_score,
-            bookmarkCount: item.reddit_score,
-            commentCount: item.reddit_score,
-            shareCount: item.reddit_score,
+            likeCount: item.n_likes,
+            bookmarkCount: item.n_bookmarks,
+            commentCount: item.n_comments,
+            shareCount: item.n_shares,
           }}
         ></TeaserView>
       );
