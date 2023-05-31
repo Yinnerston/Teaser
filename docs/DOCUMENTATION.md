@@ -22,6 +22,7 @@ POSTGRES_PASSWORD=???
 PROSODY_PASSWORD=???
 PROSODY_DOMAIN=wocchit.com
 PROSODY_VIRTUAL_HOSTS=wocchit.com
+GF_SECURITY_ADMIN_PASSWORD='???'
 ```
 - Unicode: https://unicode.org/faq/normalization.html
   - nfkc_username --> Use for identifier
@@ -67,6 +68,25 @@ user_agent=Python-Slim:teaser-script:v1.0.0 (by u/YOUR_USERNAME)
 - Download data from reddit using the django `manage.py shell` --> `RedditETL().run_pipeline()`
 - Use black python code formatter
 
+# Setup Grafana + prometheus
+- Install Docker plugin for Loki `docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions` in shell.
+- Run `docker run -ti --user root --entrypoint bash teaser_grafana` then in container run `chown -R root:root etc/grafana && chmod -R a+r /etc/grafana && chown -R grafana:root /var/lib/grafana && chown -R grafana:root /usr/share/grafana` based on https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/#migrate-to-v51-or-later
+- Add a password `GF_SECURITY_ADMIN_PASSWORD=PASSWORD_HERE` to the `.env` file
+- Go to localhost:3000
+- Login to grafana admin:admin --> Change password(You added the password to the .env file)
+- In your the grafana interface in your browser:
+    - Go Configuration > Data Sources
+    - Add data source > Pick Prometheus
+    - Set URL as http://prometheus:9090
+    - Save and Test
+- Setup loki data source
+    - Add data source > Pick Loki
+    - Set URL as http://loki:3100
+    - Save and Test
+- Import the dashboards (*.json files) from the `src/grafana/data:/grafana/data` directory
+  - Make sure the data sources are correct --> E.G. might have `prometheus` instead of `prometheus-1`
+- (Unused) Define REDIS_USERNAME and REDIS_PASSWORD in .env file
+- If you get a permission denied error on starting prometheus container, run `sudo chown nobody:nogroup src/prometheus`
 
 # Postgres
 

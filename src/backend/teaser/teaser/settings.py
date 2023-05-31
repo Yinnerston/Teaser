@@ -36,6 +36,7 @@ ALLOWED_HOSTS = [
     ".wocchit.com",
     "teasernsfw",
     ".teasernsfw.com",
+    "backend-django",  # prometheus logging
 ]
 
 if env("DEBUG") == "1":
@@ -49,6 +50,7 @@ if env("DEBUG") == "1":
         ".wocchit.com",
         "teasernsfw",
         ".teasernsfw.com",
+        "backend-django",  # prometheus logging
         env("PUBLIC_IP"),
     ]
 
@@ -62,6 +64,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    "django_prometheus",
     "admin_honeypot",  # TODO: Setup listener on admin_honeypot.signals.honeypot() signal
     "ninja_extra",
     "core",
@@ -70,6 +73,7 @@ INSTALLED_APPS = [
 NINJA_EXTRA = {"PAGINATION_CLASS": "ninja_extra.pagination.PageNumberPaginationExtra"}
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -77,6 +81,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "teaser.urls"
@@ -105,7 +110,7 @@ WSGI_APPLICATION = "teaser.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django_prometheus.db.backends.postgresql",
         "NAME": "teaser",
         "USER": "teaseruser",
         "PASSWORD": env("POSTGRES_PASSWORD"),

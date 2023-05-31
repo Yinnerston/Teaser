@@ -559,4 +559,5 @@ urlpatterns = [
         OpenAIGeneratedImageView,
         name="OpenAI Images",
     ),
+    path("", include("django_prometheus.urls")),
 ]
