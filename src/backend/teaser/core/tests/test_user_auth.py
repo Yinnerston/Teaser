@@ -10,11 +10,15 @@ from core.models.user_auth_models import TeaserUserModel
 from django.contrib.auth.models import User
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import sentry_sdk
 
 
 class TestUserAuthRegisterService(TestCase):
     @classmethod
     def setUpTestData(cls):
+        # Do not report test errors to sentry
+        sentry_sdk.init(dsn="")
+
         cls.register_data = {
             "username": "testuser1",
             "phone": "+61499499499",

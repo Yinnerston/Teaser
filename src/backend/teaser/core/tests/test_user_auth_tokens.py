@@ -4,11 +4,15 @@ from core.models.user_auth_models import AuthTokenModel, TeaserUserModel
 from core.utils.user_auth_token_utils import check_and_get_valid_auth_token
 from datetime import datetime, timedelta
 from pytz import UTC
+import sentry_sdk
 
 
 class TestUserAuthTokenService(TestCase):
     @classmethod
     def setUpTestData(cls):
+        # Do not report test errors to sentry
+        sentry_sdk.init(dsn="")
+        # Register a user
         cls.register_data = {
             "username": "testuser1",
             "phone": "+61499499499",
