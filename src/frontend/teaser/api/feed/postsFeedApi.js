@@ -35,3 +35,21 @@ export function likePost(authToken, postID) {
     });
   return response;
 }
+
+export function bookmarkPost(authToken, postID) {
+  const response = axiosAPIClient
+    .post(
+      "posts/bookmark",
+      {
+        post_id: postID,
+      },
+      {
+        headers: { accept: "*/*", Authorization: `Bearer ${authToken}` },
+      },
+    )
+    .then((res) => res.data)
+    .catch(function (error) {
+      console.log("error from data :", error.toJSON());
+    });
+  return response;
+}

@@ -52,7 +52,7 @@ export default function TeaserSidebar(props) {
         navigation={navigation}
         userAuthAtomValue={userAuthAtomValue}
         postID={postID}
-        numBookmarks={numberFormatter.format(bookmarkCount)}
+        numBookmarks={bookmarkCount}
         textStyle={styles.sidebarText}
         style={styles.sidebarItem}
       />
