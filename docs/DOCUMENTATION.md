@@ -101,6 +101,8 @@ Error: Call to function 'ExponentImagePicker.launchImageLibraryAsync' has been r
 Caused by: kotlin.UninitializedPropertyAccessException: lateinit property imageLibraryLauncher has not been initialized
 ```
 - https://github.com/expo/expo/issues/19512
+- Unexpected end of stream https://github.com/expo/expo/issues/22668#issuecomment-1566344119
+  - Solved by changing node version to v18.16.0 (see frontend dockerfile)
 
 # Firewall:
 

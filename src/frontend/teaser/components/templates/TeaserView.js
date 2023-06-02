@@ -18,6 +18,7 @@ import { STATUS_BAR_HEIGHT } from "../../Constants";
 export const TeaserView = memo(
   forwardRef(function TeaserView(props, ref) {
     const {
+      userAuthAtomValue,
       videoURL,
       thumbnailURL,
       videoMode,
@@ -37,7 +38,11 @@ export const TeaserView = memo(
           ref={ref}
         ></TeaserVideo>
         <TeaserHeader navigation={navigation} />
-        <TeaserSidebar navigation={navigation} sidebarData={sidebarData} />
+        <TeaserSidebar
+          navigation={navigation}
+          sidebarData={sidebarData}
+          userAuthAtomValue={userAuthAtomValue}
+        />
         <TeaserCaption navigation={navigation} captionData={captionData} />
       </View>
     );

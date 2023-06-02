@@ -6,3 +6,6 @@ ENV EAS_PROJECT_ROOT /app
 ENV CHOKIDAR_USEPOLLING true
 ENV EAS_NO_VCS 1
 RUN npm i
+
+RUN npm install -g n
+RUN n 18.16.0

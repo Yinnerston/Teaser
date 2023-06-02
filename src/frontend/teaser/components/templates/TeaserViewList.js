@@ -79,6 +79,7 @@ export default function TeaserViewList({ navigation }) {
     ({ item }) => {
       return (
         <TeaserView
+          userAuthAtomValue={userAuthAtomValue}
           videoURL={item.video_url}
           thumbnailURL={item.thumbnail_url}
           videoMode={item.video_mode}
@@ -95,6 +96,7 @@ export default function TeaserViewList({ navigation }) {
           }}
           sidebarData={{
             username: item.username,
+            postID: item.post_id,
             profilePhotoUrl: item.profile_photo_url,
             likeCount: item.n_likes,
             bookmarkCount: item.n_bookmarks,

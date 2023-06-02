@@ -14,9 +14,10 @@ import { numberFormatter } from "../../../utils/numberFormatter";
  * @param {likeCount, bookmarkCount, commentCount, shareCount} ^^sidebarData
  */
 export default function TeaserSidebar(props) {
-  const { navigation, sidebarData } = props;
+  const { navigation, sidebarData, userAuthAtomValue } = props;
   const {
     username,
+    postID,
     profilePhotoUrl,
     likeCount,
     bookmarkCount,
@@ -33,16 +34,22 @@ export default function TeaserSidebar(props) {
         style={styles.sidebarItem}
       />
       <LikePostButton
+        userAuthAtomValue={userAuthAtomValue}
+        postID={postID}
         numLikes={numberFormatter.format(likeCount)}
         textStyle={styles.sidebarText}
         style={styles.sidebarItem}
       />
       <CommentPostButton
-        numLikes={numberFormatter.format(commentCount)}
+        userAuthAtomValue={userAuthAtomValue}
+        postID={postID}
+        commentCount={numberFormatter.format(commentCount)}
         textStyle={styles.sidebarText}
         style={styles.sidebarItem}
       />
       <BookmarkPostButton
+        userAuthAtomValue={userAuthAtomValue}
+        postID={postID}
         numBookmarks={numberFormatter.format(bookmarkCount)}
         textStyle={styles.sidebarText}
         style={styles.sidebarItem}

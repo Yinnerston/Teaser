@@ -17,3 +17,21 @@ export function getPostsFeed({ queryKey, pageParam = 1 }) {
     .then((res) => res.data);
   return response;
 }
+
+export function likePost(authToken, postID) {
+  const response = axiosAPIClient
+    .post(
+      "posts/like",
+      {
+        post_id: postID,
+      },
+      {
+        headers: { accept: "*/*", Authorization: `Bearer ${authToken}` },
+      },
+    )
+    .then((res) => res.data)
+    .catch(function (error) {
+      console.log("error from data :", error.toJSON());
+    });
+  return response;
+}

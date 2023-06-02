@@ -5,11 +5,11 @@ import { SIDEBAR_ICON_SIZE } from "../../../Constants";
 
 /**
  * Comment Post button.
- * @param {numLikes} props
+ * @param {commentCount} props
  * @returns
  */
 export default function CommentPostButton(props) {
-  const { numLikes, style, textStyle } = props;
+  const { commentCount, style, textStyle } = props;
   // TODO: Add to liked posts on like
   const [isLiked, setIsLiked] = useState(false);
   return (
@@ -19,7 +19,7 @@ export default function CommentPostButton(props) {
           color={isLiked ? "blue" : "white"}
           size={SIDEBAR_ICON_SIZE}
         />
-        <Text style={textStyle}>{numLikes}</Text>
+        <Text style={textStyle}>{commentCount}</Text>
       </TouchableOpacity>
     </View>
   );
