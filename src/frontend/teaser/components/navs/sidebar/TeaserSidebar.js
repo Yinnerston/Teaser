@@ -34,9 +34,10 @@ export default function TeaserSidebar(props) {
         style={styles.sidebarItem}
       />
       <LikePostButton
+        navigation={navigation}
         userAuthAtomValue={userAuthAtomValue}
         postID={postID}
-        numLikes={numberFormatter.format(likeCount)}
+        numLikes={likeCount}
         textStyle={styles.sidebarText}
         style={styles.sidebarItem}
       />
@@ -48,6 +49,7 @@ export default function TeaserSidebar(props) {
         style={styles.sidebarItem}
       />
       <BookmarkPostButton
+        navigation={navigation}
         userAuthAtomValue={userAuthAtomValue}
         postID={postID}
         numBookmarks={numberFormatter.format(bookmarkCount)}

@@ -1,17 +1,21 @@
-import { View, TouchableOpacity, Text } from "react-native";
+import { View, TouchableOpacity, Text, Alert } from "react-native";
 import { useState } from "react";
 import HeartIcon from "../icon/HeartIcon";
 import { SIDEBAR_ICON_SIZE } from "../../../Constants";
 import { useMutation, useQueryClient } from "react-query";
 import { getLikePostMutationKey } from "../../../hooks/feed/useFeedSidebar";
 import { likePost } from "../../../api/feed/postsFeedApi";
+import { numberFormatter } from "../../../utils/numberFormatter";
+
 /**
  * Like Post button.
  * @param {numLikes} props
  * @returns
  */
 export default function LikePostButton(props) {
-  const { userAuthAtomValue, postID, numLikes, style, textStyle } = props;
+  const { navigation, userAuthAtomValue, postID, numLikes, style, textStyle } =
+    props;
+  const [updatedNumLikes, setCurrentNumLikes] = useState(numLikes);
   // TODO: Add to liked posts on like
   // const [isLiked, setIsLiked] = useState(false);
   const queryClient = useQueryClient();
@@ -51,6 +55,15 @@ export default function LikePostButton(props) {
         getLikePostMutationKey(userAuthAtomValue, postID),
       );
     },
+    onSuccess: (data) => {
+      if (data !== undefined) {
+        if (data["liked_post"]) {
+          setCurrentNumLikes(numLikes + 1);
+        } else {
+          setCurrentNumLikes(numLikes);
+        }
+      }
+    },
   });
   const handleLikePostOnPress =
     userAuthAtomValue !== null
@@ -58,7 +71,19 @@ export default function LikePostButton(props) {
           // setIsLiked((current) => !current);
           likePostMutation.mutate();
         }
-      : null; // TODO: Need to login to like posts?
+      : () =>
+          Alert.alert(
+            "Sign up for Teaser!",
+            "Create a profile to get personalised recommendations, follow other accounts, and make your own videos!",
+            [
+              { text: "Cancel", style: "cancel", onPress: () => {} },
+              {
+                text: "Sign Up",
+                style: "cancel",
+                onPress: () => navigation.navigate("Auth"),
+              },
+            ],
+          ); // TODO: Need to login to like posts?
   return (
     <View style={style}>
       <TouchableOpacity onPress={handleLikePostOnPress}>
@@ -72,7 +97,7 @@ export default function LikePostButton(props) {
           }
           size={SIDEBAR_ICON_SIZE}
         />
-        <Text style={textStyle}>{numLikes}</Text>
+        <Text style={textStyle}>{numberFormatter.format(updatedNumLikes)}</Text>
       </TouchableOpacity>
     </View>
   );
