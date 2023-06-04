@@ -96,7 +96,7 @@ export default function BookmarkPostButton(props) {
         <BookmarkIcon
           color={
             bookmarkPostMutation.isSuccess
-              ? bookmarkPostMutation.data["bookmarked_post"]
+              ? bookmarkPostMutation.data?.bookmarked_post
                 ? "orange"
                 : "white"
               : "white"

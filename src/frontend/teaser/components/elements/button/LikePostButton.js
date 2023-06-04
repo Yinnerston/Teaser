@@ -90,7 +90,7 @@ export default function LikePostButton(props) {
         <HeartIcon
           color={
             likePostMutation.isSuccess
-              ? likePostMutation.data["liked_post"]
+              ? likePostMutation.data?.liked_post
                 ? "red"
                 : "white"
               : "white"

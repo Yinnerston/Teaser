@@ -39,8 +39,8 @@ export async function setUserAuthFromStore() {
  * Need to set userAuthAtom in the caller.
  */
 export async function clearUserAuth(userAuth) {
-  const response = logoutUserFunction(userAuth.token_hash);
   if (response.status === 200) await SecureStore.deleteItemAsync("auth");
+  const response = logoutUserFunction(userAuth.token_hash);
 }
 
 export const userTCAcceptedAtom = atom(false);
