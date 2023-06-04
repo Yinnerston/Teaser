@@ -339,6 +339,7 @@ def get_feed_for_you_service(s_teaser_user):
     # Get all posts (TODO: within a range?) for those categories sorted by score
     # Get all posts (TODO: within a range?) in other categories sorted by score
     # return posts with the format https://{pull_zone_url}.b-cdn.net/{video_id}/play_{resolution_height}p.mp4
+    # TODO: JOIN UserPostActivitiesModel
     return get_general_feed_service()
 
 

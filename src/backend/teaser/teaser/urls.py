@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.http import HttpRequest, HttpResponse
 from django.urls import include, path
 import json
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 # Import services
 from core.services.user_auth_services import (
@@ -561,3 +562,6 @@ urlpatterns = [
     ),
     path("", include("django_prometheus.urls")),
 ]
+urlpatterns += (
+    staticfiles_urlpatterns()
+)  # static files in dev mode https://stackoverflow.com/a/12801140
