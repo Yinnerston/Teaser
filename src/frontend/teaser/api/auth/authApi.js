@@ -51,3 +51,21 @@ export const tokenVerifyFunction = async (token) => {
   const response = await axiosAPIClient.post("token/verify", token);
   return response.data;
 };
+
+export const logoutUserFunction = async (authToken) => {
+  try {
+    const response = await axiosAPIClient.post(
+      "logout",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      },
+    );
+    return { status: response.status, data: response.data };
+  } catch (error) {
+    console.error(error);
+    return { status: error.response.status, data: error.response.data.message };
+  }
+};

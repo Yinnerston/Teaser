@@ -29,7 +29,7 @@ export default function SubscriptionsScreen({ navigation }) {
     <View>
       <Button
         onPress={() => {
-          clearUserAuth();
+          clearUserAuth(userAuth);
           setUserAuth(null);
         }}
         title="logout"

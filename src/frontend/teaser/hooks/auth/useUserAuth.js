@@ -1,5 +1,6 @@
 import { atom, useAtom, useSetAtom } from "jotai";
 import * as SecureStore from "expo-secure-store";
+import { logoutUserFunction } from "../../api/auth/authApi";
 
 export const userAuthAtom = atom(null);
 export const readOnlyUserAuthAtom = atom((get) => get(userAuthAtom));
@@ -37,8 +38,9 @@ export async function setUserAuthFromStore() {
  * Clears the user auth data in the store.
  * Need to set userAuthAtom in the caller.
  */
-export async function clearUserAuth() {
-  await SecureStore.deleteItemAsync("auth");
+export async function clearUserAuth(userAuth) {
+  const response = logoutUserFunction(userAuth.token_hash);
+  if (response.status === 200) await SecureStore.deleteItemAsync("auth");
 }
 
 export const userTCAcceptedAtom = atom(false);

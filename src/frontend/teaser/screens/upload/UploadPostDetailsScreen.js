@@ -15,6 +15,7 @@ import PersonIcon from "../../components/elements/icon/PersonIcon";
 import {
   REGISTER_BUTTON_COLOR,
   VIDEO_IMAGE_FRAME_WIDTH,
+  SWITCH_COLOUR,
 } from "../../Constants";
 import IoniconsTemplateIcon from "../../components/elements/icon/IoniconsTemplate";
 import CommentIcon from "../../components/elements/icon/CommentIcon";
@@ -125,7 +126,7 @@ export default function UploadPostDetailsScreen({ navigation }) {
             <Text style={styles.rowText}>Post is private</Text>
           </View>
           <View style={styles.rowSecondFlex}>
-            <Switch value={postIsPrivate} color="#0bde9b" />
+            <Switch value={postIsPrivate} color={SWITCH_COLOUR} />
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -139,7 +140,7 @@ export default function UploadPostDetailsScreen({ navigation }) {
             <Text style={styles.rowText}>Allow comments</Text>
           </View>
           <View style={styles.rowSecondFlex}>
-            <Switch value={hasComments} color="#0bde9b" />
+            <Switch value={hasComments} color={SWITCH_COLOUR} />
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -153,7 +154,7 @@ export default function UploadPostDetailsScreen({ navigation }) {
             <Text style={styles.rowText}>Post is NSFW</Text>
           </View>
           <View style={styles.rowSecondFlex}>
-            <Switch value={postIsNSFW} color="#0bde9b" />
+            <Switch value={postIsNSFW} color={SWITCH_COLOUR} />
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.row} onPress={() => {}}>

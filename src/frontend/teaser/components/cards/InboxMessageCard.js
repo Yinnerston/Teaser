@@ -10,7 +10,7 @@ import {
 /**
  * Card body for a inbox message.
  * TODO: Add touchable Opacity and navigator to expand the message.
- * @param {navigation} props
+ * @param {navigation} props navigation is nullable
  * @returns
  */
 export default function InboxMessageCard({
@@ -23,7 +23,11 @@ export default function InboxMessageCard({
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => navigation.navigate("ChatScreen", { username: username })}
+      onPress={
+        navigation
+          ? () => navigation.navigate("ChatScreen", { username: username })
+          : null
+      }
     >
       <View style={styles.profilePhotoContainer}>
         <Image
