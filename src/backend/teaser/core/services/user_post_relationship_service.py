@@ -12,6 +12,7 @@ from core.models.post_models import PostsModel
 from django.db import transaction
 from django.db.models import Case, Value, When, F
 import json
+from datetime import datetime
 
 
 def like_post_service(s_teaser_user, us_post_id):
@@ -35,6 +36,7 @@ def like_post_service(s_teaser_user, us_post_id):
             user_post_activity.liked_post = liked_post
         else:
             liked_post.is_liked = not liked_post.is_liked
+            liked_post.updated_at = datetime.now()
             liked_post.save()
             # Increment or decrement based on liked_post.is_liked
             if liked_post.is_liked:
@@ -78,6 +80,7 @@ def bookmark_post_service(s_teaser_user, us_post_id):
             user_post_activity.bookmarked_post = bookmarked_post
         else:
             bookmarked_post.is_bookmarked = not bookmarked_post.is_bookmarked
+            bookmarked_post.updated_at = datetime.now()
             bookmarked_post.save()
             # Increment or decrement based on bookmarked_post.is_bookmarked
             if bookmarked_post.is_bookmarked:
@@ -158,6 +161,7 @@ def like_post_comment_service(s_teaser_user, us_comment_id):
             comment_model.n_likes = comment_model.n_likes + 1
         else:
             liked_comment.is_liked = not liked_comment.is_liked
+            liked_comment.updated_at = datetime.now()
             liked_comment.save()
             # Increment or decrement based on liked_post.is_liked
             if liked_comment.is_liked:
