@@ -4,6 +4,8 @@ from core.models.user_post_relationship_models import (
     BookmarkedPostsModel,
     SharedPostsModel,
     UserPostActivitiesModel,
+    CommentPathsModel,
+    CommentsModel,
 )
 
 
@@ -56,3 +58,32 @@ class UserPostActivitiesModelAdmin(admin.ModelAdmin):
         "bookmarked_post",
         "shared_post",
     ]
+
+
+@admin.register(CommentsModel)
+class CommentsModelAdmin(admin.ModelAdmin):
+    def get_username(self, obj):
+        if obj.user_id:
+            return obj.user_id.nfc_username
+
+    def get_ordering(self, request):
+        return ["-updated_at"]
+
+    list_display = [
+        "get_username",
+        "post_id",
+        "comment_text",
+        "n_likes",
+        "created_at",
+        "updated_at",
+        "depth",
+    ]
+
+
+@admin.register(CommentPathsModel)
+class CommentPathsModelAdmin(admin.ModelAdmin):
+    def get_username(self, obj):
+        if obj.user_id:
+            return obj.user_id.nfc_username
+
+    list_display = ["post_id", "ancestor", "descendent"]
