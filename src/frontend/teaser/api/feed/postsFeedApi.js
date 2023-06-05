@@ -1,5 +1,11 @@
 import axiosAPIClient from "../axiosAPIClient";
 import { PAGINATION_LIMIT } from "../../Constants";
+
+/**
+ * Get the general feed of posts (Does not require authentication)
+ * @param {queryKey, pageParam=1} props
+ * @returns
+ */
 export function getPostsFeed({ queryKey, pageParam = 1 }) {
   const token_hash = queryKey[2];
   // TODO: queryKey is defined as length == 3 if logged in otherwise 2? ==> ["posts", "feed", token_hash === queryKey[2]]
@@ -18,6 +24,12 @@ export function getPostsFeed({ queryKey, pageParam = 1 }) {
   return response;
 }
 
+/**
+ * Like a post. Requires authentication.
+ * @param {*} authToken string token hash representation
+ * @param {*} postID id of post to like
+ * @returns
+ */
 export function likePost(authToken, postID) {
   const response = axiosAPIClient
     .post(
@@ -36,6 +48,12 @@ export function likePost(authToken, postID) {
   return response;
 }
 
+/**
+ * Bookmark a post. Requires authentication.
+ * @param {*} authToken string token hash representation
+ * @param {*} postID id of post to like
+ * @returns
+ */
 export function bookmarkPost(authToken, postID) {
   const response = axiosAPIClient
     .post(

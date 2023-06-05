@@ -65,6 +65,7 @@ export default function LikePostButton(props) {
       }
     },
   });
+  // Mutate server state for liked post if logged in otherwise prompt to sign up
   const handleLikePostOnPress =
     userAuthAtomValue !== null
       ? () => {
@@ -83,7 +84,7 @@ export default function LikePostButton(props) {
                 onPress: () => navigation.navigate("Auth"),
               },
             ],
-          ); // TODO: Need to login to like posts?
+          );
   return (
     <View style={style}>
       <TouchableOpacity onPress={handleLikePostOnPress}>

@@ -2,6 +2,11 @@ import axiosAPIClient from "../axiosAPIClient";
 
 // axiosAPIClient.defaults.headers.common["Content-Type"] = "application/json";
 
+/**
+ * Register user to server
+ * @param {username, phone, password, dob, terms_of_service_accepted} props
+ * @returns
+ */
 export const registerUserFunction = async ({
   username,
   phone,
@@ -24,6 +29,11 @@ export const registerUserFunction = async ({
   }
 };
 
+/**
+ * Login user to server
+ * @param {username, password} props
+ * @returns
+ */
 export const loginUserFunction = async ({ username, password }) => {
   try {
     const response = await axiosAPIClient.post("login", {
@@ -37,21 +47,41 @@ export const loginUserFunction = async ({ username, password }) => {
   }
 };
 
+/**
+ * TODO: Unused Pair token
+ * @param {*} user
+ * @returns
+ */
 export const tokenPairFunction = async (user) => {
   const response = await axiosAPIClient.post("token/pair", user);
   return response.data;
 };
 
+/**
+ * TODO: Unused Refresh token
+ * @param {*} token
+ * @returns
+ */
 export const tokenRefreshFunction = async (token) => {
   const response = await axiosAPIClient.post("token/refresh", token);
   return response.data;
 };
 
+/**
+ * TODO: Unused Verify token
+ * @param {*} token
+ * @returns
+ */
 export const tokenVerifyFunction = async (token) => {
   const response = await axiosAPIClient.post("token/verify", token);
   return response.data;
 };
 
+/**
+ * Logout user from server
+ * @param authToken string token hash representation
+ * @returns
+ */
 export const logoutUserFunction = async (authToken) => {
   try {
     const response = await axiosAPIClient.post(

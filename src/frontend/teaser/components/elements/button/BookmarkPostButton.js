@@ -71,6 +71,7 @@ export default function BookmarkPostButton(props) {
       }
     },
   });
+  // Mutate server state for bookmarked post if logged in otherwise prompt to sign up
   const handleBookmarkPostOnPress =
     userAuthAtomValue !== null
       ? () => {
@@ -89,7 +90,7 @@ export default function BookmarkPostButton(props) {
                 onPress: () => navigation.navigate("Auth"),
               },
             ],
-          ); // TODO: Need to login to bookmark posts?
+          );
   return (
     <View style={style}>
       <TouchableOpacity onPress={handleBookmarkPostOnPress}>
