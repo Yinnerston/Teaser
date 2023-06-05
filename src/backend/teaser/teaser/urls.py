@@ -53,6 +53,7 @@ from core.services.search_service import (
 from core.services.user_post_relationship_service import (
     like_post_service,
     bookmark_post_service,
+    comment_on_post_service,
 )
 
 # Import schemas
@@ -72,7 +73,7 @@ from core.services.user_auth_services import AuthBearer
 # Views
 from core.views.views import IndexView, OpenAIGeneratedImageView
 
-from ninja import NinjaAPI, File
+from ninja import File
 from ninja.files import UploadedFile
 
 from ninja_extra import api_controller, route, NinjaExtraAPI
@@ -419,6 +420,21 @@ def bookmark_post_endpoint(request, payload: UserPostActivitySchema):
     s_teaser_user = request.auth.teaser_user_id
     us_post_id = post_dict["post_id"]
     return bookmark_post_service(s_teaser_user, us_post_id)
+
+
+@api.post("posts/comment", tags=["posts"], auth=AuthBearer())
+def comment_on_post_endpoint(request, payload: UserPostCommentSchema):
+    post_dict = payload.dict()
+    s_teaser_user = request.auth.teaser_user_id
+    us_post_id = post_dict["post_id"]
+    us_comment_ancestor_id = post_dict["comment_ancestor_id"]
+    s_comment_text = sanitization_utils.sanitize_str(post_dict["comment_text"])
+    return comment_on_post_service(
+        s_teaser_user,
+        us_post_id=us_post_id,
+        us_comment_ancestor_id=us_comment_ancestor_id,
+        s_comment_text=s_comment_text,
+    )
 
 
 # @api.post("posts/share", tags=["posts"], auth=AuthBearer())

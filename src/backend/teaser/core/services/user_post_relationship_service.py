@@ -2,6 +2,8 @@ from core.models.user_post_relationship_models import (
     LikedPostsModel,
     BookmarkedPostsModel,
     SharedPostsModel,
+    CommentsModel,
+    CommentPathsModel,
     UserPostActivitiesModel,
 )
 from core.models.event_metric_models import EventMetricsModel
@@ -96,3 +98,46 @@ def bookmark_post_service(s_teaser_user, us_post_id):
         user_id=s_teaser_user,
     )
     return {"bookmarked_post": bookmarked_post.is_bookmarked, "created": created}
+
+
+def comment_on_post_service(
+    s_teaser_user,
+    us_post_id: int,
+    s_comment_text: str,
+    us_comment_ancestor_id: int = None,
+):
+    parent_comment = None
+    new_comment_model = None
+    ancestors = []
+    with transaction.atomic():
+        # Get related post and create new comment model
+        post_model = PostsModel.objects.get(id=us_post_id)
+        # Get all descendents of the parent and insert
+        if us_comment_ancestor_id != None:
+            parent_comment = CommentsModel.objects.get(id=us_comment_ancestor_id)
+            ancestors = CommentPathsModel.objects.filter(
+                post_id=post_model, ancestor__id=us_comment_ancestor_id
+            )
+        # Create new comment and specify depth if the comment has a parent
+        if parent_comment:
+            new_comment_model = CommentsModel.objects.create(
+                post_id=post_model,
+                user_id=s_teaser_user,
+                comment_text=s_comment_text,
+                depth=parent_comment.depth + 1,
+            )
+        else:
+            new_comment_model = CommentsModel.objects.create(
+                post_id=post_model, user_id=s_teaser_user, comment_text=s_comment_text
+            )
+        # insert self-referencing new leaf comment path node
+        CommentPathsModel.objects.create(
+            post_id=post_model, ancestor=new_comment_model, descendent=new_comment_model
+        )
+        # Create a relationship with all ancestors including the immediate parent
+        for ancestor in ancestors:
+            CommentPathsModel.objects.create(
+                post_id=post_model,
+                ancestor=ancestor.descendent,
+                descendent=new_comment_model,
+            )
