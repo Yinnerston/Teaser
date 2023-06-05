@@ -4,6 +4,10 @@ Relationships between posts and users
 from core.models.user_auth_models import TeaserUserModel
 from core.models.post_models import PostsModel
 from django.db import models
+from core.utils.config_data import (
+    get_or_create_sentinel_post_data,
+    get_or_create_sentinel_post_data_id,
+)
 
 
 class LikedPostsModel(models.Model):
@@ -50,38 +54,79 @@ class SharedPostsModel(models.Model):
 
     class Meta:
         unique_together = (("user_id", "post_id"),)
-        indexes = [models.Index(fields=["user_id", "post_id", "n_shares"])]
+        indexes = [models.Index(fields=["user_id", "post_id"])]
 
 
 class CommentsModel(models.Model):
     """
     Comments model.
+    Searching on comments is not supported.
+    Supports query for most recent comments on a post, most liked comments on a post.
+    Rankings are done based on this model.
     """
 
-    post_id = models.ForeignKey(PostsModel, on_delete=models.CASCADE)
+    post_id = models.ForeignKey(
+        PostsModel, on_delete=models.CASCADE
+    )  # TODO: may not be required
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE)
     comment_text = models.CharField(max_length=500)
-    likes = models.PositiveIntegerField(default=0)
+    n_likes = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now_add=True, blank=True)
+    depth = models.PositiveIntegerField(default=0)
 
     class Meta:
-        indexes = [models.Index(fields=["user_id", "post_id", "comment_text"])]
+        """
+        TODO: Define functional index constraints that only apply where depth=0
+        """
+
+        ordering = [
+            "post_id",
+            "depth",
+            "-created_at",
+        ]  # defaults to sort by most recent
+        indexes = [
+            models.Index(fields=["post_id", "n_likes"]),  # used to sort by likes
+            models.Index(fields=["user_id", "post_id"]),  # used to sort by user
+            models.Index(
+                fields=["post_id", "-created_at"]
+            ),  # used to sort by most recent
+            models.Index(fields=["post_id", "depth"]),  # sort by depth
+        ]
 
 
 class CommentPathsModel(models.Model):
     """
     Closure Table model for comments.
+    In a closure table, each insert creates two rows:
+    1. Store one row in the table for each pair of nodes that shares an ancestor/descendent relationship
+    2. Store a row for each node to reference itself (ancestor = descendent)
     Query depth through CommentPathsModel.objects.filter()
+    We trade off storage space for faster queries.
     """
 
-    ancestor = models.OneToOneField(
+    post_id = models.ForeignKey(
+        PostsModel,
+        on_delete=models.SET(get_or_create_sentinel_post_data),
+        default=get_or_create_sentinel_post_data_id,
+    )  # get_or_create_sentinel_post_data
+    ancestor = models.ForeignKey(
         CommentsModel, on_delete=models.DO_NOTHING, null=True, related_name="ancestor"
     )
-    descendent = models.OneToOneField(
+    descendent = models.ForeignKey(
         CommentsModel, on_delete=models.DO_NOTHING, null=True, related_name="descendent"
     )
-    depth = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = [
+            "post_id",
+            "ancestor",
+        ]  # TODO: post_id, ancestor=null || depth=0, -ranking
+        unique_together = (("post_id", "ancestor", "descendent"),)
+        indexes = [
+            # composite index --> can query by parts as fields are covered by index
+            models.Index(fields=["post_id", "ancestor", "descendent"])
+        ]
 
 
 class UserPostActivitiesModel(models.Model):
