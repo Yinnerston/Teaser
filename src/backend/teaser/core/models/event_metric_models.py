@@ -24,6 +24,7 @@ class EventMetricsModel(models.Model):
         BOOKMARK = 5
         SHARE = 6
         COMMENT = 7
+        COMMENT_LIKE = 8
 
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE, null=True)
     event_type = models.IntegerField(

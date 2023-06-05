@@ -18,3 +18,11 @@ class UserPostCommentSchema(Schema):
     post_id: int = Field(example=1)
     comment_ancestor_id: Optional[int] = Field(example=1, default=None)
     comment_text: str = Field(example="This is a comment")
+
+
+class LikePostCommentSchema(Schema):
+    """
+    Schema for liking a comment.
+    """
+
+    comment_id: int = Field(example=1)

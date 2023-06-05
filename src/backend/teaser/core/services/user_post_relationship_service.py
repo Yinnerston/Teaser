@@ -4,6 +4,7 @@ from core.models.user_post_relationship_models import (
     SharedPostsModel,
     CommentsModel,
     CommentPathsModel,
+    LikedCommentsModel,
     UserPostActivitiesModel,
 )
 from core.models.event_metric_models import EventMetricsModel
@@ -141,3 +142,37 @@ def comment_on_post_service(
                 ancestor=ancestor.descendent,
                 descendent=new_comment_model,
             )
+
+
+def like_post_comment_service(s_teaser_user, us_comment_id):
+    # TODO: validate comment_id?
+    # Upsert liked post
+    with transaction.atomic():
+        comment_model = CommentsModel.objects.get(id=us_comment_id)
+        liked_comment, created = LikedCommentsModel.objects.update_or_create(
+            user_id=s_teaser_user, comment_id=comment_model
+        )
+
+        if created:
+            # Increment likes
+            comment_model.n_likes = comment_model.n_likes + 1
+        else:
+            liked_comment.is_liked = not liked_comment.is_liked
+            liked_comment.save()
+            # Increment or decrement based on liked_post.is_liked
+            if liked_comment.is_liked:
+                comment_model.n_likes += 1
+            else:
+                # decrement likes
+                comment_model.n_likes = max(comment_model.n_likes - 1, 0)
+        comment_model.save()
+    # Record metric ()
+    EventMetricsModel.objects.create(
+        event_type=EventMetricsModel.EventMetricTypes.COMMENT_LIKE,
+        event_data=json.loads(
+            '{"comment_id": "%s", "is_liked": "%r"}'
+            % (us_comment_id, liked_comment.is_liked)
+        ),
+        user_id=s_teaser_user,
+    )
+    return {"liked_comment": liked_comment.is_liked, "created": created}

@@ -54,6 +54,7 @@ from core.services.user_post_relationship_service import (
     like_post_service,
     bookmark_post_service,
     comment_on_post_service,
+    like_post_comment_service,
 )
 
 # Import schemas
@@ -434,6 +435,16 @@ def comment_on_post_endpoint(request, payload: UserPostCommentSchema):
         us_post_id=us_post_id,
         us_comment_ancestor_id=us_comment_ancestor_id,
         s_comment_text=s_comment_text,
+    )
+
+
+@api.post("posts/comment/like", tags=["posts"], auth=AuthBearer())
+def like_post_comment_endpoint(request, payload: LikePostCommentSchema):
+    post_dict = payload.dict()
+    s_teaser_user = request.auth.teaser_user_id
+    us_comment_id = post_dict["comment_id"]
+    return like_post_comment_service(
+        s_teaser_user=s_teaser_user, us_comment_id=us_comment_id
     )
 
 

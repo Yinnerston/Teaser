@@ -6,6 +6,7 @@ from core.models.user_post_relationship_models import (
     UserPostActivitiesModel,
     CommentPathsModel,
     CommentsModel,
+    LikedCommentsModel,
 )
 
 
@@ -87,3 +88,15 @@ class CommentPathsModelAdmin(admin.ModelAdmin):
             return obj.user_id.nfc_username
 
     list_display = ["post_id", "ancestor", "descendent"]
+
+
+@admin.register(LikedCommentsModel)
+class LikedCommentsModelAdmin(admin.ModelAdmin):
+    def get_username(self, obj):
+        if obj.user_id:
+            return obj.user_id.nfc_username
+
+    def get_ordering(self, request):
+        return ["-updated_at"]
+
+    list_display = ["user_id", "comment_id", "get_username", "is_liked", "updated_at"]

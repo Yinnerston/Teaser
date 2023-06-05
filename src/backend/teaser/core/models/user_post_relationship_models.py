@@ -129,6 +129,21 @@ class CommentPathsModel(models.Model):
         ]
 
 
+class LikedCommentsModel(models.Model):
+    """
+    Liked comments model.
+    """
+
+    user_id = models.ForeignKey(TeaserUserModel, on_delete=models.DO_NOTHING)
+    comment_id = models.ForeignKey(CommentsModel, on_delete=models.DO_NOTHING)
+    is_liked = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now_add=True, blank=True)
+
+    class Meta:
+        unique_together = (("user_id", "comment_id"),)
+        indexes = [models.Index(fields=["user_id", "comment_id", "is_liked"])]
+
+
 class UserPostActivitiesModel(models.Model):
     """
     Denormalized data model showing the user's engagement with a post in the main feed.
