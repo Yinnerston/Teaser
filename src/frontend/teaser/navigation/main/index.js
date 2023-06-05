@@ -24,6 +24,7 @@ import ProfileView from "../../components/templates/profile/ProfileView";
 import SearchResultsScreen from "../../screens/search/SearchResultsScreen";
 // Chat
 import ChatScreen from "../../screens/ChatScreen";
+import ProfileSettingsScreen from "../../screens/profile/ProfileSettingsScreen";
 
 const Stack = createStackNavigator();
 
@@ -127,6 +128,11 @@ export default function MainNavigator() {
           name="ProfileViewFromFeed"
           component={ProfileView}
           options={({ route }) => ({ title: route.params?.username })}
+        />
+        <Stack.Screen
+          name="ProfileSettings"
+          component={ProfileSettingsScreen}
+          options={{ title: "Profile Settings" }}
         />
       </Stack.Group>
       <Stack.Group>

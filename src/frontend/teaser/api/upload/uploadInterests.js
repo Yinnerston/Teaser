@@ -12,7 +12,7 @@ export async function setUserInterests(authToken, interests) {
         categories: interests,
       },
       {
-        Authorization: `Bearer ${authToken}`,
+        headers: { Authorization: `Bearer ${authToken}` },
       },
     );
     return { status: response.status };

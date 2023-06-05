@@ -1,8 +1,15 @@
 version: '3.8'
+
+x-logging: &loki-logging
+  driver: loki
+  options:
+    loki-url: "http://localhost:3100/api/prom/push"
+
 services:
   backend-django:
     build: ./src/backend/teaser
-    command: bash -c " python manage.py runserver 0.0.0.0:8000"
+    # command: bash -c " python manage.py runserver 0.0.0.0:8000"
+    command: gunicorn --env DJANGO_SETTINGS_MODULE=teaser.settings teaser.wsgi:application --bind 0.0.0.0:8000
     ports:
       - 8069:8000
     volumes:
@@ -12,6 +19,7 @@ services:
       - .backend.env
     depends_on:
       - db
+    logging: *loki-logging
     networks:
       - teaser-network
   frontend:
@@ -83,6 +91,35 @@ services:
       - PROSODY_DOMAIN=${PROSODY_DOMAIN}
       - PROSODY_VIRTUAL_HOSTS=${PROSODY_VIRTUAL_HOSTS}
       - PROSODY_INTEGRATION=${PROSODY_INTEGRATION}
+  prometheus:
+    build: ./src/prometheus
+    volumes:
+      - ./src/prometheus:/prometheus
+    ports:
+      - 9090:9090
+    networks:
+      - teaser-network
+  grafana:
+    build: ./src/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${PROD_GF_SECURITY_ADMIN_PASSWORD}
+    volumes:
+      - ./src/grafana:/grafana
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+    logging: *loki-logging
+    user: '472'
+    networks:
+      - teaser-network
+  loki:
+    image: grafana/loki:2.6.1
+    ports:
+      - 3100:3100
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - teaser-network
 
 volumes:
   static_volume:

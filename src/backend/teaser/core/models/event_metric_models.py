@@ -20,6 +20,10 @@ class EventMetricsModel(models.Model):
         LOGIN = 1
         REGISTER = 2
         SEARCH = 3
+        LIKE = 4
+        BOOKMARK = 5
+        SHARE = 6
+        COMMENT = 7
 
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.CASCADE, null=True)
     event_type = models.IntegerField(

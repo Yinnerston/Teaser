@@ -12,4 +12,7 @@ class EventMetricsModelAdmin(admin.ModelAdmin):
         if obj.user_id:
             return obj.user_id.nfc_username
 
+    def get_ordering(self, request):
+        return ["-timestamp"]
+
     list_display = ("event_type", "event_data", "timestamp", "user_id", "get_username")

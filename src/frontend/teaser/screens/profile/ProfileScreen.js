@@ -1,8 +1,8 @@
-import { readOnlyUserAuthAtom } from "../hooks/auth/useUserAuth";
+import { readOnlyUserAuthAtom } from "../../hooks/auth/useUserAuth";
 import { useAtom } from "jotai";
-import ProfileView from "../components/templates/profile/ProfileView";
+import ProfileView from "../../components/templates/profile/ProfileView";
 
-import SignUpScreen from "./auth/SignUpScreen";
+import SignUpScreen from "../auth/SignUpScreen";
 /**
  * Screen for profile.
  * @returns Currently logged in user's profile

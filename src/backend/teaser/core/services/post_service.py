@@ -120,10 +120,6 @@ def create_post_service(
     post_model.video_url = (
         "https://" + pull_zone + ".b-cdn.net/" + str(video_id) + "/play_720p.mp4"
     )
-    # TODO: figure out a way to make this preview.webp given possible data rate constraints?
-    post_model.thumbnail_url = (
-        "https://" + pull_zone + ".b-cdn.net/" + str(video_id) + "/thumbnail.jpg"
-    )
     # TODO: post_model.video_mode
     post_model.save()
     return {
@@ -159,7 +155,9 @@ def etl_post_service(
             post_type=TEASER_POST_TYPE,
             post_data=s_post_data,
             reddit_id=s_reddit_id,
-            reddit_score=s_reddit_score,
+            n_likes=s_reddit_score,
+            n_bookmarks=s_reddit_score,
+            n_shares=s_reddit_score,
             nfc_username=teaser_user_model.nfc_username,
         )
         # Link post categories to post
@@ -267,6 +265,17 @@ def update_post_status_service(us_library_id: int, us_video_id: str, us_status: 
     aspect_ratio = response_json["width"] / response_json["height"]
     if aspect_ratio > 1:
         post.video_mode = PostsModel.VideoModes.LANDSCAPE
+    # set thumbnail jpg to thumbnail filename otherwise set default
+    if response_json["thumbnailFileName"]:
+        # TODO: figure out a way to make this preview.webp given possible data rate constraints?
+        post.thumbnail_url = (
+            "https://"
+            + pull_zone
+            + ".b-cdn.net/"
+            + str(post.video_id)
+            + "/"
+            + response_json["thumbnailFileName"]
+        )
     post.save()
     return {}
 
@@ -312,7 +321,10 @@ def get_general_feed_service():
             thumbnail_url=F("post_id__thumbnail_url"),
             video_mode=F("post_id__video_mode"),
             post_data=F("post_id__post_data"),
-            reddit_score=F("post_id__reddit_score"),
+            n_likes=F("post_id__n_likes"),
+            n_bookmarks=F("post_id__n_bookmarks"),
+            n_shares=F("post_id__n_shares"),
+            n_comments=F("post_id__n_comments"),
         )
         .all()
     )
@@ -327,6 +339,7 @@ def get_feed_for_you_service(s_teaser_user):
     # Get all posts (TODO: within a range?) for those categories sorted by score
     # Get all posts (TODO: within a range?) in other categories sorted by score
     # return posts with the format https://{pull_zone_url}.b-cdn.net/{video_id}/play_{resolution_height}p.mp4
+    # TODO: JOIN UserPostActivitiesModel
     return get_general_feed_service()
 
 

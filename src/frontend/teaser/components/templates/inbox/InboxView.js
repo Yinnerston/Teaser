@@ -44,7 +44,6 @@ export default function InboxView({ navigation }) {
   const styles = useInboxViewStyle();
   // TODO: render MessageCards that navigate to New follower, activities, services, etc.. page
   const renderInboxHeaderCards = () => {};
-  converse.initialize({});
 
   const renderInboxMessageCard = useCallback(
     ({ item }) => (

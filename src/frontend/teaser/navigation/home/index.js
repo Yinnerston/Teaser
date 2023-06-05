@@ -1,7 +1,7 @@
 import SubscriptionsScreen from "../../screens/SubscriptionsScreen";
 import UploadTeaserScreen from "../../screens/UploadTeaserScreen";
 import InboxScreen from "../../screens/InboxScreen";
-import ProfileScreen from "../../screens/ProfileScreen";
+import ProfileScreen from "../../screens/profile/ProfileScreen";
 import TeaserViewList from "../../components/templates/TeaserViewList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -12,6 +12,7 @@ import SpeechIcon from "../../components/elements/icon/SpeechIcon";
 import PersonIcon from "../../components/elements/icon/PersonIcon";
 import { StyleSheet } from "react-native";
 import { HOMESCREEN_FOOTER_HEIGHT } from "../../Constants";
+import SettingsButton from "../../components/elements/button/SettingsButton";
 
 const Tab = createBottomTabNavigator();
 
@@ -63,10 +64,11 @@ export default function HomeNavigator() {
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{
+        options={({ navigation, route }) => ({
           tabBarIcon: ({ color }) => <PersonIcon color={color}></PersonIcon>,
+          headerRight: () => <SettingsButton navigation={navigation} />,
           ...iconParameters,
-        }}
+        })}
       />
     </Tab.Navigator>
   );

@@ -79,6 +79,7 @@ export default function TeaserViewList({ navigation }) {
     ({ item }) => {
       return (
         <TeaserView
+          userAuthAtomValue={userAuthAtomValue}
           videoURL={item.video_url}
           thumbnailURL={item.thumbnail_url}
           videoMode={item.video_mode}
@@ -95,11 +96,12 @@ export default function TeaserViewList({ navigation }) {
           }}
           sidebarData={{
             username: item.username,
+            postID: item.post_id,
             profilePhotoUrl: item.profile_photo_url,
-            likeCount: item.reddit_score,
-            bookmarkCount: item.reddit_score,
-            commentCount: item.reddit_score,
-            shareCount: item.reddit_score,
+            likeCount: item.n_likes,
+            bookmarkCount: item.n_bookmarks,
+            commentCount: item.n_comments,
+            shareCount: item.n_shares,
           }}
         ></TeaserView>
       );

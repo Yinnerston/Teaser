@@ -101,8 +101,13 @@ class PostsModel(models.Model):
 
     status = models.IntegerField(choices=PostStatuses.choices, default=-1)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
-    reddit_id = models.CharField(max_length=8, blank=True, null=True)
-    reddit_score = models.IntegerField(blank=True, null=True)
+    reddit_id = models.CharField(
+        max_length=8, blank=True, null=True
+    )  # marked to be deprecated
+    n_likes = models.PositiveIntegerField(default=0)
+    n_bookmarks = models.PositiveIntegerField(default=0)
+    n_shares = models.PositiveIntegerField(default=0)
+    n_comments = models.PositiveIntegerField(default=0)
 
     class Meta:
         indexes = [
