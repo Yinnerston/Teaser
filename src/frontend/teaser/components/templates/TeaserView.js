@@ -3,8 +3,9 @@ import TeaserCaption from "../navs/caption/TeaserCaption";
 import TeaserHeader from "../navs/header/TeaserHeader";
 import TeaserSidebar from "../navs/sidebar/TeaserSidebar";
 import { TeaserVideo } from "../navs/video/TeaserVideo";
-import { forwardRef, memo } from "react";
+import { forwardRef, memo, useMemo, useCallback, useState } from "react";
 import { STATUS_BAR_HEIGHT } from "../../Constants";
+import CommentModal from "../elements/modal/CommentModal";
 
 /**
  *  Container for all the components that make up a teaser.
@@ -28,6 +29,23 @@ export const TeaserView = memo(
       sidebarData,
     } = props;
     const styles = useTeaserViewStyle();
+
+    // Comment modal
+    // variables
+    const snapPoints = useMemo(() => ["75%"], []);
+    const [showCommentModal, setShowCommentModal] = useState(false);
+
+    // callbacks
+    const handleSheetChanges = useCallback(
+      (index) => {
+        console.log("handleSheetChanges", index);
+        if (index === -1) {
+          setShowCommentModal(false);
+        }
+      },
+      [showCommentModal, setShowCommentModal],
+    );
+
     return (
       <View style={styles.container}>
         <TeaserVideo
@@ -42,8 +60,20 @@ export const TeaserView = memo(
           navigation={navigation}
           sidebarData={sidebarData}
           userAuthAtomValue={userAuthAtomValue}
+          setShowCommentModal={setShowCommentModal}
         />
         <TeaserCaption navigation={navigation} captionData={captionData} />
+        {showCommentModal ? (
+          <CommentModal
+            navigation={navigation}
+            postID={videoIdx}
+            commentCount={sidebarData.commentCount}
+            showCommentModal={showCommentModal}
+            setShowCommentModal={setShowCommentModal}
+            handleSheetChanges={handleSheetChanges}
+            snapPoints={snapPoints}
+          />
+        ) : null}
       </View>
     );
   }),

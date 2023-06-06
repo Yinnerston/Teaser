@@ -5,7 +5,7 @@ import CommentPostButton from "../../elements/button/CommentPostButton";
 import BookmarkPostButton from "../../elements/button/BookmarkPostButton";
 import SharePostButton from "../../elements/button/SharePostButton";
 import { SIDEBAR_MARGIN_BOTTOM, SIDEBAR_WIDTH } from "../../../Constants";
-import { numberFormatter } from "../../../utils/numberFormatter";
+import { numberFormatter } from "../../../utils/formatters";
 
 /**
  * Container for the sidebar of a teaser.
@@ -14,7 +14,8 @@ import { numberFormatter } from "../../../utils/numberFormatter";
  * @param {likeCount, bookmarkCount, commentCount, shareCount} ^^sidebarData
  */
 export default function TeaserSidebar(props) {
-  const { navigation, sidebarData, userAuthAtomValue } = props;
+  const { navigation, sidebarData, userAuthAtomValue, setShowCommentModal } =
+    props;
   const {
     username,
     postID,
@@ -47,6 +48,7 @@ export default function TeaserSidebar(props) {
         commentCount={numberFormatter.format(commentCount)}
         textStyle={styles.sidebarText}
         style={styles.sidebarItem}
+        setShowCommentModal={setShowCommentModal}
       />
       <BookmarkPostButton
         navigation={navigation}

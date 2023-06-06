@@ -4,7 +4,7 @@ import { Image } from "react-native";
 import { useState, useRef } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import HeartIcon from "../elements/icon/HeartIcon";
-import { numberFormatter } from "../../utils/numberFormatter";
+import { numberFormatter } from "../../utils/formatters";
 import { Video } from "expo-av";
 import { VIDEO_PORTRAIT } from "../../Constants";
 
