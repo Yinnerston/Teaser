@@ -9,11 +9,11 @@ import * as ImagePicker from "expo-image-picker";
 
 /**
  * Back button used to import images
- * @param {onPress, uploadImageButtonStyle} props
+ * @param {onPress, uploadImageButtonStyle, colour, textColor } props
  * @returns
  */
 export default function UploadImageButton(props) {
-  const { onPress, uploadImageButtonStyle } = props;
+  const { onPress, uploadImageButtonStyle, color, textColor } = props;
   const setEnqueueAtomAtom = useSetAtom(enqueueAtomAtom);
 
   const onPressImageButton = async () => {
@@ -38,7 +38,7 @@ export default function UploadImageButton(props) {
 
   return (
     <TouchableOpacity
-      onPress={onPressImageButton}
+      onPress={onPress ? onPress : onPressImageButton}
       style={
         uploadImageButtonStyle
           ? uploadImageButtonStyle
@@ -48,9 +48,18 @@ export default function UploadImageButton(props) {
       <Feather
         name="image"
         size={VIDEO_EDITOR_SIDEBAR_BUTTON_SIZE}
-        color="white"
+        color={color ? color : "white"}
       />
-      <Text style={{ color: "white", fontSize: 12, textAlign: "center" }}>
+      <Text
+        style={{
+          color: textColor ? textColor : "white",
+          textShadowColor: "gray",
+          textShadowOffset: { width: 0, height: 1 },
+          textShadowRadius: 1,
+          fontSize: 12,
+          textAlign: "center",
+        }}
+      >
         Upload
       </Text>
     </TouchableOpacity>

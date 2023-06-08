@@ -1,10 +1,19 @@
-import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  useWindowDimensions,
+  Alert,
+} from "react-native";
 import { Modalize } from "react-native-modalize";
-import { useEffect, useRef, useCallback, useMemo } from "react";
-import { GestureDetector, Gesture } from "react-native-gesture-handler";
-import Animated from "react-native-reanimated";
-// import { useInfiniteQuery, useQuery } from "react-query";
+import { useEffect, useRef, useCallback, useMemo, useState } from "react";
+import { useInfiniteQuery } from "react-query";
+import { getTopLevelPostComments } from "../../../api/feed/postCommentsApi";
+import { getTopLevelPostCommentsQueryKey } from "../../../hooks/feed/usePostComments";
 import PostCommentCard from "../../cards/PostCommentCard";
+import { TextInput } from "react-native-gesture-handler";
+import { STATUS_BAR_HEIGHT } from "../../../Constants";
+import UploadImageButton from "../button/upload/UploadImageButton";
 const TEST_DATA = [
   {
     comment_id: 1237,
@@ -120,15 +129,15 @@ const TEST_DATA = [
  */
 export default function CommentModal({
   navigation,
+  userAuthAtomValue,
   postID,
   commentCount,
   showCommentModal,
   setShowCommentModal,
-  snapPoints,
-  handleSheetChanges,
 }) {
   // ref
   const bottomSheetRef = useRef(null);
+  const [commentText, setCommentText] = useState("");
   const { width, height, styles } = useCommentModalStyles();
   useEffect(() => {
     // Close comment modal when showCommentModal is set to false
@@ -138,7 +147,21 @@ export default function CommentModal({
       bottomSheetRef.current?.open?.();
     }
   }, [showCommentModal]);
-  // TODO: Add react query to get comment data
+  // Only load data if commentCount > 0
+  const topLevelPostCommentsQuery =
+    commentCount > 0
+      ? useInfiniteQuery({
+          queryKey: getTopLevelPostCommentsQueryKey(postID),
+          queryFn: getTopLevelPostComments,
+          getNextPageParam: (lastPage, allPages) => {
+            const pageParam = lastPage.next
+              ? lastPage.next.split("page=").pop().split("&")[0]
+              : undefined;
+            return pageParam;
+          },
+          keepPreviousData: true,
+        })
+      : { data: { pages: [] } };
 
   // TODO: Should i move this callback and memo to higher level components so they aren't redefined each time?
   const renderPostCommentCard = useCallback(
@@ -162,26 +185,60 @@ export default function CommentModal({
     () => (
       // TODO: Add a searchable related tag?
       <Text style={{ textAlign: "center", fontWeight: "bold" }}>
-        {" "}
         I'M STILL WORKING ON ADDING SCROLLING!
       </Text>
     ),
     [],
   );
+  const renderCommentTextInput = useMemo(
+    () => (
+      <View style={styles.commentInputContainer}>
+        <View style={styles.uploadImageButtonContainer}>
+          <UploadImageButton
+            onPress={() => Alert.alert("Not implemented")}
+            textColor="black"
+            uploadImageButtonStyle={styles.uploadImageButton}
+            color="gray"
+          />
+        </View>
+        <TextInput
+          editable
+          style={styles.textInput}
+          onChangeText={(text) => setCommentText(text)}
+          value={commentText}
+        />
+      </View>
+    ),
+    [],
+  );
+  const renderListEmptyComponent = useMemo(
+    () => (
+      <View>
+        <Text style={{ textAlign: "center" }}>Be the first to post here!</Text>
+      </View>
+    ),
+    [],
+  );
+  if (topLevelPostCommentsQuery.isLoading || topLevelPostCommentsQuery.isError)
+    return null;
   return (
     <Modalize
       ref={bottomSheetRef}
       onClosed={() => setShowCommentModal(false)}
       adjustToContentHeight={true}
+      FooterComponent={renderCommentTextInput}
       flatListProps={{
         style: {
           flexGrow: 0,
           height: (height * 3) / 4,
         },
-        data: TEST_DATA,
+        data: topLevelPostCommentsQuery.data.pages
+          .map((page) => page.results)
+          .flat(),
         keyExtractor: (item) => "POSTCOMMENTMODAL" + item.comment_id,
         renderItem: renderPostCommentCard,
         ListHeaderComponent: renderCommentModalHeader,
+        ListEmptyComponent: renderListEmptyComponent,
         onEndReachedThreshold: 0,
         initialNumToRender: 5,
         maxToRenderPerBatch: 5,
@@ -207,6 +264,38 @@ const useCommentModalStyles = () => {
     contentContainer: {
       flex: 1,
       alignItems: "center",
+    },
+    commentInputContainer: {
+      backgroundColor: "white",
+      // height: STATUS_BAR_HEIGHT + 128,
+      width: width,
+      flexDirection: "row",
+    },
+    textInput: {
+      backgroundColor: "#f1f1f1",
+      color: "#86858a",
+      height: 40,
+      borderRadius: 20,
+      marginHorizontal: 16,
+      marginBottom: STATUS_BAR_HEIGHT,
+      width: width - (40 + 32),
+      position: "absolute",
+      bottom: 0,
+      right: 0,
+      paddingLeft: 16,
+    },
+    uploadImageButtonContainer: {
+      position: "absolute",
+      height: 40,
+      marginBottom: STATUS_BAR_HEIGHT,
+      marginHorizontal: 8,
+      width: 40,
+      bottom: 0,
+      left: 0,
+    },
+    uploadImageButton: {
+      height: 40,
+      width: 40,
     },
   });
   return { width, height, styles };

@@ -32,19 +32,7 @@ export const TeaserView = memo(
 
     // Comment modal
     // variables
-    const snapPoints = useMemo(() => ["75%"], []);
     const [showCommentModal, setShowCommentModal] = useState(false);
-
-    // callbacks
-    const handleSheetChanges = useCallback(
-      (index) => {
-        console.log("handleSheetChanges", index);
-        if (index === -1) {
-          setShowCommentModal(false);
-        }
-      },
-      [showCommentModal, setShowCommentModal],
-    );
 
     return (
       <View style={styles.container}>
@@ -65,12 +53,11 @@ export const TeaserView = memo(
         <TeaserCaption navigation={navigation} captionData={captionData} />
         <CommentModal
           navigation={navigation}
+          userAuthAtomValue={userAuthAtomValue}
           postID={videoIdx}
           commentCount={sidebarData.commentCount}
           showCommentModal={showCommentModal}
           setShowCommentModal={setShowCommentModal}
-          handleSheetChanges={handleSheetChanges}
-          snapPoints={snapPoints}
         />
       </View>
     );
