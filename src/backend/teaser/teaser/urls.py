@@ -96,6 +96,33 @@ api = NinjaExtraAPI(
 
 from core.errors.user_auth_errors import *
 
+from django.views.decorators.common import wraps
+from django.core.cache import cache
+
+
+def api_cached(key, timeout):
+    """
+    Wrapper for caching with key and timeout.
+    https://github.com/vitalik/django-ninja/issues/148#issuecomment-1088680636
+    """
+
+    def inner(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            print(args, kwargs)
+            # TODO: How to handle pageParms and pageSize?
+            key_with_params = "-".join([key] + list(kwargs.values()))
+            value = cache.get(key_with_params)
+            if value:
+                return value
+            value = f(*args, **kwargs)
+            cache.set(key_with_params, value, timeout)
+            return value
+
+        return wrapper
+
+    return inner
+
 
 @api.exception_handler(InvalidTokenError)
 def invalid_dob_validation_error(request, exc):
@@ -474,6 +501,7 @@ class PostsFeedController:
         response=PaginatedResponseSchema[PostsFeedResponseSchema],
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
+    @api_cached(key="feed", timeout=3600)
     def get_posts_general_feed_endpoint(self):
         """
         General feed endpoint (login not required).
