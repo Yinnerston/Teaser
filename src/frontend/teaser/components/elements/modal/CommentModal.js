@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
-import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
+import { Modalize } from "react-native-modalize";
 import { useEffect, useRef, useCallback, useMemo } from "react";
+import { GestureDetector, Gesture } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
 // import { useInfiniteQuery, useQuery } from "react-query";
 import PostCommentCard from "../../cards/PostCommentCard";
 const TEST_DATA = [
@@ -81,8 +83,41 @@ const TEST_DATA = [
     has_replies: true,
     depth: 0,
   },
+  {
+    comment_id: 123121,
+    username: "Yinnerston",
+    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
+    comment_text: "This is a top level comment!",
+    n_likes: 4,
+    created_at: "2023-01-10 15:00:00.000",
+    updated_at: "2020-01-10 15:00:00.000",
+    has_replies: true,
+    depth: 0,
+  },
+  {
+    comment_id: 123132,
+    username: "Yinnerston",
+    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
+    comment_text: "This is a top level comment!",
+    n_likes: 4,
+    created_at: "2023-01-10 15:00:00.000",
+    updated_at: "2020-01-10 15:00:00.000",
+    has_replies: true,
+    depth: 0,
+  },
 ];
 
+/**
+ * TODO: when commentCount === 0 ==> Add a comment button
+ * Don't bother querying for comments when the comment count is zero (save bandwidth)
+ * TODO: Fix scroll https://stackoverflow.com/questions/69253810/react-native-flatlist-does-not-scroll-inside-the-custom-animated-bottom-sheet
+ *  - possible ways to fix: rewrite bottom sheet to have my own modal
+ *  - tried: replace FlatList with RNGH --> doesn't do anything
+ *  - I think every gesture is being caught by the comment
+ *  - Solution i'm looking at: https://github.com/gorhom/react-native-bottom-sheet/issues/918 --> going to transition to RN modalize
+ * @param {*} param0
+ * @returns
+ */
 export default function CommentModal({
   navigation,
   postID,
@@ -94,11 +129,13 @@ export default function CommentModal({
 }) {
   // ref
   const bottomSheetRef = useRef(null);
-  const { height, styles } = useCommentModalStyles();
+  const { width, height, styles } = useCommentModalStyles();
   useEffect(() => {
     // Close comment modal when showCommentModal is set to false
     if (!showCommentModal) {
       bottomSheetRef.current?.close?.();
+    } else {
+      bottomSheetRef.current?.open?.();
     }
   }, [showCommentModal]);
   // TODO: Add react query to get comment data
@@ -126,29 +163,32 @@ export default function CommentModal({
       // TODO: Add a searchable related tag?
       <Text style={{ textAlign: "center", fontWeight: "bold" }}>
         {" "}
-        X Number of Comments
+        I'M STILL WORKING ON ADDING SCROLLING!
       </Text>
     ),
     [],
   );
   return (
-    <BottomSheet
-      style={styles.container}
-      containerHeight={height / 2}
-      enablePanDownToClose={true}
+    <Modalize
       ref={bottomSheetRef}
-      index={0}
-      snapPoints={snapPoints}
-      onChange={handleSheetChanges}
-    >
-      <BottomSheetFlatList
-        data={TEST_DATA}
-        keyExtractor={(item) => "POSTCOMMENTMODAL" + item.comment_id}
-        renderItem={renderPostCommentCard}
-        contentContainerStyle={styles.contentContainer}
-        ListHeaderComponent={renderCommentModalHeader}
-      />
-    </BottomSheet>
+      onClosed={() => setShowCommentModal(false)}
+      adjustToContentHeight={true}
+      flatListProps={{
+        style: {
+          flexGrow: 0,
+          height: (height * 3) / 4,
+        },
+        data: TEST_DATA,
+        keyExtractor: (item) => "POSTCOMMENTMODAL" + item.comment_id,
+        renderItem: renderPostCommentCard,
+        ListHeaderComponent: renderCommentModalHeader,
+        onEndReachedThreshold: 0,
+        initialNumToRender: 5,
+        maxToRenderPerBatch: 5,
+        windowSize: 5,
+        removeClippedSubviews: true,
+      }}
+    />
   );
 }
 
@@ -169,5 +209,5 @@ const useCommentModalStyles = () => {
       alignItems: "center",
     },
   });
-  return { height, styles };
+  return { width, height, styles };
 };

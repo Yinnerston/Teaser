@@ -63,17 +63,15 @@ export const TeaserView = memo(
           setShowCommentModal={setShowCommentModal}
         />
         <TeaserCaption navigation={navigation} captionData={captionData} />
-        {showCommentModal ? (
-          <CommentModal
-            navigation={navigation}
-            postID={videoIdx}
-            commentCount={sidebarData.commentCount}
-            showCommentModal={showCommentModal}
-            setShowCommentModal={setShowCommentModal}
-            handleSheetChanges={handleSheetChanges}
-            snapPoints={snapPoints}
-          />
-        ) : null}
+        <CommentModal
+          navigation={navigation}
+          postID={videoIdx}
+          commentCount={sidebarData.commentCount}
+          showCommentModal={showCommentModal}
+          setShowCommentModal={setShowCommentModal}
+          handleSheetChanges={handleSheetChanges}
+          snapPoints={snapPoints}
+        />
       </View>
     );
   }),
