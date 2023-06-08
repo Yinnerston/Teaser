@@ -7,13 +7,15 @@ import {
 } from "react-native";
 import { Modalize } from "react-native-modalize";
 import { useEffect, useRef, useCallback, useMemo, useState } from "react";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useMutation } from "react-query";
 import { getTopLevelPostComments } from "../../../api/feed/postCommentsApi";
 import { getTopLevelPostCommentsQueryKey } from "../../../hooks/feed/usePostComments";
 import PostCommentCard from "../../cards/PostCommentCard";
-import { TextInput } from "react-native-gesture-handler";
+import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { STATUS_BAR_HEIGHT } from "../../../Constants";
 import UploadImageButton from "../button/upload/UploadImageButton";
+import { AntDesign } from "@expo/vector-icons";
+
 const TEST_DATA = [
   {
     comment_id: 1237,
@@ -137,7 +139,7 @@ export default function CommentModal({
 }) {
   // ref
   const bottomSheetRef = useRef(null);
-  const [commentText, setCommentText] = useState("");
+  const [textInputCommentText, setTextInputCommentText] = useState("");
   const { width, height, styles } = useCommentModalStyles();
   useEffect(() => {
     // Close comment modal when showCommentModal is set to false
@@ -162,7 +164,11 @@ export default function CommentModal({
           keepPreviousData: true,
         })
       : { data: { pages: [] } };
-
+  // TODO:
+  const newCommentMutation = useMutation({
+    mutationKey: null,
+    mutationFn: null,
+  });
   // TODO: Should i move this callback and memo to higher level components so they aren't redefined each time?
   const renderPostCommentCard = useCallback(
     ({ item }) => (
@@ -191,25 +197,46 @@ export default function CommentModal({
     [],
   );
   const renderCommentTextInput = useMemo(
-    () => (
-      <View style={styles.commentInputContainer}>
-        <View style={styles.uploadImageButtonContainer}>
-          <UploadImageButton
-            onPress={() => Alert.alert("Not implemented")}
-            textColor="black"
-            uploadImageButtonStyle={styles.uploadImageButton}
-            color="gray"
+    () =>
+      userAuthAtomValue !== null ? (
+        <View style={styles.commentInputContainer}>
+          <View style={styles.uploadImageButtonContainer}>
+            <UploadImageButton
+              onPress={() => Alert.alert("Not implemented")}
+              textColor="black"
+              uploadImageButtonStyle={styles.uploadImageButton}
+              color="gray"
+            />
+          </View>
+          <TextInput
+            editable
+            style={styles.textInput}
+            onChangeText={(text) => setTextInputCommentText(text)}
+            value={textInputCommentText}
+            onSubmitEditing={({ nativeEvent: { text } }) => {
+              if (text !== "") {
+                // TODO: navigation.navigate("SearchResults", { searchTerm: text });
+                console.log("SUBMIT", text);
+              }
+            }}
+            placeholder="Add comment..."
           />
+          {textInputCommentText ? ( // render upload button
+            <View style={styles.uploadCommentButtonContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  if (textInputCommentText !== "") {
+                    console.log("SUBMIT", textInputCommentText);
+                  }
+                }}
+              >
+                <AntDesign name="arrowup" size={20} color="white" />
+              </TouchableOpacity>
+            </View>
+          ) : null}
         </View>
-        <TextInput
-          editable
-          style={styles.textInput}
-          onChangeText={(text) => setCommentText(text)}
-          value={commentText}
-        />
-      </View>
-    ),
-    [],
+      ) : null,
+    [userAuthAtomValue, textInputCommentText],
   );
   const renderListEmptyComponent = useMemo(
     () => (
@@ -296,6 +323,18 @@ const useCommentModalStyles = () => {
     uploadImageButton: {
       height: 40,
       width: 40,
+    },
+    uploadCommentButtonContainer: {
+      backgroundColor: "#f13059",
+      position: "absolute",
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      justifyContent: "center",
+      alignItems: "center",
+      bottom: 8,
+      right: 32,
+      marginBottom: STATUS_BAR_HEIGHT,
     },
   });
   return { width, height, styles };
