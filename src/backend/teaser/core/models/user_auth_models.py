@@ -29,7 +29,9 @@ class TeaserUserModel(models.Model):
         max_length=32
     )  # TODO: on change, change PostsModel denormalized nfc_username
     phone_str = models.CharField(max_length=16)
-    profile_photo_url = models.URLField(default="", blank=True)
+    profile_photo_url = models.URLField(
+        default="http://teasernsfw.b-cdn.net/teaser-32x32.png", blank=True
+    )
     stage_name = models.CharField(max_length=64, default="", blank=True)
     dob_date = models.DateField()
     is_verified = models.BooleanField(default=False)

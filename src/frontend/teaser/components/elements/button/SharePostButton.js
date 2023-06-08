@@ -4,12 +4,14 @@ import ShareIcon from "../icon/ShareIcon";
 import { SIDEBAR_ICON_SIZE } from "../../../Constants";
 
 export default function SharePostButton(props) {
-  const { numShares, style, textStyle } = props;
+  const { numShares, style, textStyle, setShowShareModal } = props;
   // TODO: Add to liked posts on like
   const [isShared, setIsShared] = useState(false);
   return (
     <View style={style}>
-      <TouchableOpacity onPress={() => setIsShared((current) => !current)}>
+      <TouchableOpacity
+        onPress={() => setShowShareModal((current) => !current)}
+      >
         <ShareIcon
           color={isShared ? "black" : "white"}
           size={SIDEBAR_ICON_SIZE}

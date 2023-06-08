@@ -10,12 +10,17 @@ import { numberFormatter } from "../../../utils/formatters";
 /**
  * Container for the sidebar of a teaser.
  * Handles likes, user profiles, comments, etc.
- * @param {navigation, sidebarData} props
+ * @param {navigation, sidebarData, userAuthAtomValue, setShowCommentModal, setShowShareModal} props
  * @param {likeCount, bookmarkCount, commentCount, shareCount} ^^sidebarData
  */
 export default function TeaserSidebar(props) {
-  const { navigation, sidebarData, userAuthAtomValue, setShowCommentModal } =
-    props;
+  const {
+    navigation,
+    sidebarData,
+    userAuthAtomValue,
+    setShowCommentModal,
+    setShowShareModal,
+  } = props;
   const {
     username,
     postID,
@@ -62,6 +67,7 @@ export default function TeaserSidebar(props) {
         numShares={numberFormatter.format(shareCount)}
         textStyle={styles.sidebarText}
         style={styles.sidebarItem}
+        setShowShareModal={setShowShareModal}
       />
     </View>
   );

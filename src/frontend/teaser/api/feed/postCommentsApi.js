@@ -7,3 +7,28 @@ export function getTopLevelPostComments({ queryKey, pageParam = 1 }) {
     .then((res) => res.data);
   return response;
 }
+
+export function postPostComment(
+  authToken,
+  postID,
+  commentText,
+  commentAncestorId = null,
+) {
+  const response = axiosAPIClient
+    .post(
+      "posts/comment",
+      {
+        post_id: postID,
+        comment_text: commentText,
+        comment_ancestor_id: commentAncestorId,
+      },
+      {
+        headers: { accept: "*/*", Authorization: `Bearer ${authToken}` },
+      },
+    )
+    .then((res) => res.data)
+    .catch(function (error) {
+      console.log("error from data :", error.toJSON());
+    });
+  return response;
+}

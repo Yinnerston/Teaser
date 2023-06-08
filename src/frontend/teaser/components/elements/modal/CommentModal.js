@@ -8,8 +8,14 @@ import {
 import { Modalize } from "react-native-modalize";
 import { useEffect, useRef, useCallback, useMemo, useState } from "react";
 import { useInfiniteQuery, useMutation } from "react-query";
-import { getTopLevelPostComments } from "../../../api/feed/postCommentsApi";
-import { getTopLevelPostCommentsQueryKey } from "../../../hooks/feed/usePostComments";
+import {
+  getTopLevelPostComments,
+  postPostComment,
+} from "../../../api/feed/postCommentsApi";
+import {
+  getTopLevelPostCommentsQueryKey,
+  postPostCommentMutationKey,
+} from "../../../hooks/feed/usePostComments";
 import PostCommentCard from "../../cards/PostCommentCard";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { STATUS_BAR_HEIGHT } from "../../../Constants";
@@ -139,6 +145,7 @@ export default function CommentModal({
 }) {
   // ref
   const bottomSheetRef = useRef(null);
+  const [selectedParentComment, setSelectedParentComment] = useState(null);
   const [textInputCommentText, setTextInputCommentText] = useState("");
   const { width, height, styles } = useCommentModalStyles();
   useEffect(() => {
@@ -148,7 +155,7 @@ export default function CommentModal({
     } else {
       bottomSheetRef.current?.open?.();
     }
-  }, [showCommentModal]);
+  }, [showCommentModal, bottomSheetRef]);
   // Only load data if commentCount > 0
   const topLevelPostCommentsQuery =
     commentCount > 0
@@ -164,10 +171,25 @@ export default function CommentModal({
           keepPreviousData: true,
         })
       : { data: { pages: [] } };
-  // TODO:
+  // TODO: optimistic updates for replies
   const newCommentMutation = useMutation({
-    mutationKey: null,
-    mutationFn: null,
+    mutationKey: postPostCommentMutationKey(
+      userAuthAtomValue,
+      postID,
+      selectedParentComment?.commentID,
+    ),
+    mutationFn: () =>
+      postPostComment(
+        userAuthAtomValue?.token_hash,
+        postID,
+        textInputCommentText,
+        selectedParentComment,
+      ),
+    onSettled: () => {
+      // Refetch
+      topLevelPostCommentsQuery.refetch();
+    },
+    enabled: topLevelPostCommentsQuery.isSuccess,
   });
   // TODO: Should i move this callback and memo to higher level components so they aren't redefined each time?
   const renderPostCommentCard = useCallback(
@@ -216,7 +238,7 @@ export default function CommentModal({
             onSubmitEditing={({ nativeEvent: { text } }) => {
               if (text !== "") {
                 // TODO: navigation.navigate("SearchResults", { searchTerm: text });
-                console.log("SUBMIT", text);
+                newCommentMutation.mutate();
               }
             }}
             placeholder="Add comment..."
@@ -226,7 +248,7 @@ export default function CommentModal({
               <TouchableOpacity
                 onPress={() => {
                   if (textInputCommentText !== "") {
-                    console.log("SUBMIT", textInputCommentText);
+                    newCommentMutation.mutate();
                   }
                 }}
               >
