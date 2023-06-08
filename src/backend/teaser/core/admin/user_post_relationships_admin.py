@@ -77,6 +77,7 @@ class CommentsModelAdmin(admin.ModelAdmin):
         "n_likes",
         "created_at",
         "updated_at",
+        "has_replies",
         "depth",
     ]
 

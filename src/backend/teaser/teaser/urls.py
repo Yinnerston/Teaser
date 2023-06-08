@@ -55,6 +55,8 @@ from core.services.user_post_relationship_service import (
     bookmark_post_service,
     comment_on_post_service,
     like_post_comment_service,
+    get_post_comments_service,
+    get_post_comment_replies_service,
 )
 
 # Import schemas
@@ -423,7 +425,12 @@ def bookmark_post_endpoint(request, payload: UserPostActivitySchema):
     return bookmark_post_service(s_teaser_user, us_post_id)
 
 
-@api.post("posts/comment", tags=["posts"], auth=AuthBearer())
+@api.post(
+    "posts/comment",
+    tags=["posts"],
+    auth=AuthBearer(),
+    response=UserPostCommentResponseSchema,
+)
 def comment_on_post_endpoint(request, payload: UserPostCommentSchema):
     post_dict = payload.dict()
     s_teaser_user = request.auth.teaser_user_id
@@ -518,6 +525,37 @@ class PostsFeedController:
         """
         s_teaser_user = request.auth.teaser_user_id
         return get_own_profile_posts_service(s_teaser_user)
+
+    @route.get(
+        "/comments/top_level/{post_id}",
+        tags=["posts"],
+        # request=UserPostActivitySchema,
+        response={200: PaginatedResponseSchema[TopLevelPostCommentsResponseSchema]},
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_top_level_post_comments_endpoint(self, post_id: int):
+        """
+        Get the comments attached to a post.
+        """
+        us_post_id = post_id
+        return get_post_comments_service(us_post_id)
+
+    @route.get(
+        "/comments/replies/{post_id}/{comment_id}",
+        tags=["posts"],
+        # request=UserPostActivitySchema,
+        response={200: PaginatedResponseSchema[TopLevelPostCommentsResponseSchema]},
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_post_comment_replies_endpoint(self, post_id: int, comment_id: int):
+        """
+        Get the replies to a comment attached to a post.
+        """
+        us_post_id = post_id
+        us_comment_id = comment_id
+        return get_post_comment_replies_service(
+            us_post_id=us_post_id, us_comment_id=us_comment_id
+        )
 
 
 @api_controller("/search")

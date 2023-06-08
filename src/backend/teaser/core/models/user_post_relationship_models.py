@@ -73,6 +73,7 @@ class CommentsModel(models.Model):
     n_likes = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now_add=True, blank=True)
+    has_replies = models.BooleanField(default=False)
     depth = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -111,10 +112,10 @@ class CommentPathsModel(models.Model):
         default=get_or_create_sentinel_post_data_id,
     )  # get_or_create_sentinel_post_data
     ancestor = models.ForeignKey(
-        CommentsModel, on_delete=models.DO_NOTHING, null=True, related_name="ancestor"
+        CommentsModel, on_delete=models.SET_NULL, null=True, related_name="ancestor"
     )
     descendent = models.ForeignKey(
-        CommentsModel, on_delete=models.DO_NOTHING, null=True, related_name="descendent"
+        CommentsModel, on_delete=models.SET_NULL, null=True, related_name="descendent"
     )
 
     class Meta:
@@ -135,7 +136,7 @@ class LikedCommentsModel(models.Model):
     """
 
     user_id = models.ForeignKey(TeaserUserModel, on_delete=models.DO_NOTHING)
-    comment_id = models.ForeignKey(CommentsModel, on_delete=models.DO_NOTHING)
+    comment_id = models.ForeignKey(CommentsModel, on_delete=models.SET_NULL, null=True)
     is_liked = models.BooleanField(default=True)
     updated_at = models.DateTimeField(auto_now_add=True, blank=True)
 

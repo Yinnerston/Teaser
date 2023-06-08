@@ -104,6 +104,40 @@ def bookmark_post_service(s_teaser_user, us_post_id):
     return {"bookmarked_post": bookmarked_post.is_bookmarked, "created": created}
 
 
+def get_post_comments_service(us_post_id: int):
+    # TODO: Validate
+    # TODO: Catch and return standardized error
+    top_level_paths = (
+        CommentPathsModel.objects.filter(post_id__id=us_post_id)
+        .select_related("ancestor")
+        .select_related("descendent")
+        .select_related("descendent__user_id")
+        .filter(descendent__depth=0)
+    )
+    # Already ordered by newest
+    # ^ annotate so each field matches TopLevelPostCommentsResponseSchema
+    return top_level_paths.values(
+        comment_id=F("descendent__id"),
+        username=F("descendent__user_id__nfc_username"),
+        profile_photo_url=F("descendent__user_id__profile_photo_url"),
+        comment_text=F("descendent__comment_text"),
+        n_likes=F("descendent__n_likes"),
+        created_at=F("descendent__created_at"),
+        updated_at=F("descendent__updated_at"),
+        has_replies=F("descendent__has_replies"),
+        depth=F("descendent__depth"),
+    ).all()
+
+
+def get_post_comment_replies_service(us_post_id: int, us_comment_id: int):
+    parent_comment = CommentsModel.objects.get(id=us_comment_id)
+    comment_replies = top_level_paths = CommentPathsModel.objects.filter(
+        post_id__id=us_post_id, ancestor=parent_comment
+    )
+    pass
+    # What processing and format can I return comments in to load them on my frontend?
+
+
 def comment_on_post_service(
     s_teaser_user,
     us_post_id: int,
@@ -112,18 +146,20 @@ def comment_on_post_service(
 ):
     parent_comment = None
     new_comment_model = None
-    ancestors = []
+    ancestor_paths = []
     with transaction.atomic():
         # Get related post and create new comment model
         post_model = PostsModel.objects.get(id=us_post_id)
         # Get all descendents of the parent and insert
         if us_comment_ancestor_id != None:
             parent_comment = CommentsModel.objects.get(id=us_comment_ancestor_id)
-            ancestors = CommentPathsModel.objects.filter(
+            ancestor_paths = CommentPathsModel.objects.filter(
                 post_id=post_model, ancestor__id=us_comment_ancestor_id
             )
         # Create new comment and specify depth if the comment has a parent
         if parent_comment:
+            # TODO: Set parent_comment.has_replies?
+            # add ^ to response schema
             new_comment_model = CommentsModel.objects.create(
                 post_id=post_model,
                 user_id=s_teaser_user,
@@ -138,13 +174,18 @@ def comment_on_post_service(
         CommentPathsModel.objects.create(
             post_id=post_model, ancestor=new_comment_model, descendent=new_comment_model
         )
-        # Create a relationship with all ancestors including the immediate parent
-        for ancestor in ancestors:
+        post_model.n_comments += 1
+        post_model.save()
+        # Create a relationship with all ancestor_paths including the immediate parent
+        for ancestor_path in ancestor_paths:
+            ancestor_path.descendent.has_replies = True
+            ancestor_path.descendent.save()
             CommentPathsModel.objects.create(
                 post_id=post_model,
-                ancestor=ancestor.descendent,
+                ancestor=ancestor_path.descendent,
                 descendent=new_comment_model,
             )
+    return {"comment_id": new_comment_model.id}
 
 
 def like_post_comment_service(s_teaser_user, us_comment_id):
