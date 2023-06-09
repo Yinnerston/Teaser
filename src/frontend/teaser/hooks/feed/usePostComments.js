@@ -26,7 +26,20 @@ export function postPostCommentMutationKey(
     ? [
         "feed",
         "postComments",
-        "mutation",
+        "postCommentMutation",
+        userAuthAtomValue.token_hash,
+        postID,
+        commentID,
+      ]
+    : ["feed", "postComments", "mutation", null, postID, commentID];
+}
+
+export function postLikePostCommentKey(userAuthAtomValue, postID, commentID) {
+  return userAuthAtomValue !== null
+    ? [
+        "feed",
+        "postComments",
+        "likeCommentMutation",
         userAuthAtomValue.token_hash,
         postID,
         commentID,

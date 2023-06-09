@@ -10,7 +10,7 @@ from core.models.user_post_relationship_models import (
 from core.models.event_metric_models import EventMetricsModel
 from core.models.post_models import PostsModel
 from django.db import transaction
-from django.db.models import Case, Value, When, F
+from django.db.models import Case, Value, When, F, Q
 import json
 from datetime import datetime
 

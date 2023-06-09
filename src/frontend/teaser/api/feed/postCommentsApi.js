@@ -32,3 +32,21 @@ export function postPostComment(
     });
   return response;
 }
+
+export function postLikeComment(authToken, commentID) {
+  const response = axiosAPIClient
+    .post(
+      "posts/comment/like",
+      {
+        comment_id: commentID,
+      },
+      {
+        headers: { accept: "*/*", Authorization: `Bearer ${authToken}` },
+      },
+    )
+    .then((res) => res.data)
+    .catch(function (error) {
+      console.log("error from data :", error.toJSON());
+    });
+  return response;
+}

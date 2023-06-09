@@ -172,6 +172,7 @@ export default function CommentModal({
         })
       : { data: { pages: [] } };
   // TODO: optimistic updates for replies
+  // TODO: if the user is logged in a likes a comment, return a bool
   const newCommentMutation = useMutation({
     mutationKey: postPostCommentMutationKey(
       userAuthAtomValue,
@@ -196,6 +197,8 @@ export default function CommentModal({
     ({ item }) => (
       <PostCommentCard
         navigation={navigation}
+        userAuthAtomValue={userAuthAtomValue}
+        postID={postID}
         commentID={item.comment_id}
         username={item.username}
         profilePhotoURL={item.profile_photo_url}
@@ -207,7 +210,7 @@ export default function CommentModal({
         depth={item.depth}
       />
     ),
-    [navigation],
+    [navigation, userAuthAtomValue],
   );
   const renderCommentModalHeader = useMemo(
     () => (

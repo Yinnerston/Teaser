@@ -58,6 +58,10 @@ from core.services.user_post_relationship_service import (
     get_post_comments_service,
     get_post_comment_replies_service,
 )
+from core.services.moderation_services import (
+    report_post_service,
+    report_comment_service,
+)
 
 # Import schemas
 from core.schemas.user_auth_schemas import *
@@ -480,6 +484,13 @@ def like_post_comment_endpoint(request, payload: LikePostCommentSchema):
     return like_post_comment_service(
         s_teaser_user=s_teaser_user, us_comment_id=us_comment_id
     )
+
+
+@api.post("posts/comment/report", tags=["posts"])
+def report_post_comment_endpoint(request, payload: LikePostCommentSchema):
+    post_dict = payload.dict()
+    us_comment_id = post_dict["comment_id"]
+    return report_comment_service(us_comment_id=us_comment_id)
 
 
 # @api.post("posts/share", tags=["posts"], auth=AuthBearer())

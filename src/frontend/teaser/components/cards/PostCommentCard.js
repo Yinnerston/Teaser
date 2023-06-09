@@ -4,14 +4,21 @@ import {
   Image,
   StyleSheet,
   useWindowDimensions,
+  Alert,
 } from "react-native";
 import HeartIcon from "../elements/icon/HeartIcon";
 import { formatCommentDate, numberFormatter } from "../../utils/formatters";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useState } from "react";
+import { useMutation } from "react-query";
+import { postLikePostCommentKey } from "../../hooks/feed/usePostComments";
+import { postLikeComment } from "../../api/feed/postCommentsApi";
+import { postCommentReport } from "../../api/reports/reportApi";
 
 export default function PostCommentCard({
   navigation,
+  userAuthAtomValue,
+  postID,
   commentID,
   username,
   profilePhotoURL,
@@ -24,7 +31,16 @@ export default function PostCommentCard({
 }) {
   const styles = usePostCommentCardStyles();
   const [commentIsLiked, setCommentIsLiked] = useState(false);
-
+  const likeMutation = useMutation({
+    mutationKey: postLikePostCommentKey(userAuthAtomValue, postID, commentID),
+    mutationFn: () => postLikeComment(userAuthAtomValue?.token_hash, commentID),
+    // TODO: Fetch data["liked_post"] on comment load
+    onSuccess: (data) => {
+      if (data !== undefined) {
+        setCommentIsLiked(!!data["liked_comment"]);
+      }
+    },
+  });
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -37,7 +53,16 @@ export default function PostCommentCard({
       >
         <Image style={styles.profilePhoto} source={{ uri: profilePhotoURL }} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setCommentIsLiked((cur) => !cur)}>
+      <TouchableOpacity
+        onPress={() => {
+          if (userAuthAtomValue !== null) {
+            setCommentIsLiked((cur) => !cur);
+            likeMutation.mutate();
+          } else {
+            Alert.alert("Log in to like comments!");
+          }
+        }}
+      >
         <View style={styles.commentBodyContainer}>
           <TouchableOpacity
             onPress={() =>
@@ -86,7 +111,22 @@ export default function PostCommentCard({
                     : numberFormatter.format(nLikes)}
                 </Text>
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  Alert.alert(
+                    "Report this comment by " + username + "?",
+                    "Report a comment if it breaks Teaser's terms of use.",
+                    [
+                      { text: "Cancel", style: "cancel", onPress: () => {} },
+                      {
+                        text: "Report",
+                        style: "cancel",
+                        onPress: () => postCommentReport(commentID),
+                      },
+                    ],
+                  )
+                }
+              >
                 <Text style={styles.commentFooterReplyButtonText}>Report</Text>
               </TouchableOpacity>
             </View>
