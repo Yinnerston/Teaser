@@ -15,10 +15,13 @@ services:
     volumes:
       - static_volume:/app/static
       - ./src/backend/teaser:/app
+    environment:
+      - REDIS_CACHE=redis_cache
     env_file:
       - .backend.env
     depends_on:
       - db
+      - redis_cache
     logging: *loki-logging
     networks:
       - teaser-network
@@ -102,7 +105,7 @@ services:
   grafana:
     build: ./src/grafana
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${PROD_GF_SECURITY_ADMIN_PASSWORD}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
     volumes:
       - ./src/grafana:/grafana
     ports:
@@ -120,8 +123,34 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - teaser-network
+  redis_cache:  # TODO: Run redis/redis-stack-server in prod
+    image: redis/redis-stack
+    restart: always
+    # volumes:
+      # - ./redis.conf:/usr/local/etc/redis/redis.conf # use default config
+      # - "redis:/data"
+    ports:
+      - 6379:6379
+      - 8001:8001
+    # command: redis-server
+    networks:
+      - teaser-network
+  redis-exporter:
+    image: oliver006/redis_exporter
+    ports:
+      - 9121:9121
+    environment:
+      REDIS_ADDR: redis_cache:6379
+      # REDIS_USER: ${PROD_REDIS_USERNAME}
+      # REDIS_PASSWORD: ${PROD_REDIS_PASSWORD}
+    links:
+      - redis_cache
+      - prometheus
+    networks:
+      - teaser-network
 
 volumes:
   static_volume:
+  redis: {}
 networks:
   teaser-network:

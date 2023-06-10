@@ -53,6 +53,14 @@ from core.services.search_service import (
 from core.services.user_post_relationship_service import (
     like_post_service,
     bookmark_post_service,
+    comment_on_post_service,
+    like_post_comment_service,
+    get_post_comments_service,
+    get_post_comment_replies_service,
+)
+from core.services.moderation_services import (
+    report_post_service,  # TODO: report post endpoint
+    report_comment_service,
 )
 
 # Import schemas
@@ -72,7 +80,7 @@ from core.services.user_auth_services import AuthBearer
 # Views
 from core.views.views import IndexView, OpenAIGeneratedImageView
 
-from ninja import NinjaAPI, File
+from ninja import File
 from ninja.files import UploadedFile
 
 from ninja_extra import api_controller, route, NinjaExtraAPI
@@ -91,6 +99,33 @@ api = NinjaExtraAPI(
 # Define exceptions
 
 from core.errors.user_auth_errors import *
+
+from django.views.decorators.common import wraps
+from django.core.cache import cache
+
+
+def api_cached(key, timeout):
+    """
+    Wrapper for caching with key and timeout.
+    https://github.com/vitalik/django-ninja/issues/148#issuecomment-1088680636
+    """
+
+    def inner(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            print(args, kwargs)
+            # TODO: How to handle pageParms and pageSize?
+            key_with_params = "-".join([key] + list(kwargs.values()))
+            value = cache.get(key_with_params)
+            if value:
+                return value
+            value = f(*args, **kwargs)
+            cache.set(key_with_params, value, timeout)
+            return value
+
+        return wrapper
+
+    return inner
 
 
 @api.exception_handler(InvalidTokenError)
@@ -421,6 +456,43 @@ def bookmark_post_endpoint(request, payload: UserPostActivitySchema):
     return bookmark_post_service(s_teaser_user, us_post_id)
 
 
+@api.post(
+    "posts/comment",
+    tags=["posts"],
+    auth=AuthBearer(),
+    response=UserPostCommentResponseSchema,
+)
+def comment_on_post_endpoint(request, payload: UserPostCommentSchema):
+    post_dict = payload.dict()
+    s_teaser_user = request.auth.teaser_user_id
+    us_post_id = post_dict["post_id"]
+    us_comment_ancestor_id = post_dict["comment_ancestor_id"]
+    s_comment_text = sanitization_utils.sanitize_str(post_dict["comment_text"])
+    return comment_on_post_service(
+        s_teaser_user,
+        us_post_id=us_post_id,
+        us_comment_ancestor_id=us_comment_ancestor_id,
+        s_comment_text=s_comment_text,
+    )
+
+
+@api.post("posts/comment/like", tags=["posts"], auth=AuthBearer())
+def like_post_comment_endpoint(request, payload: LikePostCommentSchema):
+    post_dict = payload.dict()
+    s_teaser_user = request.auth.teaser_user_id
+    us_comment_id = post_dict["comment_id"]
+    return like_post_comment_service(
+        s_teaser_user=s_teaser_user, us_comment_id=us_comment_id
+    )
+
+
+@api.post("posts/comment/report", tags=["posts"])
+def report_post_comment_endpoint(request, payload: LikePostCommentSchema):
+    post_dict = payload.dict()
+    us_comment_id = post_dict["comment_id"]
+    return report_comment_service(us_comment_id=us_comment_id)
+
+
 # @api.post("posts/share", tags=["posts"], auth=AuthBearer())
 # def share_post_endpoint(request, payload: UserPostActivitySchema):
 #     post_dict = payload.dict()
@@ -440,6 +512,7 @@ class PostsFeedController:
         response=PaginatedResponseSchema[PostsFeedResponseSchema],
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
+    @api_cached(key="feed", timeout=3600)
     def get_posts_general_feed_endpoint(self):
         """
         General feed endpoint (login not required).
@@ -491,6 +564,37 @@ class PostsFeedController:
         """
         s_teaser_user = request.auth.teaser_user_id
         return get_own_profile_posts_service(s_teaser_user)
+
+    @route.get(
+        "/comments/top_level/{post_id}",
+        tags=["posts"],
+        # request=UserPostActivitySchema,
+        response={200: PaginatedResponseSchema[TopLevelPostCommentsResponseSchema]},
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_top_level_post_comments_endpoint(self, post_id: int):
+        """
+        Get the comments attached to a post.
+        """
+        us_post_id = post_id
+        return get_post_comments_service(us_post_id)
+
+    @route.get(
+        "/comments/replies/{post_id}/{comment_id}",
+        tags=["posts"],
+        # request=UserPostActivitySchema,
+        response={200: PaginatedResponseSchema[TopLevelPostCommentsResponseSchema]},
+    )
+    @paginate(PageNumberPaginationExtra, page_size=50)
+    def get_post_comment_replies_endpoint(self, post_id: int, comment_id: int):
+        """
+        Get the replies to a comment attached to a post.
+        """
+        us_post_id = post_id
+        us_comment_id = comment_id
+        return get_post_comment_replies_service(
+            us_post_id=us_post_id, us_comment_id=us_comment_id
+        )
 
 
 @api_controller("/search")

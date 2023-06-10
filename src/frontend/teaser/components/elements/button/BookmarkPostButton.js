@@ -5,7 +5,7 @@ import { SIDEBAR_ICON_SIZE } from "../../../Constants";
 import { useMutation, useQueryClient } from "react-query";
 import { getBookmarkPostMutationKey } from "../../../hooks/feed/useFeedSidebar";
 import { bookmarkPost } from "../../../api/feed/postsFeedApi";
-import { numberFormatter } from "../../../utils/numberFormatter";
+import { numberFormatter } from "../../../utils/formatters";
 
 /**
  * Bookmark Post button.

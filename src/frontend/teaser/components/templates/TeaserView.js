@@ -3,8 +3,10 @@ import TeaserCaption from "../navs/caption/TeaserCaption";
 import TeaserHeader from "../navs/header/TeaserHeader";
 import TeaserSidebar from "../navs/sidebar/TeaserSidebar";
 import { TeaserVideo } from "../navs/video/TeaserVideo";
-import { forwardRef, memo } from "react";
+import { forwardRef, memo, useMemo, useCallback, useState } from "react";
 import { STATUS_BAR_HEIGHT } from "../../Constants";
+import CommentModal from "../elements/modal/CommentModal";
+import ShareModal from "../elements/modal/ShareModal";
 
 /**
  *  Container for all the components that make up a teaser.
@@ -28,6 +30,11 @@ export const TeaserView = memo(
       sidebarData,
     } = props;
     const styles = useTeaserViewStyle();
+
+    // Comment modal
+    // variables
+    const [showCommentModal, setShowCommentModal] = useState(false);
+    const [showShareModal, setShowShareModal] = useState(false);
     return (
       <View style={styles.container}>
         <TeaserVideo
@@ -42,8 +49,24 @@ export const TeaserView = memo(
           navigation={navigation}
           sidebarData={sidebarData}
           userAuthAtomValue={userAuthAtomValue}
+          setShowCommentModal={setShowCommentModal}
+          setShowShareModal={setShowShareModal}
         />
         <TeaserCaption navigation={navigation} captionData={captionData} />
+        <CommentModal
+          navigation={navigation}
+          userAuthAtomValue={userAuthAtomValue}
+          postID={videoIdx}
+          commentCount={sidebarData.commentCount}
+          showCommentModal={showCommentModal}
+          setShowCommentModal={setShowCommentModal}
+        />
+        <ShareModal
+          postID={videoIdx}
+          shareURL={videoURL}
+          showShareModal={showShareModal}
+          setShowShareModal={setShowShareModal}
+        />
       </View>
     );
   }),

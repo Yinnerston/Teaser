@@ -5,7 +5,7 @@ import { SIDEBAR_ICON_SIZE } from "../../../Constants";
 import { useMutation, useQueryClient } from "react-query";
 import { getLikePostMutationKey } from "../../../hooks/feed/useFeedSidebar";
 import { likePost } from "../../../api/feed/postsFeedApi";
-import { numberFormatter } from "../../../utils/numberFormatter";
+import { numberFormatter } from "../../../utils/formatters";
 
 /**
  * Like Post button.

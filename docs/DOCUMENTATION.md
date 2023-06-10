@@ -30,6 +30,7 @@ GF_SECURITY_ADMIN_PASSWORD='???'
 - Setup PostCategoriesModel by running `python manage.py shell < core/utils/populate_categories.py
 ` in backend_django container
 - Create user with username `uploader` --> This is used for uploading etl
+- Create user with username `Deleted` --> This is used in the sentinel pattern for PostModel foreign keys
 
 # Setup
 

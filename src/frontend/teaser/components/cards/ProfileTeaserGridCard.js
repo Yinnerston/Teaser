@@ -8,7 +8,7 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useRef, useState } from "react";
 import { Video } from "expo-av";
-import { numberFormatter } from "../../utils/numberFormatter";
+import { numberFormatter } from "../../utils/formatters";
 import { VIDEO_PORTRAIT } from "../../Constants";
 
 /**

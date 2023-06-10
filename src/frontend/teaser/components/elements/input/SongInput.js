@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, StyleSheet, useWindowDimensions } from "react-native";
+import { View, StyleSheet, useWindowDimensions, Alert } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import SearchIcon from "../icon/upload/SearchIcon";
 
@@ -13,6 +13,11 @@ export default function SongInput() {
         placeholder="What song do you want to play in your video?"
         onChange={(newText) => setSongText(newText)}
         value={songText}
+        onSubmitEditing={({ nativeEvent: { text } }) => {
+          if (text !== "") {
+            Alert.alert("Not implemented yet.");
+          }
+        }}
       ></TextInput>
       <View style={styles.searchIconView}>
         <SearchIcon searchIconStyle={styles.searchIconStyle} />

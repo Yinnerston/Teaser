@@ -99,6 +99,13 @@ MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://" + env("REDIS_CACHE") + ":6379",
+    }
+}
+
 ROOT_URLCONF = "teaser.urls"
 
 TEMPLATES = [
