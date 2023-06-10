@@ -104,7 +104,7 @@ from django.views.decorators.common import wraps
 from django.core.cache import cache
 
 
-def api_cached(key, timeout):
+def api_cached(key, has_auth, uses_controller, timeout):
     """
     Wrapper for caching with key and timeout.
     https://github.com/vitalik/django-ninja/issues/148#issuecomment-1088680636
@@ -113,9 +113,17 @@ def api_cached(key, timeout):
     def inner(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            print(args, kwargs)
-            # TODO: How to handle pageParms and pageSize?
-            key_with_params = "-".join([key] + list(kwargs.values()))
+            # find token hash from args
+            initial_key = [key]
+            if has_auth:
+                if uses_controller:
+                    initial_key += [kwargs["request"].auth.token_hash]
+                else:
+                    initial_key += [args[0].auth.token_hash]
+            # Attach values like pageParam to end of key joined by "/"
+            key_with_params = "/".join(
+                initial_key + [str(val) for val in kwargs.values()]
+            )
             value = cache.get(key_with_params)
             if value:
                 return value
@@ -278,6 +286,9 @@ def add_user_category_endpoint(request, payload: CreateUserCategorySchema):
     tags=["users"],
     auth=AuthBearer(),
 )
+@api_cached(
+    key="api/v1/users/profile", has_auth=True, uses_controller=False, timeout=60
+)
 def get_authenticated_user_profile_endpoint(request):
     """
     Get user profile requiring authentication
@@ -289,6 +300,9 @@ def get_authenticated_user_profile_endpoint(request):
     "users/{username}/profile",
     tags=["users"],
 )
+@api_cached(
+    key="api/v1/{username}/profile", has_auth=False, uses_controller=False, timeout=60
+)
 def get_user_profile_from_username_endpoint(request, username: str):
     """
     Get profile from username without authentication
@@ -299,14 +313,6 @@ def get_user_profile_from_username_endpoint(request, username: str):
 
 # TODO: Change password endpoint
 # Creates another token with invalidate_other_tokens=True
-
-
-@api.get("get_data", auth=AuthBearer())
-def get_data_endpoint(request, payload):
-    if not request.auth:
-        raise InvalidLoginCredentialsValidationError(464, request.auth.teaser_user_id)
-    else:
-        return f"Authenticated user {request.auth.token_hash} {request.auth.teaser_user_id}"
 
 
 # Token routes
@@ -512,7 +518,9 @@ class PostsFeedController:
         response=PaginatedResponseSchema[PostsFeedResponseSchema],
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
-    @api_cached(key="feed", timeout=3600)
+    @api_cached(
+        key="api/v1/posts/feed", has_auth=False, uses_controller=True, timeout=60
+    )
     def get_posts_general_feed_endpoint(self):
         """
         General feed endpoint (login not required).
@@ -529,6 +537,9 @@ class PostsFeedController:
         auth=AuthBearer(),
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
+    @api_cached(
+        key="api/v1/posts/forYou", has_auth=True, uses_controller=True, timeout=60
+    )
     def get_posts_for_you_feed_endpoint(
         self, request: HttpRequest, response: HttpResponse
     ):
@@ -544,6 +555,9 @@ class PostsFeedController:
         response=PaginatedResponseSchema[ProfileFeedResponseSchema],
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
+    @api_cached(
+        key="api/v1/posts/users", has_auth=False, uses_controller=True, timeout=60
+    )
     def get_profile_posts(self, username):
         """
         Get posts from a user's profile. Auth not required
@@ -557,6 +571,9 @@ class PostsFeedController:
         auth=AuthBearer(),
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
+    @api_cached(
+        key="api/v1/posts/self", has_auth=True, uses_controller=True, timeout=60
+    )
     def get_own_profile_posts(self, request: HttpRequest, response: HttpResponse):
         """
         Get your own posts, auth required.
@@ -572,6 +589,12 @@ class PostsFeedController:
         response={200: PaginatedResponseSchema[TopLevelPostCommentsResponseSchema]},
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
+    @api_cached(
+        key="api/v1/posts/comments/top_level",
+        has_auth=False,
+        uses_controller=True,
+        timeout=60,
+    )
     def get_top_level_post_comments_endpoint(self, post_id: int):
         """
         Get the comments attached to a post.
@@ -586,6 +609,12 @@ class PostsFeedController:
         response={200: PaginatedResponseSchema[TopLevelPostCommentsResponseSchema]},
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
+    @api_cached(
+        key="api/v1/posts/comments/replies",
+        has_auth=True,
+        uses_controller=True,
+        timeout=60,
+    )
     def get_post_comment_replies_endpoint(self, post_id: int, comment_id: int):
         """
         Get the replies to a comment attached to a post.
@@ -608,6 +637,12 @@ class SearchController:
         tags=["search"],
         response=List[SearchSuggestionSchema],
     )
+    @api_cached(
+        key="api/v1/posts/search/suggestions",
+        has_auth=False,
+        uses_controller=True,
+        timeout=60,
+    )
     def get_search_suggestions_endpoint(
         self, query_str: str, request: HttpRequest, response: HttpResponse
     ):
@@ -622,6 +657,12 @@ class SearchController:
         response=PaginatedResponseSchema[SearchResultSchema],
     )
     @paginate(PageNumberPaginationExtra, page_size=50)
+    @api_cached(
+        key="api/v1/posts/search/query",
+        has_auth=False,
+        uses_controller=True,
+        timeout=60,
+    )
     def get_search_results_endpoint(
         self, query_str: str, request: HttpRequest, response: HttpResponse
     ):
