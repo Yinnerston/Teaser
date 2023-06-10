@@ -22,108 +22,6 @@ import { STATUS_BAR_HEIGHT } from "../../../Constants";
 import UploadImageButton from "../button/upload/UploadImageButton";
 import { AntDesign } from "@expo/vector-icons";
 
-const TEST_DATA = [
-  {
-    comment_id: 1237,
-    username: "Yinnerston",
-    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
-    comment_text: "This is a top level comment!",
-    n_likes: 4,
-    created_at: "2023-01-10 15:00:00.000",
-    updated_at: "2020-01-10 15:00:00.000",
-    has_replies: true,
-    depth: 0,
-  },
-  {
-    comment_id: 1236,
-    username: "Yinnerston14",
-    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
-    comment_text: "This is a top level comment!",
-    n_likes: 4,
-    created_at: "2023-01-10 15:00:00.000",
-    updated_at: "2020-01-10 15:00:00.000",
-    has_replies: true,
-    depth: 0,
-  },
-  {
-    comment_id: 1235,
-    username: "Yinnerston12",
-    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
-    comment_text: "This is a top level comment!",
-    n_likes: 4,
-    created_at: "2023-01-10 15:00:00.000",
-    updated_at: "2020-01-10 15:00:00.000",
-    has_replies: true,
-    depth: 0,
-  },
-  {
-    comment_id: 1234,
-    username: "Yinnerston11",
-    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
-    comment_text: "This is a top level comment!",
-    n_likes: 4,
-    created_at: "2023-01-10 15:00:00.000",
-    updated_at: "2020-01-10 15:00:00.000",
-    has_replies: true,
-    depth: 0,
-  },
-  {
-    comment_id: 1233,
-    username: "Yinnerston31",
-    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
-    comment_text: "This is a top level comment!",
-    n_likes: 4,
-    created_at: "2023-01-10 15:00:00.000",
-    updated_at: "2020-01-10 15:00:00.000",
-    has_replies: true,
-    depth: 0,
-  },
-  {
-    comment_id: 1232,
-    username: "Yinnerston65",
-    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
-    comment_text: "This is a top level comment!",
-    n_likes: 4,
-    created_at: "2023-01-10 15:00:00.000",
-    updated_at: "2020-01-10 15:00:00.000",
-    has_replies: true,
-    depth: 0,
-  },
-  {
-    comment_id: 1231,
-    username: "Yinnerston3",
-    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
-    comment_text: "This is a top level comment!",
-    n_likes: 4,
-    created_at: "2023-01-10 15:00:00.000",
-    updated_at: "2020-01-10 15:00:00.000",
-    has_replies: true,
-    depth: 0,
-  },
-  {
-    comment_id: 123121,
-    username: "Yinnerston",
-    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
-    comment_text: "This is a top level comment!",
-    n_likes: 4,
-    created_at: "2023-01-10 15:00:00.000",
-    updated_at: "2020-01-10 15:00:00.000",
-    has_replies: true,
-    depth: 0,
-  },
-  {
-    comment_id: 123132,
-    username: "Yinnerston",
-    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
-    comment_text: "This is a top level comment!",
-    n_likes: 4,
-    created_at: "2023-01-10 15:00:00.000",
-    updated_at: "2020-01-10 15:00:00.000",
-    has_replies: true,
-    depth: 0,
-  },
-];
-
 /**
  * TODO: when commentCount === 0 ==> Add a comment button
  * Don't bother querying for comments when the comment count is zero (save bandwidth)
@@ -132,6 +30,18 @@ const TEST_DATA = [
  *  - tried: replace FlatList with RNGH --> doesn't do anything
  *  - I think every gesture is being caught by the comment
  *  - Solution i'm looking at: https://github.com/gorhom/react-native-bottom-sheet/issues/918 --> going to transition to RN modalize
+ * Return schema from topLevelPostCommentsQuery is a paginated list of:
+ * {
+ *  comment_id: 123132,
+    username: "Yinnerston",
+    profile_photo_url: "https://avatars.githubusercontent.com/u/57548788?v=4",
+    comment_text: "This is a top level comment!",
+    n_likes: 4,
+    created_at: "2023-01-10 15:00:00.000",
+    updated_at: "2020-01-10 15:00:00.000",
+    has_replies: true,
+    depth: 0,
+}
  * @param {*} param0
  * @returns
  */
@@ -240,7 +150,7 @@ export default function CommentModal({
             value={textInputCommentText}
             onSubmitEditing={({ nativeEvent: { text } }) => {
               if (text !== "") {
-                // TODO: navigation.navigate("SearchResults", { searchTerm: text });
+                // no empty comments allowed
                 newCommentMutation.mutate();
               }
             }}

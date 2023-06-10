@@ -105,6 +105,9 @@ def bookmark_post_service(s_teaser_user, us_post_id):
 
 
 def get_post_comments_service(us_post_id: int):
+    """
+    Get all the top level comments on a post (depth=0)
+    """
     # TODO: Validate
     # TODO: Catch and return standardized error
     top_level_paths = (
@@ -130,11 +133,15 @@ def get_post_comments_service(us_post_id: int):
 
 
 def get_post_comment_replies_service(us_post_id: int, us_comment_id: int):
+    """
+    TODO: Not implemented
+    Get all the replies to a top level comment
+    """
     parent_comment = CommentsModel.objects.get(id=us_comment_id)
     comment_replies = top_level_paths = CommentPathsModel.objects.filter(
         post_id__id=us_post_id, ancestor=parent_comment
     )
-    pass
+    return []
     # TODO: What processing and format can I return comments in to load them on my frontend?
 
 
@@ -144,6 +151,10 @@ def comment_on_post_service(
     s_comment_text: str,
     us_comment_ancestor_id: int = None,
 ):
+    """
+    Create a new comment on a post.
+    Can be a reply to another comment.
+    """
     parent_comment = None
     new_comment_model = None
     ancestor_paths = []
@@ -189,6 +200,9 @@ def comment_on_post_service(
 
 
 def like_post_comment_service(s_teaser_user, us_comment_id):
+    """
+    Like a comment on a post.
+    """
     # TODO: validate comment_id?
     # Upsert liked post
     with transaction.atomic():

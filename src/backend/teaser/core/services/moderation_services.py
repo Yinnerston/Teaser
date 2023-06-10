@@ -5,6 +5,9 @@ from django.db import transaction
 
 
 def report_post_service(us_post_id: int):
+    """
+    Report a post service.
+    """
     # TODO: Add more report features
     with transaction.atomic():
         post_to_report = PostsModel.objects.get(id=us_post_id)
@@ -12,6 +15,9 @@ def report_post_service(us_post_id: int):
 
 
 def report_comment_service(us_comment_id: int):
+    """
+    Report a comment service.
+    """
     with transaction.atomic():
         comment_to_report = CommentsModel.objects.get(id=us_comment_id)
         CommentReportsModel.objects.create(comment_id=comment_to_report)

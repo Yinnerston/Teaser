@@ -12,6 +12,10 @@ from core.models.user_post_relationship_models import (
 
 @admin.register(LikedPostsModel)
 class LikedPostsModelAdmin(admin.ModelAdmin):
+    """
+    Model admin for liked posts, relationship between TeaserUserModel and PostsModel.
+    """
+
     def get_username(self, obj):
         if obj.user_id:
             return obj.user_id.nfc_username
@@ -36,6 +40,10 @@ class BookmarkedPostsModelAdmin(admin.ModelAdmin):
 
 @admin.register(SharedPostsModel)
 class SharedPostsModelAdmin(admin.ModelAdmin):
+    """
+    DEPRECATED: Share post action.
+    """
+
     def get_username(self, obj):
         if obj.user_id:
             return obj.user_id.nfc_username
@@ -48,6 +56,10 @@ class SharedPostsModelAdmin(admin.ModelAdmin):
 
 @admin.register(UserPostActivitiesModel)
 class UserPostActivitiesModelAdmin(admin.ModelAdmin):
+    """
+    Admin for normalized data describing relationship between a single user and their actions relating to a post.
+    """
+
     def get_username(self, obj):
         if obj.user_id:
             return obj.user_id.nfc_username
@@ -63,6 +75,10 @@ class UserPostActivitiesModelAdmin(admin.ModelAdmin):
 
 @admin.register(CommentsModel)
 class CommentsModelAdmin(admin.ModelAdmin):
+    """
+    Model admin for comments on a post.
+    """
+
     def get_username(self, obj):
         if obj.user_id:
             return obj.user_id.nfc_username
@@ -84,6 +100,10 @@ class CommentsModelAdmin(admin.ModelAdmin):
 
 @admin.register(CommentPathsModel)
 class CommentPathsModelAdmin(admin.ModelAdmin):
+    """
+    Closure table model admin for representing comments on a post.
+    """
+
     def get_username(self, obj):
         if obj.user_id:
             return obj.user_id.nfc_username
@@ -93,6 +113,10 @@ class CommentPathsModelAdmin(admin.ModelAdmin):
 
 @admin.register(LikedCommentsModel)
 class LikedCommentsModelAdmin(admin.ModelAdmin):
+    """
+    Model admin for representing relationship between users and liking a post.
+    """
+
     def get_username(self, obj):
         if obj.user_id:
             return obj.user_id.nfc_username

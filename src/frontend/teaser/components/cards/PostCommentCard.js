@@ -15,6 +15,22 @@ import { postLikePostCommentKey } from "../../hooks/feed/usePostComments";
 import { postLikeComment } from "../../api/feed/postCommentsApi";
 import { postCommentReport } from "../../api/reports/reportApi";
 
+/**
+ * A card representing a single top-level post comment.
+ * @param {navigation,
+  userAuthAtomValue,
+  postID,
+  commentID,
+  username,
+  profilePhotoURL,
+  commentText,
+  nLikes,
+  createdAt,
+  updatedAt,
+  hasReplies,
+  depth,} param0
+ * @returns
+ */
 export default function PostCommentCard({
   navigation,
   userAuthAtomValue,
