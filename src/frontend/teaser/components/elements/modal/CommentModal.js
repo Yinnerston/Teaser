@@ -81,8 +81,6 @@ export default function CommentModal({
           keepPreviousData: true,
         })
       : { data: { pages: [] } };
-  // TODO: optimistic updates for replies
-  // TODO: if the user is logged in a likes a comment, return a bool
   const newCommentMutation = useMutation({
     mutationKey: postPostCommentMutationKey(
       userAuthAtomValue,
