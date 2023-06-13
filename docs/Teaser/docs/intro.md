@@ -42,7 +42,7 @@ I want to reverse engineer TikTok, so I made Teaser.
 | Neighbour | Positive:                                                                                                                            | Negative:                                                                                                             |
 |-----------|--------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
 | TikTok    | Presents content in a format that is easily consumable, i.e. average length of a vid is 10-15 seconds, Content covers the entire human experience | Censorship, content format lacks substance                                                                            |
-| OnlyFans  | Ownership over your own content, Creators set their own hours,Interaction between creator and consumer                               | Lack of built-in advertising and support to creators, i.e. creators need to advertise themselves on Reddit and TikTok |
+| OnlyFans  | Ownership over your own content, Creators set their own hours, Interaction between creator and consumer                               | Lack of built-in advertising and support to creators, i.e. creators need to advertise themselves on Reddit and TikTok |
 
 # What's our solution
 

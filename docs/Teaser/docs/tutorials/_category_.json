@@ -1,8 +1,8 @@
 {
-  "label": "Tutorial - Basics",
+  "label": "Tutorials",
   "position": 3,
   "link": {
     "type": "generated-index",
-    "description": "5 minutes to learn the most important Docusaurus concepts."
+    "description": "Tutorials are lessons that take the reader by the hand through a series of steps to complete a project of some kind. They are what your project needs in order to show a beginner that they can achieve something with it."
   }
 }
