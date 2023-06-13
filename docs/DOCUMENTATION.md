@@ -1,4 +1,4 @@
-# Documentation
+# Documentation (BEING DEPRECATED FOR DOCUSAURUS)
 - Env files:\
 - `.frontend.env`:
 ```bash
