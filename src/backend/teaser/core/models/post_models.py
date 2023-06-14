@@ -126,7 +126,7 @@ class PostsModel(models.Model):
                 name="search_vector_idx",
             ),  # TODO: What if post_data__data__categories, description or nfc_username changes? Will the model update?
         ]
-        ordering = ("status",)
+        ordering = ("status", "-created_at")
 
 
 class TagsModel(models.Model):
