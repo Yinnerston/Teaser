@@ -104,7 +104,7 @@ Caused by: kotlin.UninitializedPropertyAccessException: lateinit property imageL
 - https://github.com/expo/expo/issues/19512
 - Unexpected end of stream https://github.com/expo/expo/issues/22668#issuecomment-1566344119
   - Solved by changing node version to v18.16.0 (see frontend dockerfile)
-
+- If apache2 is running (stops nginx) --> `sudo systemctl stop apache2`
 # Firewall:
 
 - Need to add port mappings to your modem if you are hosting locally
