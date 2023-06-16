@@ -6,7 +6,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "My Site",
+  title: "Teaser",
   tagline: "Dinosaurs are cool",
   favicon: "img/favicon.ico",
 
@@ -67,9 +67,9 @@ const config = {
       // Replace with your project's social card
       image: "img/docusaurus-social-card.jpg",
       navbar: {
-        title: "My Site",
+        title: "Teaser",
         logo: {
-          alt: "My Site Logo",
+          alt: "Teaser Logo",
           src: "img/logo.svg",
         },
         items: [
