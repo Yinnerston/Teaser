@@ -1,3 +1,4 @@
 # Teaser
 
-Add `.env`, `.frontend.env` and `.backend.env` files with env variables (see [DOCUMENTATION.md](docs/DOCUMENTATION.md) for setup documentation and bugs)
+Reverse engineering TikTok.
+Documentation is on https://yinnerston.github.io/Teaser/

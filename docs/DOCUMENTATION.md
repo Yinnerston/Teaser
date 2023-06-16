@@ -114,3 +114,7 @@ Caused by: kotlin.UninitializedPropertyAccessException: lateinit property imageL
 - XMPP c2s: 5222:5222
 - XMPP s2s: 5269:5269
 - XMPP http: 5280:5280
+
+# Deploy to GH Pages
+
+`GIT_USER=Yinnerston USE_SSH=true npm run deploy`
