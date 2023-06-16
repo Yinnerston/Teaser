@@ -1,13 +1,18 @@
-# Documentation (BEING DEPRECATED FOR DOCUSAURUS)
-- Env files:\
-- `.frontend.env`:
-```bash
+---
+sidebar_position: 2
+sidebar_label: 'Setup'
+---
+
+# Local Setup on Ubuntu
+
+### .env files
+Create `.env` files in the root directory to use with docker-compose for local development.
+```bash title=".frontend.env"
 EXPO_DEVTOOLS_LISTEN_ADDRESS='???'
 CHOKIDAR_USEPOLLING='true'
 REACT_NATIVE_PACKAGER_HOSTNAME='???'
 ```
-- `.backend.env`:
-```bash
+```bash title=".backend.env"
 DJANGO_SECRET_KEY=???
 POSTGRES_PASSWORD=???
 PRIVATE_IP=???
@@ -16,26 +21,26 @@ OPENAI_API_KEY=???
 CDN_VIDEO_LIBRARY_ID=???
 CDN_API_KEY=???
 ```
-- `.env`:
-```bash
+```bash title=".env"
 POSTGRES_PASSWORD=???
 PROSODY_PASSWORD=???
 PROSODY_DOMAIN=wocchit.com
 PROSODY_VIRTUAL_HOSTS=wocchit.com
 GF_SECURITY_ADMIN_PASSWORD='???'
 ```
-- Unicode: https://unicode.org/faq/normalization.html
-  - nfkc_username --> Use for identifier
-  - nfc_username --> Use for general text display
 - Setup PostCategoriesModel by running `python manage.py shell < core/utils/populate_categories.py
 ` in backend_django container
 - Create user with username `uploader` --> This is used for uploading etl
 - Create user with username `Deleted` --> This is used in the sentinel pattern for PostModel foreign keys
 
-# Setup
+:::tip Get in contact!
+Email teaseradmin@teasernsfw.com and I can send you a pg_dump of an already populated database!
+:::
 
-- (Git): For development, Install requirements in a venv and run `pre-commit install` to add black code auto-formatting on your commits
-- Install postgres 13.9 with PGAdmin. This project assumes postgres runs on port 5432. (Default  for first time postgres installation).
+### Development Setup
+
+- `(Git)`: For development, Install requirements in a venv and run `pre-commit install` to add black code auto-formatting on your commits
+- Install [postgres 15](https://www.postgresql.org/download/linux/ubuntu/) and PGAdmin. This project assumes postgres runs on port 5432. (Default  for first time postgres installation).
 - For postgres setup, I follow this tutorial: https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-django-application-on-ubuntu-20-04
 - In postgres shell:
 ```sql
@@ -55,6 +60,9 @@ in another terminal.
 - `docker-compose up -d --build`
 - Run initial migration `docker-compose exec backend_django python manage.py migrate --noinput`
 - Check default Django tables were created `docker-compose exec db psql --username=teaseruser --dbname=teaser`
+
+### (Optional) Pull data from Reddit
+
 - Create a reddit personal use script in https://www.reddit.com/prefs/apps/
 - Add praw.ini file to `src\teaser`
 ```ini
@@ -66,10 +74,12 @@ username=YOUR_USERNAME
 user_agent=Python-Slim:teaser-script:v1.0.0 (by u/YOUR_USERNAME)
 ```
 - Change the list of subreddits if you want in `from core.utils.user_profile_validator import ALL_CATEGORIES_TEMP`
-- Download data from reddit using the django `manage.py shell` --> `RedditETL().run_pipeline()`
-- Use black python code formatter
+- Exec `bash` in your `backend-django` container
+  - Find the backend-django CONTAINER_ID with `docker container ls`.
+  - Execute an interactive bash shell in the container with `docker exec -it CONTAINER_ID bash`
+  - Download data from reddit using the django `manage.py shell` --> `RedditETL().run_pipeline()`
 
-# Setup Grafana + prometheus
+### Setup Grafana + prometheus
 - Install Docker plugin for Loki `docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions` in shell.
 - Run `docker run -ti --user root --entrypoint bash teaser_grafana` then in container run `chown -R root:root etc/grafana && chmod -R a+r /etc/grafana && chown -R grafana:root /var/lib/grafana && chown -R grafana:root /usr/share/grafana` based on https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/#migrate-to-v51-or-later
 - Add a password `GF_SECURITY_ADMIN_PASSWORD=PASSWORD_HERE` to the `.env` file
@@ -88,33 +98,3 @@ user_agent=Python-Slim:teaser-script:v1.0.0 (by u/YOUR_USERNAME)
   - Make sure the data sources are correct --> E.G. might have `prometheus` instead of `prometheus-1`
 - (Unused) Define REDIS_USERNAME and REDIS_PASSWORD in .env file
 - If you get a permission denied error on starting prometheus container, run `sudo chown nobody:nogroup src/prometheus`
-
-# Postgres
-
-- Run psql shell with `docker exec -it ${container_id} psql teaser -U teaseruser`
--
-# Known Bugs:
-- `... Invariant Violation:` --> Check first error
-- https://github.com/henninghall/react-native-date-picker#why-does-the-android-app-crash-in-production
--
-```
-Error: Call to function 'ExponentImagePicker.launchImageLibraryAsync' has been rejected.
-Caused by: kotlin.UninitializedPropertyAccessException: lateinit property imageLibraryLauncher has not been initialized
-```
-- https://github.com/expo/expo/issues/19512
-- Unexpected end of stream https://github.com/expo/expo/issues/22668#issuecomment-1566344119
-  - Solved by changing node version to v18.16.0 (see frontend dockerfile)
-
-# Firewall:
-
-- Need to add port mappings to your modem if you are hosting locally
-- HTTPS: 443:443
-- HTTP: 80:80
-- Frontend Expo Dev Client: 8081:8081
-- XMPP c2s: 5222:5222
-- XMPP s2s: 5269:5269
-- XMPP http: 5280:5280
-
-# Deploy to GH Pages
-
-`GIT_USER=Yinnerston USE_SSH=true npm run deploy`

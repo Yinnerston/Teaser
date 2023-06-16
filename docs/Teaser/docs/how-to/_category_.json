@@ -1,0 +1,8 @@
+{
+  "label": "How-To Guides",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "How-to guides take the reader through the steps required to solve a real-world problem."
+  }
+}

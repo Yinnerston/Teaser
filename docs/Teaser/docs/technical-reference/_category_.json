@@ -1,0 +1,8 @@
+{
+  "label": "Technical Reference Guides",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Reference guides are technical descriptions of the machinery and how to operate it."
+  }
+}

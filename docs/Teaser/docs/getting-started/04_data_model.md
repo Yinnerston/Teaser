@@ -1,8 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-  <body>
-    <pre class="mermaid">
-        erDiagram
+---
+sidebar_position: 4
+sidebar_label: "Data Model"
+---
+
+# Data Model
+
+Open the SVG in a new tab to enlarge it.
+![SVG Data Model](./assets/er-data-model.svg)
+
+As mermaid inline:
+```mermaid
+    erDiagram
         TeaserUserModel |o--o{ PostsModel : uploads
         TeaserUserModel |o--o{ ServicesModel : offers
         PostsModel ||--|| SongsModel : plays
@@ -296,9 +304,6 @@
             int id PK
             int comment_id FK "CommentsModel"
             datetime created_at "Added automatically. auto_now_add=True, blank=True"
-        }            </pre>
-    <script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-    </script>
-  </body>
-</html>
+        }
+
+```

@@ -9,7 +9,7 @@ class PostReportsModel(models.Model):
     TODO: Add descriptive features of a report
     """
 
-    post_id = models.ForeignKey(CommentsModel, on_delete=models.SET_NULL, null=True)
+    post_id = models.ForeignKey(PostsModel, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
 
