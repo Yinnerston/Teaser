@@ -33,8 +33,8 @@ const FeatureList = [
     Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
     description: (
       <>
-        I'm using a pretty common yet common stack for web developers. I hope
-        the combination of strong documentation and powerful tools aids
+        I'm using a pretty common and accessible stack for web developers. I
+        hope the combination of strong documentation and powerful tools aids
         development.
       </>
     ),

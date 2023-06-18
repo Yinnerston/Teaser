@@ -9,6 +9,8 @@ I want to reverse engineer TikTok, so I made Teaser.
 
 # What is the vision?
 
+![Teaser Mind Map SVG](/docs/img/teasermindmap.svg)
+
 - Video editor
   - Video filters
   - Cutting and splicing video together
