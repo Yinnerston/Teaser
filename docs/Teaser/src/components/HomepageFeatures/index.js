@@ -4,32 +4,38 @@ import styles from "./styles.module.css";
 
 const FeatureList = [
   {
-    title: "Easy to Use",
+    title: "Free and Open Source",
     Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Teaser is free to host and is now fully open-source! I'm still studying
+        at university but I want to work on Teaser with others in my spare time.
       </>
     ),
   },
   {
-    title: "Focus on What Matters",
+    title: "Made to Teach Others",
     Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        I want to use this project to share my knowledge, to work
+        collaboratively and to build a better social media platform. Maybe we
+        can address the{" "}
+        <a href="https://www.wired.com/story/tiktok-platforms-cory-doctorow/">
+          enshittification
+        </a>{" "}
+        of TikTok?
       </>
     ),
   },
   {
-    title: "Powered by React",
+    title: "Django Ninja and React Native",
     Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        I'm using a pretty common and accessible stack for web developers. I
+        hope the combination of strong documentation and powerful tools aids
+        development.
       </>
     ),
   },

@@ -9,27 +9,33 @@ I want to reverse engineer TikTok, so I made Teaser.
 
 # What is the vision?
 
+### Teaser as of 18/06/2023:
+![Teaser Mind Map SVG](/docs/img/teasermindmap.svg)
+
 - Video editor
   - Video filters
   - Cutting and splicing video together
   - Adding music from youtube clips
-  - In app browser
-- Recommendation algorithm
+  - **TODO:** In app browser like HN Harmonic & video download
+- **TODO:** Recommendation algorithm
 - User profiles
   - Profile photos
-  - Follow other users
-  - Save posts to view later
+  - **TODO:** Follow other users
+  - **TODO:** Save posts to view later
 - Tagging system
   - Teasers are searchable by tags
   - Robust tagging system
+  - **TODO:** Link tags when clicked to search results
 - Teaser video viewer
   - Likes, profile view, share, comments, etc
-- Chat client
-  - Group chat with XMPP client
-  - 1:1 chat with subscribers
-- Content moderation
+  - **TODO:** Nested comments
+- **TODO:** XMPP Chat client
+  - Prosody Server + Converse.js headless client
+  - Message encryption
+  - Group chat, 1:1 chat with subscribers
+- **TODO:** Content moderation
   - NO illegal content! (See our terms of use)
-- Payments
+- **TODO:** Payments
   - Stripe API
 
 # What is NOT in scope?

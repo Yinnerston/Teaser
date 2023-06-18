@@ -66,12 +66,12 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: "img/docusaurus-social-card.jpg",
+      image: "img/Teaser-social-card.jpg",
       navbar: {
         title: "Teaser",
         logo: {
           alt: "Teaser Logo",
-          src: "img/logo.svg",
+          src: "img/favicon.ico",
         },
         items: [
           {
@@ -95,8 +95,12 @@ const config = {
             title: "Docs",
             items: [
               {
-                label: "Tutorial",
+                label: "Introduction",
                 to: "/docs/intro",
+              },
+              {
+                label: "API",
+                href: "https://wocchit.com/api/v1/docs",
               },
             ],
           },
@@ -104,16 +108,12 @@ const config = {
             title: "Community",
             items: [
               {
-                label: "Stack Overflow",
-                href: "https://stackoverflow.com/questions/tagged/docusaurus",
+                label: "Jira",
+                href: "https://memefeed.atlassian.net/jira/software/projects/TSR/boards/6",
               },
               {
-                label: "Discord",
-                href: "https://discordapp.com/invite/docusaurus",
-              },
-              {
-                label: "Twitter",
-                href: "https://twitter.com/docusaurus",
+                label: "Email",
+                href: "mailto:teaseradmin@teasernsfw.com",
               },
             ],
           },
@@ -123,6 +123,10 @@ const config = {
               {
                 label: "Blog",
                 to: "/blog",
+              },
+              {
+                label: "Official Website",
+                href: "https://teasernsfw.com",
               },
               {
                 label: "GitHub",
