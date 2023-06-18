@@ -6,7 +6,7 @@ sidebar_label: "Data Model"
 # Data Model
 
 Open the SVG in a new tab to enlarge it.
-![SVG Data Model](./assets/er-data-model.svg)
+![SVG Data Model](/docs/assets/er-data-model.svg)
 
 As mermaid inline:
 ```mermaid

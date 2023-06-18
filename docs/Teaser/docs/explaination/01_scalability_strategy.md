@@ -7,7 +7,7 @@ sidebar_label: "Scalability Strategy"
 
 **In-Depth strategy:** https://docs.google.com/document/d/1RnDb1ep0ZLi6Y_Ep7Bzz1ufI4fIPGH7e9RaIzvJu0kg/edit?usp=sharing
 
-![System Design Primer](./images/systemdesignprimer.png)
+![System Design Primer](/docs/img/systemdesignprimer.png)
 
 :::tip Low hanging fruits
 Exhaust the low-hanging fruits of vertical scaling before attempting a horizontal scaling strategy
