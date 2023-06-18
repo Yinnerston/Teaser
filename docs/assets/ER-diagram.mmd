@@ -1,0 +1,295 @@
+    erDiagram
+        TeaserUserModel |o--o{ PostsModel : uploads
+        TeaserUserModel |o--o{ ServicesModel : offers
+        PostsModel ||--|| SongsModel : plays
+        TeaserUserModel ||--|| User : is
+        TeaserUserModel ||--|| LocationsModel : "located at"
+        TeaserUserModel |o--o{ AuthTokenModel : "login is authorized by"
+        User   {
+            int id PK "django.contrib.auth user"
+            string username  "6-32 characters. Unicode nfkc normalized."
+            string password "encrypted, 8-32 characters with a at least one Uppercase, lowercase, number and special chacter"
+        }
+        TeaserUserModel {
+            int id PK
+            int user_id FK "One to one"
+            int location_id FK "on_delete=models.DO_NOTHING, null=True, blank=True"
+            string nfc_username "6-32 characters. Unicode nfc normalized."
+            string phone_str "+XX Country code included."
+            string profile_photo_url "default=http://teasernsfw.b-cdn.net/teaser-32x32.png, blank=True"
+            string stage_name "max_length=64, default=, blank=True"
+            date dob_date ">= 18 years old, utc"
+            boolean is_verified "default=False"
+            boolean terms_of_service_accepted "default=False"
+            datetime created_at "Added automatically. auto_now_add=True, blank=True"
+        }
+        LocationsModel  {
+            int id PK
+            string address "max_length=300"
+            string country_code "max_length=3"
+            string state "max_length=30"
+            string city "max_length=30"
+        }
+        AuthTokenModel  {
+            string token_hash PK "max_length=32"
+            int teaser_user_id FK "TeaserUserModel"
+            datetime expiry_date "3 months after creation"
+            datetime created_date "Added automatically. auto_now_add=True, blank=True"
+            boolean is_valid "Invalidated by logout. default=True"
+        }
+
+        PostsModel {
+            int id PK
+            int user_id FK "TeaserUserModel"
+            int song_id FK "SongsModel"
+
+            enum PostStatuses "integer choice -1 to 8"
+            enum PostTypes "integer choice 0, 1"
+            enum VideoModes "integer choice PORTRAIT=0, LANDSCAPE=1"
+
+            uuid video_id "blank=True, null=True"
+            string description "max_length=200"
+            string upload_url "default=empty string"
+            string video_url "default=empty string"
+            string thumbnail_url "default=empty string"
+
+            boolean is_pinned "default=False"
+            boolean is_private "default=False"
+            boolean is_nsfw "default=True"
+            boolean has_comments "default=True"
+            string nfc_username "Denormalized nfc_username from TeaserUserModel"
+
+            datetime created_at "Added automatically. auto_now_add=True, blank=True"
+            string reddit_id "To be deprecated. max_length=8, blank=True, null=True"
+            int n_likes "Denormalized count of LikedPosts. >0. default=0"
+            int n_bookmarks "Denormalized count of BookmarkedPosts. >0. default=0"
+            int n_shares "Denormalized count of SharedPosts. >0. default=0"
+            int n_comments "Denormalized count of Comments on a post. >0. default=0"
+
+            int video_mode "1:1 enum VideoModes"
+            int post_type "1:1 enum PostTypes"
+            int status "1:1 enum PostStatuses"
+
+            JSONB post_data "data: {urls, thumbnail, ..}, question: {data, VO_url}"
+            index indices "[status], [video_id], [description], [is_nsfw], GinIndex([description, nfc_username, post_category])"
+            ordering order "Order by status"
+        }
+
+        PostCategoriesModel }o--o{ PostsModel : "relates categories to"
+        PostCategoriesModel }o--o{ CategoriesModel : "relates posts to"
+        PostCategoriesModel {
+            int post_id FK "PostsModel"
+            int category_id FK "CategoriesModel"
+        }
+        SongsModel   {
+            int id PK
+            string title "max_length=100"
+            string song_url
+            int duration "duration in ms. default=0"
+            string author "default=Anonymous, max_length=64"
+            string thumbnail "blank=True"
+            string original_url "URL downloaded from if youtube url"
+            url song_url "nullable"
+            index indices "[title, author]"
+        }
+        ServicesModel  {
+            int id PK "Not implemented yet."
+            int user_id FK
+            float cost "AUD, 2 decimal points"
+            string title "max_length=100"
+            string description "max_length=500"
+        }
+
+        LikedPostsModel }o--|| TeaserUserModel : has
+        LikedPostsModel }o--|| PostsModel : has
+        LikedPostsModel  {
+            int post_id FK "PostsModel"
+            int user_id FK "TeaserUserModel"
+            boolean is_liked "default=True"
+            boolean updated_at "Added automatically. auto_now_add=True, blank=True"
+            constraint unique_together "[user_id, post_id]"
+            index indices "[user_id, post_id, is_liked]"
+        }
+
+        BookmarkedPostsModel }o--|| TeaserUserModel : has
+        BookmarkedPostsModel }o--|| PostsModel : has
+        BookmarkedPostsModel {
+            int post_id FK "PostsModel"
+            int user_id FK "TeaserUserModel"
+            boolean is_bookmarked "default=True"
+            boolean updated_at "Added automatically. auto_now_add=True, blank=True"
+            constraint unique_together "[user_id, post_id]"
+            index indices "[user_id, post_id, is_liked]"
+        }
+        SharedPostsModel }o--|| TeaserUserModel : has
+        SharedPostsModel }o--|| PostsModel : has
+
+        SharedPostsModel    {
+            int post_id FK "PostsModel"
+            int user_id FK "TeaserUserModel"
+            integer n_shares "Currently not implemented. default=0."
+            boolean updated_at "Added automatically. auto_now_add=True, blank=True"
+            constraint unique_together "[user_id, post_id]"
+            index indices "[user_id, post_id]"
+        }
+
+        UserPostActivitiesModel |o--|| TeaserUserModel : has
+        UserPostActivitiesModel |o--|| PostsModel : has
+        UserPostActivitiesModel |o--|| LikedPostsModel : "denormalises count()"
+        UserPostActivitiesModel |o--|| BookmarkedPostsModel : "denormalises count()"
+        UserPostActivitiesModel |o--|| SharedPostsModel : "denormalises count()"
+        UserPostActivitiesModel {
+            int id PK "Denormalized table aggregating counts"
+            int user_id FK "TeaserUserModel"
+            int post_id FK "PostsModel"
+            int liked_post FK "LikedPostsModel"
+            int bookmarked_post FK "BookmarkedPostsModel"
+            int shared_post FK "SharedPostsModel"
+            constraint unique_together "[user_id, post_id]"
+            index indices "[user_id, post_id]"
+        }
+
+        UserCategoriesModel ||--o{ CategoriesModel : "applies to"
+        UserCategoriesModel }|--o{ TeaserUserModel : "applies to"
+        CategoriesModel  {
+            string title PK "max_length=50"
+            string alias "max_length=50"
+        }
+        UserCategoriesModel {
+            int user_id FK  "TeaserUserModel"
+            int category_id FK "CategoriesModel"
+            string colour_code "max_length=7. #colour code identifier specified by user"
+            index indices "[user_id]"
+        }
+        UserProfileModel  {
+            int user_id "PK FK"
+            string description "max_length=200, default=Add a bio"
+        }
+        UserProfileModel ||--|| TeaserUserModel : has
+        UserProfileModel ||--o{ ProfileLinksModel : has
+        ProfileLinksModel }|--|{ ProfileLinkTypesModel : are
+        ProfileLinksModel   {
+            int id PK   "Currently not implemented"
+            int user_id FK  "1:1 TeaserUserModel"
+            string link_type FK "1:1 ProfileLinkTypesModel"
+            string link_url
+        }
+        ProfileLinkTypesModel   {
+            string type PK
+        }
+
+
+        PostTagsModel |o--|{ PostsModel : has
+        PostTagsModel |o--|{ TagsModel : has
+        TagsModel  {
+            string name PK "max_length=50, primary_key=True"
+        }
+        PostTagsModel {
+            int post_id FK
+            int tag_id FK
+        }
+
+        FollowedUsersModel }o--|{ TeaserUserModel : follows
+        BlockedUsersModel }o--|| TeaserUserModel : blocks
+        FollowedUsersModel {
+            int followed_user_id FK "TeaserUserModel"
+            int follower_user_id FK "TeaserUserModel"
+        }
+        BlockedUsersModel {
+            int blocked_user_id FK "TeaserUserModel"
+            int blocker_user_id FK "TeaserUserModel"
+        }
+
+        CommentPathsModel }o--|{ PostsModel : "closure table"
+        CommentPathsModel }o--|{ CommentsModel : "closure table"
+        CommentsModel }o--|{ TeaserUserModel : comments
+        CommentsModel }o--|{ PostsModel : has
+        LikedCommentsModel }o--|{ CommentsModel : has
+        LikedCommentsModel }o--|{ TeaserUserModel : "comment by"
+
+        CommentsModel    {
+            int id PK
+            int post_id FK "PostsModel"
+            int user_id FK "TeaserUserModel"
+            string comment_text "max_length=500"
+            int n_likes "default=0. >=0. Denormalized count() on LikedCommentsModel"
+            datetime created_at "Added automatically. auto_now_add=True, blank=True"
+            datetime updated_at "Added automatically. auto_now_add=True, blank=True"
+            boolean has_replies "default=False. Denormalized count() > 0 on descendents in CommentPathsModel"
+            int depth "default=0. >=0."
+        }
+        CommentPathsModel   {
+            int id PK
+            int post_id "PostsModel"
+            int ancestor FK "CommentsModel"
+            int descendent FK "CommentsModel"
+            int depth ">= 0"
+            ordering order "Order by [post_id, ancestor]"
+            constraint unique_together "[post_id, ancestor, descendent]"
+            index indices "[post_id, ancestor, descendent]"
+        }
+        LikedCommentsModel  {
+            int id PK
+            int user_id FK "TeaserUserModel"
+            int comment_id FK "CommentsModel"
+            boolean is_liked "default=True"
+            datetime updated_at "Added automatically. auto_now_add=True, blank=True"
+            constraint unique_together "[user_id, comment_id]"
+            index indices "[user_id, comment_id, is_liked]"
+        }
+        SubscriptionsModel }o--|{ TeaserUserModel : has
+        SubscriptionsModel }|--|| BillingPeriodModel : has
+        SubscriptionsModel   {
+            int creator_id FK "TeaserUserModel"
+            int subscriber_id FK "TeaserUserModel"
+            int billing_period FK "BillingPeriodModel. TODO: Should be an enum?"
+            boolean is_subscribed "default=False"
+            double price "decimal_places=2, max_digits=10"
+        }
+
+        BillingPeriodModel   {
+            string time_range PK "max_length=20, primary_key=True. Weekly, Fortnightly, Monthly, Yearly"
+        }
+
+        TeaserUserModel }o--o| PurchasesModel : makes
+        TeaserUserModel ||--o{ PaymentMethodsModel : has
+        PurchasesModel }|--|| PaymentMethodsModel : uses
+        PurchasesModel   {
+            int id PK
+            int seller_id FK "TeaserUserModel"
+            int buyer_id FK "TeaserUserModel"
+            int payment_method FK "PaymentMethodsModel"
+            string name "max_length=300. Donation, Purchase for services"
+            date purchase_date
+        }
+
+        PaymentMethodsModel {
+            int id PK
+            int user_id FK
+            JSONB details "encrypted details?"
+        }
+
+        EventMetricsModel }o--|| TeaserUserModel : event
+        EventMetricsModel {
+            int id PK
+            enum EventMetricTypes "integer choice 0 to 8"
+            int user_id FK "TeaserUserModel"
+            int event_type "1:1 enum EventMetricTypes"
+            JSONB data "Data describing the event"
+            datetime timestamp "Added automatically. auto_now_add=True, blank=True"
+            ordering order "Order by [event_type, -timestamp]"
+            index indices "[event_type, timestamp]"
+        }
+
+        PostReportsModel }o--|{ PostsModel : reports
+        PostReportsModel    {
+            int id PK
+            int post_id FK "PostsModel"
+            datetime created_at "Added automatically. auto_now_add=True, blank=True"
+        }
+        CommentReportsModel }o--|{ CommentsModel : reports
+        CommentReportsModel    {
+            int id PK
+            int comment_id FK "CommentsModel"
+            datetime created_at "Added automatically. auto_now_add=True, blank=True"
+        }
