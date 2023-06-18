@@ -1,9 +1,13 @@
 # Teaser
 
 Reverse engineering TikTok.
-Documentation is on https://yinnerston.github.io/Teaser/
 
-Official Site: https://teasernsfw.com
+**Documentation:** https://yinnerston.github.io/Teaser/
+
+**Official Site:** https://teasernsfw.com
+
+![Teaser Mind Map](./docs/Teaser/static/docs/img/teasermindmap.svg)
+
 
 ### Contact me
 I am broke and looking for a job as a junior or intern full-stack software engineer. 
