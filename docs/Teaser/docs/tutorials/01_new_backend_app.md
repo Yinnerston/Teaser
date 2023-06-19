@@ -14,6 +14,7 @@ Follow the django docs on creating a new app.
 ### URL Endpoint, Service Layer and, Data Model pattern
 
 Separate the Data Model from the business logic in your application.
+The [Style Guide](../explaination/02_style_guide.md) has API design guidelines.
 
 ### Defining the view / URL endpoint
 
