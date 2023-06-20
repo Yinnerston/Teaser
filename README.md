@@ -2,6 +2,8 @@
 
 Reverse engineering TikTok.
 
+**Latest production build `.apk` file:** https://expo.dev/artifacts/eas/wAi3MYS8suGZbiFqVJYpYi.apk
+
 **Documentation:** https://yinnerston.github.io/Teaser/
 
 **Official Site:** https://teasernsfw.com
