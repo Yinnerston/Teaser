@@ -8,6 +8,8 @@ Reverse engineering TikTok.
 
 **Official Site:** https://teasernsfw.com
 
+**Jira**: If you want to contribute, request to join the Jira: https://memefeed.atlassian.net/jira/software/projects/TSR/boards/6
+
 ![Teaser Mind Map](./docs/Teaser/static/docs/img/teasermindmap.svg)
 
 
