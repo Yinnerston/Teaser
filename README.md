@@ -6,11 +6,7 @@ Reverse engineering TikTok.
 
 **Official Site:** https://teasernsfw.com
 
-<p align="center">
-    <a href="https://play.google.com/store/apps/details?id=com.yinnerston.teaser">
-        <img src="./docs/Teaser/static/img/google-play.png" alt="Play Store Link" width="50%">
-    </a>
-</p>
+<a href='https://play.google.com/store/apps/details?id=com.yinnerston.teaser&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
 
 ![Teaser Mind Map](./docs/Teaser/static/docs/img/teasermindmap.svg)
 
