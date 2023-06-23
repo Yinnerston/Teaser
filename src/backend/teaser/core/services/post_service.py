@@ -304,12 +304,13 @@ def get_general_feed_service():
     vanilla_category_aliases = ["Funny"]
     # TODO: Probably more efficient to generate PostCategoriesModel queryset by iterating through vanilla_category_aliases
     # then selecting using the __in operator on ^.post_id?
+    
+        
     output = (
         PostCategoriesModel.objects.filter(
             category_id__alias__in=vanilla_category_aliases
-        )
-        .select_related("post_id", "post_id__user_id")
-        .filter(post_id__status=PostsModel.PostStatuses.FINISHED)
+        ).select_related("post_id", "post_id__user_id")
+        .filter(post_id__status=PostsModel.PostStatuses.FINISHED, post_id__is_nsfw=False)
         .values(
             "post_id",  #
             description=F("post_id__description"),
