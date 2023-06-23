@@ -8,6 +8,7 @@ x-logging: &loki-logging
 services:
   backend-django:
     build: ./src/backend/teaser
+    restart: unless-stopped
     # command: bash -c " python manage.py runserver 0.0.0.0:8000"
     command: gunicorn --env DJANGO_SETTINGS_MODULE=teaser.settings teaser.wsgi:application --bind 0.0.0.0:8000
     ports:
@@ -25,21 +26,22 @@ services:
     logging: *loki-logging
     networks:
       - teaser-network
-  frontend:
-    build: ./src/frontend/teaser
-    command: npm run start
-    ports:
-      - 8081:8081
-      - 42069:42069
-    env_file:
-      - .frontend.env
-    volumes:
-      - ./src/frontend/teaser:/app
-      - /app/node_modules
-    networks:
-      - teaser-network
+  # frontend:
+  #   build: ./src/frontend/teaser
+  #   command: npm run start
+  #   ports:
+  #     - 8081:8081
+  #     - 42069:42069
+  #   env_file:
+  #     - .frontend.env
+  #   volumes:
+  #     - ./src/frontend/teaser:/app
+  #     - /app/node_modules
+  #   networks:
+  #     - teaser-network
   db:
     image: postgres:15.2
+    restart: unless-stopped
     volumes:
       - ./data:/var/lib/postgresql/data/
     expose:
@@ -69,33 +71,35 @@ services:
   certbot:
     image: certbot/certbot
     restart: unless-stopped
+    # entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew ${PROSODY_INTEGRATION}; sleep 12h & wait $${!}; done;'"
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew ${PROSODY_INTEGRATION}; sleep 12h & wait $${!}; done;'"
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    environment:
-      - PROSODY_INTEGRATION=--deploy-hook "prosodyctl --root cert import /etc/letsencrypt/live"
-  prosody:
-    image: prosody/prosody
-    build: ./prosody
-    ports:
-      - 5222:5222
-      - 5269:5269
-      - 5280:5280
-    depends_on:
-      - nginx
-    volumes:
-      - ./prosody/config:/etc/prosody
-      - ./prosody/log:/var/log/prosody
-      - ./certbot/conf:/etc/letsencrypt
-      # - ./prosody/modules:/usr/lib/prosody/prosody-modules-enabled
-    environment:
-      - PROSODY_PASSWORD=${PROSODY_PASSWORD}
-      - PROSODY_DOMAIN=${PROSODY_DOMAIN}
-      - PROSODY_VIRTUAL_HOSTS=${PROSODY_VIRTUAL_HOSTS}
-      - PROSODY_INTEGRATION=${PROSODY_INTEGRATION}
+  #   environment:
+  #     - PROSODY_INTEGRATION=--deploy-hook "prosodyctl --root cert import /etc/letsencrypt/live"
+  # prosody:
+  #   image: prosody/prosody
+  #   build: ./prosody
+  #   ports:
+  #     - 5222:5222
+  #     - 5269:5269
+  #     - 5280:5280
+  #   depends_on:
+  #     - nginx
+  #   volumes:
+  #     - ./prosody/config:/etc/prosody
+  #     - ./prosody/log:/var/log/prosody
+  #     - ./certbot/conf:/etc/letsencrypt
+  #     # - ./prosody/modules:/usr/lib/prosody/prosody-modules-enabled
+  #   environment:
+  #     - PROSODY_PASSWORD=${PROSODY_PASSWORD}
+  #     - PROSODY_DOMAIN=${PROSODY_DOMAIN}
+  #     - PROSODY_VIRTUAL_HOSTS=${PROSODY_VIRTUAL_HOSTS}
+  #     - PROSODY_INTEGRATION=${PROSODY_INTEGRATION}
   prometheus:
     build: ./src/prometheus
+    restart: unless-stopped
     volumes:
       - ./src/prometheus:/prometheus
     ports:
@@ -104,6 +108,7 @@ services:
       - teaser-network
   grafana:
     build: ./src/grafana
+    restart: unless-stopped
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
     volumes:
@@ -118,6 +123,7 @@ services:
       - teaser-network
   loki:
     image: grafana/loki:2.6.1
+    restart: unless-stopped
     ports:
       - 3100:3100
     command: -config.file=/etc/loki/local-config.yaml
