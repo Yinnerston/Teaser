@@ -6,6 +6,8 @@ Reverse engineering TikTok.
 
 **Official Site:** https://teasernsfw.com
 
+**Jira**: If you want to contribute, request to join the Jira: https://memefeed.atlassian.net/jira/software/projects/TSR/boards/6
+
 <p align="center">
     <a href='https://play.google.com/store/apps/details?id=com.yinnerston.teaser&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
         <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/>
@@ -13,7 +15,6 @@ Reverse engineering TikTok.
 </p>
 
 ![Teaser Mind Map](./docs/Teaser/static/docs/img/teasermindmap.svg)
-
 
 ### Contact me
 I am broke and looking for a job as a junior or intern full-stack software engineer.
