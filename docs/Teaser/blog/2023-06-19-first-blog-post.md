@@ -11,7 +11,7 @@ tags: [teaser, summary]
 
 # What's coming in June?
 
-I'm gonna write a monthly blog post planning out what I hope to accomplish each month! Here's what coming in June!
+I'm going to write a monthly blog post planning out what I hope to accomplish each month! Here's what coming in June!
 
 I'm finishing my CS degree at UNSW this year, so I'll be dedicating more time to that than Teaser.
 I also need to find a job, otherwise I can't make rent in Sydney lol.
@@ -27,5 +27,5 @@ I also need to find a job, otherwise I can't make rent in Sydney lol.
 ### Anything else I want to discuss?
 
 - I don't know anything about managing an open source project. I'll do some research on how to communicate properly with new contributors in open-source, how to manage tasks and improve my technical skills!
-- I'm planning on making a [Show HN](https://news.ycombinator.com/show) post soon. I'll be posting Teaser on [EarlyWork Village](https://www.earlywork.co/community), [LinkedIn](https://www.linkedin.com/posts/nathanyin_tiktok-reverseengineering-reactnative-activity-7076381313808674816-q_5f?utm_source=share&utm_medium=member_desktop) and Reddit. Anybody know any niche subreddits that would fit Teaser?
+- I'm planning on making a [Show HN](https://news.ycombinator.com/item?id=36398582) post soon. I'll be posting Teaser on [EarlyWork Village](https://www.earlywork.co/community), [LinkedIn](https://www.linkedin.com/posts/nathanyin_tiktok-reverseengineering-reactnative-activity-7076381313808674816-q_5f?utm_source=share&utm_medium=member_desktop) and Reddit. Anybody know any niche subreddits that would fit Teaser?
 - I want a way to get feedback on these blog posts and on Teaser in general! If I have time, I'll start working on deploying a forum to separate technical issues on github from other discussion of Teaser and related topics!
