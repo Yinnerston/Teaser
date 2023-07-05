@@ -8,6 +8,7 @@ sidebar_label: 'Setup'
 ### Production setup:
 
 - If you are forking this repository and hosting Teaser on your own production domain, change all mentions of `wocchit.com` to your domain.
+  - For your dev environment, you can replace `wocchit.com` with the IP of the computer that is hosting the backend server. You need to rebuild the frontend into an apk using the command `npx eas build --platform android --profile development` in the frontend container
 
 ### .env files
 Create `.env` files in the root directory to use with docker-compose for local development.
@@ -72,9 +73,9 @@ Add the password to the .env file in root directory, `POSTGRES_PASSWORD=PUT_YOU_
 openssl rand -hex 32
 ```
 in another terminal.
-- `docker-compose up -d --build`
-- Run initial migration `docker-compose exec backend_django python manage.py migrate --noinput`
-- Check default Django tables were created `docker-compose exec db psql --username=teaseruser --dbname=teaser`
+- `docker-compose -f docker-compose.prod.yml up -d --build`
+- Run initial migration `docker exec backend_django python manage.py migrate --noinput`
+- Check default Django tables were created `docker exec db psql --username=teaseruser --dbname=teaser`
 
 ### (Optional) Pull data from Reddit
 
@@ -113,3 +114,20 @@ user_agent=Python-Slim:teaser-script:v1.0.0 (by u/YOUR_USERNAME)
   - Make sure the data sources are correct --> E.G. might have `prometheus` instead of `prometheus-1`
 - (Unused) Define REDIS_USERNAME and REDIS_PASSWORD in .env file
 - If you get a permission denied error on starting prometheus container, run `sudo chown nobody:nogroup src/prometheus`
+
+### Building the frontend
+
+I have setup three profiles to build the frontend application using eas.
+- Production: 
+  - `production` profile: Builds as an .aab file for the android play store
+  - `production-apk` profile: Builds as a production .apk file for android
+- Preview:
+  - `preview` profile: Builds as a preview .aab file for the android play store
+  - `preview-apk` profile: Builds as an .apk file for android
+- Development: Development build that supports hot reload based on connecting to the backend
+  - `development` profile: builds as .apk file for android
+
+Run builds with:
+`npx eas build --platform android --profile {PROFILE_GOES_HERE}`
+
+You can download your build from eas.
