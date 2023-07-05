@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkteaser=self.webpackChunkteaser||[]).push([[2535],{5641:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Life update and Teaser","permalink":"/Teaser/blog/update-on-teaser"},{"title":"What\'s coming in June?","permalink":"/Teaser/blog/whats-coming-in-june-23"}]}')}}]);

@@ -4,10 +4,20 @@
         <title>Teaser Blog</title>
         <link>https://yinnerston.github.io/Teaser/blog</link>
         <description>Teaser Blog</description>
-        <lastBuildDate>Mon, 19 Jun 2023 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 05 Jul 2023 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
+        <item>
+            <title><![CDATA[Life update and Teaser]]></title>
+            <link>https://yinnerston.github.io/Teaser/blog/update-on-teaser</link>
+            <guid>https://yinnerston.github.io/Teaser/blog/update-on-teaser</guid>
+            <pubDate>Wed, 05 Jul 2023 00:00:00 GMT</pubDate>
+            <description><![CDATA[Hi everybody.]]></description>
+            <content:encoded><![CDATA[<p>Hi everybody.</p><p>I've decided that I want to spend a few months working on other projects that I'm more passionate about and my studies at UNSW. My next project is going to be a online gallery inspired by <a href="https://www.awwwards.com/" target="_blank" rel="noopener noreferrer">awwwards.com</a> and <a href="https://play.unity.com/" target="_blank" rel="noopener noreferrer">play.unity</a> to showcase the most beautiful WebGL animations / websites on the internet.</p><p>I liked working on Teaser though, and I'll still be available to review pull requests. Please get in touch with <a href="mailto:teaseradmin@teasernsfw.com" target="_blank" rel="noopener noreferrer">teaseradmin@teasernsfw.com</a> if you've contributed to this project so I can add you as a collaborator.</p>]]></content:encoded>
+            <category>teaser</category>
+            <category>update</category>
+        </item>
         <item>
             <title><![CDATA[What's coming in June?]]></title>
             <link>https://yinnerston.github.io/Teaser/blog/whats-coming-in-june-23</link>
