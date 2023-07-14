@@ -1,7 +1,7 @@
 # Teaser
 
 Reverse engineering TikTok.
-Teaser is down over the weekend for maintenance. I'll add a health check badge that will show you the status of the Teaser server.
+Teaser not being hosted right now, see [#32](https://github.com/Yinnerston/Teaser/issues/32) for instructions on how to host Teaser.
 
 **Latest production build `.apk` file:** https://expo.dev/artifacts/eas/wAi3MYS8suGZbiFqVJYpYi.apk
 
