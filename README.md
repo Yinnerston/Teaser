@@ -1,7 +1,7 @@
 # Teaser
 
 Reverse engineering TikTok.
-Teaser not being hosted right now, see [#32](https://github.com/Yinnerston/Teaser/issues/32) for instructions on how to host Teaser.
+I am committed to hosting Teaser indefinitely, please contact me if you want to be added as a collaborator to the project.
 
 **Latest production build `.apk` file:** https://expo.dev/artifacts/eas/wAi3MYS8suGZbiFqVJYpYi.apk
 
@@ -20,9 +20,6 @@ Teaser not being hosted right now, see [#32](https://github.com/Yinnerston/Tease
 ![Teaser Mind Map](./docs/Teaser/static/docs/img/teasermindmap.svg)
 
 ### Contact me
-I am broke and looking for a job as a junior or intern full-stack software engineer.
-I'm industrious, and ambitious and I want to work on ambitious things with others.
-Forwarding me jobs or referrals is greatly appreciated!
 
 Contact:
 - nathanzjyin@gmail.com
