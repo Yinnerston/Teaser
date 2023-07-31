@@ -1,7 +1,7 @@
 # Teaser
 
 Reverse engineering TikTok.
-I am committed to hosting Teaser indefinitely, please contact me if you want to be added as a collaborator to the project.
+This project is archived and no longer being hosted. Contact me via email if you'd like me to turn on hosting to check out the frontend.
 
 **Latest production build `.apk` file:** https://expo.dev/artifacts/eas/wAi3MYS8suGZbiFqVJYpYi.apk
 
